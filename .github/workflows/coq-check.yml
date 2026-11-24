@@ -3,6 +3,7 @@ name: coq-check
 on:
   push:
     branches: ["ccr-*", "main"]
+    paths: [".github/workflows/coq-check.yml", "scripts/check_m284.sh"]
   workflow_dispatch:
 
 env:

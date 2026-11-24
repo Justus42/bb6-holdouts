@@ -1,0 +1,78 @@
+name: laufzeit
+
+# Block 2c: Laufzeit von PR #32 klaeren (VM vs. native). Laeuft nur, wenn sich
+# dieser Workflow oder scripts/build_check.sh aendert.
+on:
+  push:
+    branches: ["ccr-*"]
+    paths: [".github/workflows/laufzeit.yml", "scripts/build_check.sh"]
+  workflow_dispatch:
+
+env:
+  BUSYCOQ_URL: https://github.com/ccz181078/busycoq
+  BUSYCOQ_PIN: 33209bc7dc282b38c8cd6be507bfc551fea56108
+  # Digests am 2026-11-24 per Registry-API verifiziert
+  IMG_VM: coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
+  IMG_NATIVE: coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: pr-1e45f1b-vm
+            image: coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
+            src: "1e45f1b:verify/1RB1LE_0RC0LC_1LD0RA_0LA0LF_0LC0LE_0LD---.v"
+            mod: M284pr1
+            thms: "halt"
+            coqchk_if_under: ""
+          - id: pr-57c9956-vm
+            image: coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
+            src: "57c9956:verify/M_1RB1LE_0RC0LC_1LD0RA_0LA0LF_0LC0LE_0LDHHH.v"
+            mod: M284pr2
+            thms: "halt halt_C halt_twin"
+            coqchk_if_under: ""
+          - id: m284-native
+            image: coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd
+            src: "33209bc7dc282b38c8cd6be507bfc551fea56108:verify/PR_Loop4Mono.v"
+            mod: M284
+            thms: "TM1.halt TM2.halt"
+            coqchk_if_under: "300"
+    name: ${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    container:
+      image: ${{ matrix.image }}
+      options: --user root
+    env:
+      OPAMROOT: /home/coq/.opam
+    steps:
+      - uses: actions/checkout@v4
+      - name: busycoq auf festen Commit klonen (volle Historie fuer PR-Commits)
+        run: |
+          git config --global --add safe.directory '*'
+          git clone -q --branch BB6 "$BUSYCOQ_URL" busycoq
+          git -C busycoq checkout -q "$BUSYCOQ_PIN"
+          test "$(git -C busycoq rev-parse HEAD)" = "$BUSYCOQ_PIN"
+      - name: Bauen + Print Assumptions (streng)
+        working-directory: busycoq/verify
+        env:
+          COQCHK_IF_UNDER: ${{ matrix.coqchk_if_under }}
+        run: bash "$GITHUB_WORKSPACE/scripts/build_check.sh" "${{ matrix.src }}" "${{ matrix.mod }}" ${{ matrix.thms }}
+      - name: Negativkontrolle b mit coqchk (nur nativ, nur wenn Bau < 300 s)
+        if: matrix.id == 'm284-native'
+        working-directory: busycoq/verify
+        run: |
+          b=$(cat M284.buildtime)
+          if [ "$b" -ge 300 ]; then echo "uebersprungen: Bau ${b}s >= 300s"; exit 0; fi
+          # Beweis von check_spec durch Admitted ersetzen (nur in der Runner-Kopie)
+          perl -0777 -pe 's/(Theorem check_spec cs s0 fuel[^\n]*\n)Proof\..*?Qed\./$1Admitted./s' M284.v > M284b.v
+          diff M284.v M284b.v || true
+          set +e
+          COQCHK_IF_UNDER=100000 bash "$GITHUB_WORKSPACE/scripts/build_check.sh" file:M284b.v M284b TM1.halt TM2.halt | tee negb.log
+          set -e
+          grep -q "STRENG FAIL TM1.halt" negb.log || { echo "Kontrolle b: Print Assumptions hat die Luecke NICHT gezeigt"; exit 1; }
+          grep -q "COQCHK M284b: exit=0" negb.log || { echo "Kontrolle b: coqchk nicht durchgelaufen"; exit 1; }
+          grep -q "M284b.TM1.check_spec" coqchk_M284b.log || { echo "Kontrolle b: Axiom fehlt in coqchk-Ausgabe"; exit 1; }
+          echo "Kontrolle b: Luecke von Print Assumptions UND coqchk erkannt"
