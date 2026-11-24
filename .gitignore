@@ -236,7 +236,6 @@ Makefile.coq*
 
 # Rust
 target/
-Cargo.lock
 
 # External clones (never commit)
 busycoq/
