@@ -1,0 +1,509 @@
+#!/usr/bin/env -S python3 -I
+"""Aussage-Pruefung einer busycoq-Beweisdatei VOR dem Bau (nur Text, kein Coq).
+
+Aufruf:
+  scripts/aussage_check <datei.v> <erwarteter Maschinen-String> [--coq <Modul> <kern.v>]
+  scripts/aussage_check --formen <busycoq/verify>
+
+Prueft:
+  1. Der erwartete String hat das 6x2-Format und steht in data/BB6_holdouts_608.txt oder
+     in "decided" von data/holdouts.json (beide Dateien per SHA-256 aus data/QUELLE.md).
+  2. Jede Maschine der Datei (jedes TM_from_str "...") ist exakt der erwartete String oder
+     sein Spiegel-Zwilling (L/R getauscht, Zustaende beliebig umbenannt); Zwillinge werden
+     gekennzeichnet. Andere Maschinen-Definitionen (TM'_from_str, ": TM", flip, TM_from_str
+     ohne Literal) fuehren zu FAIL.
+  3. Haupttheoreme haben dieselbe Form wie in den gemergten busycoq-Beweisen (abgeleitet
+     mit --formen aus den Dateien, die "decided" im Pin nennt):
+       Theorem|Lemma <name> : halts <tm> c0.        (haelt ab Leerband)
+       Theorem|Lemma <name> : ~halts <tm> c0.       (haelt nicht ab Leerband)
+     mit <tm> := [Eval compute in] (TM_from_str "S") oder inline (TM_from_str "S").
+     Keine Binder, nicht in Section/Module Type/Funktor, Beweis endet mit Qed/Defined.
+     Die erwartete Maschine braucht ein Haupttheorem, jede andere Maschine ebenfalls;
+     widerspruechliche Urteile oder ein Widerspruch zu "verdict" in decided -> FAIL.
+  4. c0, halts, TM_from_str usw. werden in der Datei nicht neu definiert.
+
+Ausgabe: Bericht, dann "HAUPTTHEOREME: <A.b> ..." und "ERGEBNIS: OK|FAIL". Exit 0 = OK,
+1 = FAIL, 2 = Aufruffehler. Mit --coq wird zusaetzlich eine Coq-Datei geschrieben, die nach
+dem Bau die Aussagen im Kern abgleicht (Definition <..> : halts (TM_from_str "S") c0 := M.x).
+Die Textpruefung ersetzt diesen Abgleich nicht, sie faengt Fehler nur vor dem langen Bau ab.
+"""
+import hashlib
+import itertools
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+LIST = ROOT / "data" / "BB6_holdouts_608.txt"
+LIST_SHA256 = "81b29741c6179b56e60123b672ac4b58149869af04271fb05b57f9421e4500a5"
+JSON = ROOT / "data" / "holdouts.json"
+JSON_SHA256 = "84e7b8ac2ca92dedeac98bb2bfd5f57dd5aefdef38ee4da302f9c36df2b66810"
+
+TM_RE = re.compile(r"^([01][LR][A-F]|---){2}(_([01][LR][A-F]|---){2}){5}$")
+STATES = "ABCDEF"
+ID = r"[A-Za-z_][A-Za-z0-9_']*"
+QID = rf"{ID}(?:\.{ID})*"
+THM_KW = r"(?:Theorem|Lemma|Corollary|Fact|Remark|Proposition|Property|Example)"
+# Form der Haupttheoreme (aus dem Pin abgeleitet, siehe --formen)
+MAIN_NAMED = re.compile(rf"^(~\s*)?halts\s+({QID})\s+c0$")
+MAIN_INLINE = re.compile(r'^(~\s*)?halts\s+\(\s*TM_from_str\s+"([^"]*)"\s*\)\s+c0$')
+# Maschinen-Definitionen (aus dem Pin): Definition tm := [Eval compute in] (TM_from_str "S").
+MACHINE_DEF = re.compile(
+    rf'^(?:Local\s+)?Definition\s+({ID})\s*(?::\s*TM\s*)?:=\s*'
+    r'(?:Eval\s+compute\s+in\s*\(\s*TM_from_str\s+"([^"]*)"\s*\)|Eval\s+compute\s+in\s+TM_from_str\s+"([^"]*)"'
+    r'|\(\s*TM_from_str\s+"([^"]*)"\s*\)|TM_from_str\s+"([^"]*)")$', re.S)
+PROTECTED = {"c0", "halts", "halts_in", "halted", "TM_from_str", "tape0", "q0", "s0", "s1",
+             "flip", "Q_from_str", "trans_from_str", "trans_from_char", "Q_from_char",
+             "Sym_from_char", "dir_from_char", "skip_sep"}
+BINDER_KW = r"(?:Variables?|Parameters?|Axioms?|Hypothes[ie]s|Conjectures?|Context)"
+DEF_KW = (r"(?:Definition|Fixpoint|CoFixpoint|Let|Inductive|CoInductive|Record|Structure|Class|"
+          r"Instance|Program\s+Definition|Program\s+Fixpoint|Function|Equations|" + THM_KW + ")")
+
+
+def die(msg, code=2):
+    print(msg, file=sys.stderr)
+    sys.exit(code)
+
+
+# --- Coq-Text in Saetze zerlegen (Kommentare verschachtelt, Strings mit "" ) -------------
+def sentences(src):
+    out, buf, start = [], [], None
+    i, n, depth = 0, len(src), 0
+
+    def skip_string(j):
+        j += 1
+        while j < n:
+            if src[j] == '"':
+                if j + 1 < n and src[j + 1] == '"':
+                    j += 2
+                    continue
+                return j + 1
+            j += 1
+        raise ValueError("String nicht geschlossen")
+
+    while i < n:
+        if src.startswith("(*", i):
+            depth += 1
+            i += 2
+            continue
+        if depth:
+            if src.startswith("*)", i):
+                depth -= 1
+                i += 2
+                if not depth:
+                    buf.append(" ")
+            elif src[i] == '"':
+                i = skip_string(i)
+            else:
+                i += 1
+            continue
+        c = src[i]
+        if c == '"':
+            j = skip_string(i)
+            if start is None:
+                start = i
+            buf.append(src[i:j])
+            i = j
+            continue
+        if c == "." and (i + 1 == n or src[i + 1].isspace()):
+            text = "".join(buf).strip()
+            if text:
+                out.append((text, src.count("\n", 0, start) + 1))
+            buf, start = [], None
+            i += 1
+            continue
+        if start is None and not c.isspace():
+            start = i
+        buf.append(c)
+        i += 1
+    if depth:
+        raise ValueError("Kommentar nicht geschlossen")
+    if "".join(buf).strip():
+        raise ValueError("letzter Satz ohne Punkt")
+    return out
+
+
+def norm(s):
+    return " ".join(s.split())
+
+
+def strip_bullets(s):
+    return re.sub(r"^[\s\-+*{}]*", "", s)
+
+
+# --- Maschinen -----------------------------------------------------------------------
+def parse_tm(s):
+    rows = s.split("_")
+    t = {}
+    for qi, row in enumerate(rows):
+        for sym in (0, 1):
+            tr = row[3 * sym:3 * sym + 3]
+            t[(STATES[qi], sym)] = None if tr == "---" else (tr[0], tr[1], tr[2])
+    return t
+
+
+def tm_str(t):
+    return "_".join("".join("---" if t[(q, s)] is None else "".join(t[(q, s)]) for s in (0, 1))
+                    for q in STATES)
+
+
+def mirror_twins(expected):
+    """Alle (pi, string) mit string = pi(flip(expected)); pi: Zustand hier -> Zustand dort."""
+    e = parse_tm(expected)
+    res = {}
+    for perm in itertools.permutations(STATES):
+        pi = dict(zip(STATES, perm))
+        t = {}
+        for (q, s), tr in e.items():
+            t[(pi[q], s)] = None if tr is None else (tr[0], "L" if tr[1] == "R" else "R", pi[tr[2]])
+        res.setdefault(tm_str(t), []).append(pi)
+    return res
+
+
+def describe_pi(pi):
+    if all(pi[q] == q for q in STATES):
+        return "reines Spiegelbild (L/R getauscht, Zustaende gleich)"
+    ren = " ".join(pi[q] for q in STATES)
+    inv = {v: k for k, v in pi.items()}
+    if pi["A"] == "A":
+        return f"Spiegelbild, Zustaende A..F hier = {ren} dort (gleicher Start A)"
+    return (f"Spiegel-Zwilling, Zustaende A..F hier = {ren} dort; Start A dort = Zustand {inv['A']} hier "
+            f"(eigener Lauf: Lauf dieser Maschine ab Leerband in {inv['A']})")
+
+
+# --- Daten ---------------------------------------------------------------------------
+def load_data():
+    lraw = LIST.read_bytes()
+    if hashlib.sha256(lraw).hexdigest() != LIST_SHA256:
+        die(f"FEHLER: SHA-256 von {LIST} weicht von QUELLE.md ab", 2)
+    jraw = JSON.read_bytes()
+    if hashlib.sha256(jraw).hexdigest() != JSON_SHA256:
+        die(f"FEHLER: SHA-256 von {JSON} weicht von QUELLE.md ab", 2)
+    lst = {tm: i + 1 for i, tm in enumerate(lraw.decode("ascii").splitlines())}
+    dec = {}
+    for x in json.loads(jraw)["decided"]:
+        dec.setdefault(x["tm"], []).append(x)
+    return lst, dec
+
+
+def where(tm, lst, dec):
+    parts = []
+    if tm in lst:
+        parts.append(f"Liste Zeile {lst[tm]}")
+    for x in dec.get(tm, []):
+        parts.append(f"decided n={x['n']} file={x['file']} class={x['class']} by={x['by']} verdict={x['verdict']}")
+    return parts
+
+
+# --- Datei analysieren ---------------------------------------------------------------
+def analyse(src):
+    """Liefert (machines, theorems, problems). machines: list of dict, theorems: list of dict."""
+    sents = sentences(src)
+    stack = []          # (art, name): art in Module, Functor, ModuleType, Section
+    defs = {}           # Pfad-Tupel -> machine-index
+    machines, theorems, problems = [], [], []
+
+    def modpath():
+        return tuple(n for a, n in stack if a in ("Module", "Functor", "ModuleType"))
+
+    def resolve(name):
+        parts = tuple(name.split("."))
+        mp = modpath()
+        for k in range(len(mp), -1, -1):
+            key = mp[:k] + parts
+            if key in defs:
+                return defs[key]
+        return None
+
+    def add_machine(s, label, line, how):
+        machines.append({"tm": s, "label": label, "line": line, "how": how})
+        return len(machines) - 1
+
+    pending = None  # Haupttheorem, dessen Beweisende noch gesucht wird
+    for idx, (s, line) in enumerate(sents):
+        t = norm(s)
+        t0 = re.sub(r"^#\[[^\]]*\]\s*", "", t)
+        # Beweisende eines Haupttheorems
+        if pending is not None:
+            b = strip_bullets(t0)
+            m = re.match(r"^(?:Time\s+)?(Qed|Defined|Admitted|Abort|Save)\b", b)
+            if m:
+                pending["end"] = m.group(1)
+                pending = None
+            elif re.match(rf"^(?:Local\s+|Global\s+)*(?:{THM_KW}|Definition|Module|End|Section)\b", b):
+                pending["end"] = "kein Qed vor naechster Deklaration"
+                pending = None
+        # Module/Section-Struktur
+        m = re.match(rf"^Module\s+(?:(Import|Export)\s+)?(Type\s+)?({ID})(.*)$", t0)
+        if m:
+            rest = m.group(4)
+            if ":=" in rest:
+                if re.search(r"\bTM_from_str\b", rest):
+                    problems.append(f"Zeile {line}: TM_from_str in Modul-Ausdruck")
+                continue
+            art = "ModuleType" if m.group(2) else ("Functor" if rest.strip().startswith("(") else "Module")
+            stack.append((art, m.group(3)))
+            continue
+        m = re.match(rf"^Section\s+({ID})$", t0)
+        if m:
+            stack.append(("Section", m.group(1)))
+            continue
+        m = re.match(rf"^End\s+({ID})$", t0)
+        if m:
+            if not stack or stack[-1][1] != m.group(1):
+                problems.append(f"Zeile {line}: End {m.group(1)} passt nicht zur Struktur")
+            else:
+                stack.pop()
+            continue
+        # Neudefinition geschuetzter Namen
+        m = re.match(rf"^(?:Local\s+|Global\s+|Polymorphic\s+|Monomorphic\s+)*{DEF_KW}\s+({ID})", t0)
+        if m and m.group(1) in PROTECTED:
+            problems.append(f"Zeile {line}: definiert geschuetzten Namen {m.group(1)}")
+        if re.match(rf"^(?:Local\s+|Global\s+)*{BINDER_KW}\b", t0):
+            head = re.sub(rf"^(?:Local\s+|Global\s+)*{BINDER_KW}\s*", "", t0)
+            groups = re.findall(r"[({\[`]+\s*([^:(){}\[\]]*?)\s*:", head) or [head.split(":")[0]]
+            for g in groups:
+                for name in g.split():
+                    if name in PROTECTED:
+                        problems.append(f"Zeile {line}: bindet geschuetzten Namen {name}")
+        if re.match(r"^(?:Local\s+|Global\s+)*(?:Notation|Infix|Reserved\s+Notation)\b", t0):
+            for lit in re.findall(r'"([^"]*)"', t0):
+                for w in re.findall(rf"{ID}", lit.replace("'", " ")):
+                    if w in PROTECTED:
+                        problems.append(f"Zeile {line}: Notation mit geschuetztem Namen {w}")
+            m2 = re.match(rf"^(?:Local\s+|Global\s+)*Notation\s+({ID})\s", t0)
+            if m2 and m2.group(1) in PROTECTED:
+                problems.append(f"Zeile {line}: Abkuerzung fuer geschuetzten Namen {m2.group(1)}")
+        if re.search(r"\bInductive\b|\bCoInductive\b|\bVariant\b", t0):
+            for w in re.findall(rf"(?:\||:=)\s*({ID})\s*:", t0):
+                if w in PROTECTED:
+                    problems.append(f"Zeile {line}: Konstruktor mit geschuetztem Namen {w}")
+        # nicht unterstuetzte Maschinen-Formen
+        if "TM'_from_str" in t0:
+            problems.append(f"Zeile {line}: TM'_from_str wird nicht unterstuetzt")
+        if re.match(rf"^(?:Local\s+)?Definition\s+{ID}\s*:\s*TM\s*:=", t0) and not MACHINE_DEF.match(t0):
+            problems.append(f"Zeile {line}: Maschine mit ': TM' ohne TM_from_str-Literal")
+        if re.match(rf"^(?:Local\s+)?Definition\s+{ID}\s*(?::\s*TM\s*)?:=\s*(?:Eval\s+\w+\s+in\s*)?\(?\s*flip\b", t0):
+            problems.append(f"Zeile {line}: Maschine per flip definiert (nicht unterstuetzt)")
+        for _ in re.finditer(r"\bTM_from_str\b(?!\s*\(?\s*\")", t0):
+            problems.append(f"Zeile {line}: TM_from_str ohne String-Literal")
+        # Maschinen-Definition
+        m = MACHINE_DEF.match(t0)
+        if m:
+            s_tm = next(g for g in m.groups()[1:] if g is not None)
+            key = modpath() + (m.group(1),)
+            label = ".".join(key)
+            defs[key] = add_machine(s_tm, label, line, "Definition")
+            continue
+        # sonstige TM_from_str-Literale (inline)
+        inl = re.findall(r'\bTM_from_str\s*\(?\s*"([^"]*)"', t0)
+        # Theoreme
+        m = re.match(rf"^(?:Local\s+|Global\s+)*({THM_KW})\s+({ID})\s*(.*)$", t0, re.S)
+        mi_used = set()
+        if m:
+            kw, name, rest = m.groups()
+            if rest.startswith(":"):
+                stmt = norm(rest[1:])
+                mn, mi = MAIN_NAMED.match(stmt), MAIN_INLINE.match(stmt)
+                target, how = None, None
+                if mn:
+                    target = resolve(mn.group(2))
+                    if target is None:
+                        problems.append(f"Zeile {line}: {name}: Maschine {mn.group(2)} nicht als TM_from_str-Definition in der Datei gefunden")
+                    neg = bool(mn.group(1))
+                elif mi:
+                    target = add_machine(mi.group(2), f"{'.'.join(modpath() + (name,))} (inline)", line, "inline")
+                    mi_used.add(mi.group(2))
+                    neg = bool(mi.group(1))
+                if target is not None:
+                    ctx = [a for a, _ in stack if a in ("Section", "ModuleType", "Functor")]
+                    th = {"name": ".".join(modpath() + (name,)), "kw": kw, "line": line, "machine": target,
+                          "verdict": "nonhalt" if neg else "halt", "stmt": stmt, "end": None, "ctx": ctx}
+                    theorems.append(th)
+                    pending = th
+        for lit in inl:
+            if lit in mi_used:
+                mi_used.discard(lit)
+                continue
+            add_machine(lit, f"Zeile {line} (TM_from_str-Literal)", line, "Literal")
+    if pending is not None:
+        pending["end"] = "Dateiende ohne Qed"
+    if stack:
+        problems.append(f"Struktur nicht geschlossen: {stack}")
+    return machines, theorems, problems
+
+
+# --- Hauptpruefung -------------------------------------------------------------------
+def check(path, expected, coq=None):
+    fails = []
+    raw = Path(path).read_bytes()
+    print(f"Datei: {path}")
+    print(f"  sha256: {hashlib.sha256(raw).hexdigest()}")
+    print(f"Erwartet: {expected}")
+    if not TM_RE.match(expected):
+        print("FAIL: erwarteter String hat nicht das 6x2-Format")
+        print("ERGEBNIS: FAIL")
+        return 1
+    lst, dec = load_data()
+    w = where(expected, lst, dec)
+    if w:
+        for x in w:
+            print(f"  {x}")
+    else:
+        fails.append("erwarteter String steht weder in BB6_holdouts_608.txt noch in decided")
+    try:
+        machines, theorems, problems = analyse(raw.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError) as e:
+        print(f"FAIL: Datei nicht lesbar: {e}")
+        print("ERGEBNIS: FAIL")
+        return 1
+    fails += problems
+    twins = mirror_twins(expected)
+
+    print(f"Maschinen in der Datei: {len(machines)}")
+    rel = []
+    for i, mc in enumerate(machines):
+        s = mc["tm"]
+        if not TM_RE.match(s):
+            r = "FORMAT-FEHLER"
+            fails.append(f"{mc['label']} (Zeile {mc['line']}): '{s}' hat nicht das 6x2-Format "
+                         "(TM_from_str macht daraus stillschweigend Halteuebergaenge)")
+        elif s == expected:
+            r = "EXAKT"
+        elif s in twins:
+            pis = twins[s]
+            pi = next((p for p in pis if all(p[q] == q for q in STATES)), pis[0])
+            r = "SPIEGEL-ZWILLING: " + describe_pi(pi)
+        else:
+            r = "FREMD"
+            fails.append(f"{mc['label']} (Zeile {mc['line']}): {s} ist weder der erwartete String noch sein Spiegel-Zwilling")
+        rel.append(r)
+        print(f"  [{i + 1}] {mc['label']}  Zeile {mc['line']}  {s}")
+        print(f"      {r}")
+        if r.startswith("SPIEGEL"):
+            ww = where(s, lst, dec)
+            print("      " + ("; ".join(ww) if ww else "HINWEIS: Zwilling steht weder in der Liste noch in decided"))
+    if not machines:
+        fails.append("keine Maschine (TM_from_str) in der Datei gefunden")
+
+    print(f"Haupttheoreme: {len(theorems)}")
+    by_machine = {}
+    for th in theorems:
+        mc = machines[th["machine"]]
+        print(f"  {th['name']}  Zeile {th['line']}  {th['kw']} : {th['stmt']}  -> [{th['machine'] + 1}] "
+              f"({'haelt' if th['verdict'] == 'halt' else 'haelt nicht'}), Ende: {th['end']}")
+        if th["end"] not in ("Qed", "Defined"):
+            fails.append(f"{th['name']}: Beweis endet nicht mit Qed/Defined ({th['end']})")
+        if th["ctx"]:
+            fails.append(f"{th['name']}: steht in {'/'.join(th['ctx'])}; Aussage waere dort nicht die gepruefte")
+        by_machine.setdefault(th["machine"], set()).add(th["verdict"])
+    for i, mc in enumerate(machines):
+        v = by_machine.get(i, set())
+        if not v:
+            fails.append(f"[{i + 1}] {mc['label']}: kein Haupttheorem der Form [~]halts <tm> c0")
+        if len(v) > 1:
+            fails.append(f"[{i + 1}] {mc['label']}: widerspruechliche Haupttheoreme (halts und ~halts)")
+        for x in dec.get(mc["tm"], []):
+            want = {"halts": "halt", "non-halting": "nonhalt"}.get(x["verdict"])
+            if want and v and v != {want}:
+                fails.append(f"[{i + 1}] {mc['label']}: Urteil widerspricht decided n={x['n']} verdict={x['verdict']} "
+                             "(Datei oder Daten pruefen; decided kann irren, z. B. n=356 gegen CSv1.v)")
+    exact = [i for i, r in enumerate(rel) if r == "EXAKT"]
+    if machines and not any(i in by_machine for i in exact):
+        fails.append("die erwartete Maschine selbst hat kein Haupttheorem")
+
+    names = [th["name"] for th in theorems]
+    print("Pruefungen:")
+    for f in fails:
+        print(f"  FAIL {f}")
+    if not fails:
+        print("  alle bestanden")
+    print("HAUPTTHEOREME: " + " ".join(names))
+    print(f"ERGEBNIS: {'OK' if not fails else 'FAIL'}")
+    if coq and not fails:
+        mod, out = coq
+        if not re.fullmatch(ID, mod):
+            die(f"FEHLER: Modulname {mod!r} ungueltig")
+        lines = [f"(* Erzeugt von scripts/aussage_check fuer {Path(path).name}",
+                 f"   (sha256 {hashlib.sha256(raw).hexdigest()}). Der Kern prueft, dass jedes",
+                 "   Haupttheorem genau diese Aussage hat; das gepruefte Modul wird nur geladen,",
+                 "   nicht importiert, kann also keine Namen ueberdecken. *)",
+                 "From Coq Require Import String.",
+                 "From BusyCoq Require Import Individual62.",
+                 f"From BusyCoq Require {mod}.", ""]
+        for k, th in enumerate(theorems):
+            s = machines[th["machine"]]["tm"]
+            neg = "~ " if th["verdict"] == "nonhalt" else ""
+            lines.append(f'Definition aussage_{k + 1} : {neg}halts (TM_from_str "{s}") c0 := {mod}.{th["name"]}.')
+        Path(out).write_text("\n".join(lines) + "\n")
+        print(f"Kern-Abgleich geschrieben: {out}")
+    return 0 if not fails else 1
+
+
+# --- Formen aus dem Pin ableiten -----------------------------------------------------
+def formen(verify):
+    verify = Path(verify)
+    d = json.loads(JSON.read_bytes())
+    files = sorted({x["file"] for x in d["decided"] if x["by"] == "proof"})
+    from collections import Counter
+    forms, defs_forms, other = Counter(), Counter(), Counter()
+    bad = []
+    for f in files:
+        p = verify / f
+        if not p.exists():
+            bad.append(f)
+            continue
+        try:
+            sents = sentences(p.read_text())
+        except ValueError as e:
+            bad.append(f"{f}: {e}")
+            continue
+        for s, _ in sents:
+            t = norm(re.sub(r"^#\[[^\]]*\]\s*", "", s))
+            m = MACHINE_DEF.match(t)
+            if m:
+                defs_forms["Eval compute in (TM_from_str S)" if m.group(2) else
+                           "Eval compute in TM_from_str S" if m.group(3) else
+                           "(TM_from_str S)" if m.group(4) else "TM_from_str S"] += 1
+            m = re.match(rf"^(?:Local\s+)?({THM_KW})\s+({ID})\s*(.*)$", t, re.S)
+            if m and "halts" in m.group(3) and "c0" in m.group(3):
+                rest = m.group(3)
+                if rest.startswith(":"):
+                    st = norm(rest[1:])
+                    if MAIN_NAMED.match(st):
+                        forms[f"{m.group(1)} : {'~' if st.startswith('~') else ''}halts <tm> c0"] += 1
+                        continue
+                    if MAIN_INLINE.match(st):
+                        forms[f"{m.group(1)} : {'~' if st.startswith('~') else ''}halts (TM_from_str S) c0"] += 1
+                        continue
+                other[re.sub(r'"[^"]*"', "S", re.sub(rf"^{THM_KW}\s+{ID}", "X", t))[:70]] += 1
+    print(f"Dateien aus decided (by=proof): {len(files)}, nicht lesbar/fehlend: {bad or 'keine'}")
+    print("Haupttheorem-Formen (ohne Binder):")
+    for k, v in forms.most_common():
+        print(f"  {v:5d}  {k}")
+    print("Maschinen-Definitionen:")
+    for k, v in defs_forms.most_common():
+        print(f"  {v:5d}  Definition <tm> := {k}")
+    print("Sonstige Aussagen mit halts ... c0 (keine Haupttheoreme), haeufigste:")
+    for k, v in other.most_common(8):
+        print(f"  {v:5d}  {k}")
+    return 0
+
+
+def main(argv):
+    if len(argv) == 2 and argv[0] == "--formen":
+        return formen(argv[1])
+    coq = None
+    if len(argv) == 5 and argv[2] == "--coq":
+        coq = (argv[3], argv[4])
+        argv = argv[:2]
+    if len(argv) != 2:
+        die(__doc__.split("Prueft:")[0].strip())
+    if not Path(argv[0]).is_file():
+        die(f"FEHLER: Datei {argv[0]} fehlt")
+    return check(argv[0], argv[1], coq)
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
