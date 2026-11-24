@@ -16,6 +16,10 @@ COQBIN=$(dirname "$(ls /home/coq/.opam/*/bin/coqc | head -1)")
 export PATH=$COQBIN:$PATH
 coqc --version | head -1
 coqc -config | grep -E "^NATIVE_COMPILER_DEFAULT|^COQ_NATIVE" || true
+# Nativ kompilierte Casts laufen auf dem System-Stack; mit 8 MB brach PR_Loop4Mono.v lokal beim
+# Qed von halt_C mit "Dynlink error ... Stack overflow" ab. Stack anheben, soweit das Hard-Limit erlaubt.
+ulimit -s unlimited 2>/dev/null || ulimit -s "$(ulimit -Hs)" 2>/dev/null || true
+echo "Stack-Limit: $(ulimit -s) (hart: $(ulimit -Hs))"
 
 head_sha=$(git -C .. rev-parse HEAD)
 [ "$head_sha" = "$PIN" ] || { echo "FEHLER: busycoq nicht auf $PIN ($head_sha)"; exit 2; }
