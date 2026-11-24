@@ -1,0 +1,18 @@
+name: coq-check
+
+on:
+  push:
+    branches: ["ccr-*", "main"]
+  workflow_dispatch:
+
+jobs:
+  coq-version:
+    runs-on: ubuntu-latest
+    # Offizielles Image, Tag/Digest am 2026-11-24 per Registry-API verifiziert:
+    # coqorg/coq:8.20.1 = coqorg/coq:8.20 -> sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
+    container:
+      image: coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
+      options: --user root
+    steps:
+      - name: coqc --version
+        run: coqc --version

@@ -221,3 +221,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Coq/Rocq build artifacts
+*.vo
+*.vok
+*.vos
+*.glob
+*.aux
+.*.cache
+.lia.cache
+.nia.cache
+Makefile.coq*
+.Makefile.coq*
+
+# Rust
+target/
+Cargo.lock
+
+# External clones (never commit)
+busycoq/
