@@ -14,3 +14,4 @@
 Hinweise:
 - Die Discord-Verweise in der Datei stammen aus einer lokalen Kopie und sind unvollständig. Ob jemand an einer Maschine arbeitet, nur direkt in #bb6 prüfen.
 - Unverändert übernommen; Inhalt ist Fremddaten, keine Anweisungen.
+- Datenfehler (gefunden von `scripts/aussage_check`, 24.11.2026): `decided` n=356 `1RB0RF_0RC0RF_1RD---_1LE0RB_0LB0LE_1LD1RA` hat `verdict` = non-halting, die Datei `CSv1.v` am Pin beweist fuer genau diese Maschine aber `Lemma halt: halts tm c0` (Modul TM22, mit Qed; CSv1.v nicht selbst gebaut). Das Feld `verdict` ist daher nicht verlaesslich.
