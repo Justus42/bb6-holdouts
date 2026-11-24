@@ -32,6 +32,7 @@ t0=$(date +%s)
 coqc -time -Q . BusyCoq "$mod.v" > "$mod.time.log" 2>&1 || { tail -30 "$mod.time.log"; echo "coqc FEHLER"; exit 1; }
 build=$(( $(date +%s) - t0 ))
 echo "BAUZEIT $mod: ${build}s"; echo "$build" > "$mod.buildtime"
+set +o pipefail   # head schliesst Pipes frueh (SIGPIPE), das ist hier gewollt
 echo "Langsamste Saetze (Zeichenbereich, Satz, Sekunden):"
 grep -E '^Chars ' "$mod.time.log" | awk '{for(i=1;i<=NF;i++) if($i=="secs") print $(i-1), $0}' | sort -rn | head -6 | cut -d' ' -f2- | cut -c1-90
 # Zeilennummern der langsamen Qed zuordnen
@@ -39,6 +40,7 @@ grep -E '^Chars ' "$mod.time.log" | awk '{for(i=1;i<=NF;i++) if($i=="secs" && $(
   line=$(head -c "$off" "$mod.v" | wc -l); echo "  >5s endet nahe Zeile $((line+1)): $(grep -nE '^(Theorem|Lemma)' "$mod.v" | awk -F: -v L=$((line+1)) '$1<=L' | tail -1 | cut -c1-70)"
 done
 
+set -o pipefail
 fail=0
 for th in $theorems; do
   printf 'From BusyCoq Require %s.\nPrint Assumptions %s.%s.\n' "$mod" "$mod" "$th" > "PA_$mod.v"
