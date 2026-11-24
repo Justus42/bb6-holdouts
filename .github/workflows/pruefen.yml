@@ -1,0 +1,128 @@
+name: pruefen
+
+# Prueft eine Beweisdatei fuer eine Maschine, nur manuell:
+#   1. aussage_check (Text, vor dem Bau): Maschinen = erwarteter String oder Spiegel-Zwilling,
+#      String in der Liste oder in decided, Haupttheoreme in der Form der gemergten Beweise.
+#   2. Bau im nativen UND im VM-Image (Digests am 2026-11-24 per Registry-API verifiziert),
+#      jeweils Print Assumptions streng fuer alle Haupttheoreme und Kern-Abgleich der Aussagen.
+# Beide Bau-Jobs bekommen per Artefakt genau die Bytes, die aussage_check gesehen hat (SHA-256).
+# Kein coqchk.
+on:
+  workflow_dispatch:
+    inputs:
+      datei:
+        description: "Beweisdatei: Pfad im Repo, oder pin:<Pfad> fuer busycoq am Pin (z. B. pin:verify/PR_Loop4Mono.v)"
+        required: true
+        default: "pin:verify/PR_Loop4Mono.v"
+      maschine:
+        description: "erwarteter Maschinen-String (6x2, Halt als ---)"
+        required: true
+        default: "1RB1LE_0RC0LC_1LD0RA_0LA0LF_0LC0LE_0LD---"
+
+permissions:
+  contents: read
+
+env:
+  BUSYCOQ_URL: https://github.com/ccz181078/busycoq
+  BUSYCOQ_PIN: 33209bc7dc282b38c8cd6be507bfc551fea56108
+  MOD: Pruefling
+
+jobs:
+  aussage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      thms: ${{ steps.check.outputs.thms }}
+      sha: ${{ steps.check.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: busycoq auf Pin
+        run: |
+          git init -q busycoq
+          git -C busycoq remote add origin "$BUSYCOQ_URL"
+          git -C busycoq fetch -q --depth 1 origin "$BUSYCOQ_PIN"
+          git -C busycoq checkout -q FETCH_HEAD
+          test "$(git -C busycoq rev-parse HEAD)" = "$BUSYCOQ_PIN"
+      - name: Datei bereitstellen
+        env:
+          DATEI: ${{ inputs.datei }}
+        run: |
+          case "$DATEI" in
+            *..*|/*) echo "FEHLER: Pfad mit .. oder absolut: $DATEI"; exit 2 ;;
+            pin:*) src="busycoq/${DATEI#pin:}" ;;
+            *) src="$DATEI" ;;
+          esac
+          test -f "$src" || { echo "FEHLER: $src fehlt"; exit 2; }
+          mkdir pruefling
+          cp "$src" "pruefling/$MOD.v"
+          echo "Quelle: $src (Repo $(git rev-parse HEAD), busycoq $BUSYCOQ_PIN)"
+      - name: aussage_check (vor dem Bau)
+        id: check
+        shell: bash
+        env:
+          MASCHINE: ${{ inputs.maschine }}
+        run: |
+          set -euo pipefail
+          scripts/aussage_check "pruefling/$MOD.v" "$MASCHINE" --coq "$MOD" "pruefling/Kern_$MOD.v" | tee pruefling/aussage.log
+          thms=$(sed -n 's/^HAUPTTHEOREME: //p' pruefling/aussage.log)
+          [ -n "$thms" ] || { echo "FEHLER: keine Haupttheoreme"; exit 1; }
+          echo "thms=$thms" >> "$GITHUB_OUTPUT"
+          echo "sha=$(sha256sum "pruefling/$MOD.v" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pruefling
+          path: pruefling/
+          if-no-files-found: error
+          retention-days: 30
+
+  bau:
+    needs: aussage
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: nativ
+            image: coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd
+          - id: vm
+            image: coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
+    name: bau-${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    container:
+      image: ${{ matrix.image }}
+      options: --user root
+    env:
+      OPAMROOT: /home/coq/.opam
+    steps:
+      - uses: actions/checkout@v4
+      - name: busycoq auf Pin
+        run: |
+          git config --global --add safe.directory '*'
+          git init -q busycoq
+          git -C busycoq remote add origin "$BUSYCOQ_URL"
+          git -C busycoq fetch -q --depth 1 origin "$BUSYCOQ_PIN"
+          git -C busycoq checkout -q FETCH_HEAD
+          test "$(git -C busycoq rev-parse HEAD)" = "$BUSYCOQ_PIN"
+      - uses: actions/download-artifact@v4
+        with:
+          name: pruefling
+          path: pruefling
+      - name: dieselbe Datei wie aussage_check
+        env:
+          SHA: ${{ needs.aussage.outputs.sha }}
+        run: |
+          echo "$SHA  pruefling/$MOD.v" | sha256sum -c -
+          test ! -e "busycoq/verify/$MOD.v"
+          cp "pruefling/$MOD.v" "pruefling/Kern_$MOD.v" busycoq/verify/
+      - name: Bau + Print Assumptions (streng)
+        working-directory: busycoq/verify
+        env:
+          THMS: ${{ needs.aussage.outputs.thms }}
+        run: bash "$GITHUB_WORKSPACE/scripts/build_check.sh" "file:$MOD.v" "$MOD" $THMS
+      - name: Kern-Abgleich der Aussagen
+        working-directory: busycoq/verify
+        run: |
+          export PATH="$(dirname "$(ls /home/coq/.opam/*/bin/coqc | head -1)"):$PATH"
+          grep -E '^Definition aussage_' "Kern_$MOD.v"
+          coqc -Q . BusyCoq "Kern_$MOD.v"
+          echo "KERN OK: alle Haupttheoreme haben die erwartete Aussage"

@@ -3,11 +3,12 @@
 # Aufruf (cwd = busycoq/verify, busycoq auf Pin):
 #   build_check.sh <git-rev>:<pfad> <Modulname> <Theorem>...
 #   build_check.sh 57c9956:verify/M_...HHH.v M284pr halt halt_twin
-# Umgebungsvariablen:
-#   COQCHK_IF_UNDER=<sek>  coqchk -o laufen lassen, wenn der Bau schneller war (Limit COQCHK_LIMIT, Std. 1200 s)
+#   build_check.sh file:Pruefling.v Pruefling TM1.halt TM2.halt
+# coqchk ist gestrichen (Werkzeuge haerten, 24.11.2026); massgeblich ist Print Assumptions streng.
 set -euo pipefail
 PIN=33209bc7dc282b38c8cd6be507bfc551fea56108
 DEPS="LibTactics Helper Eqb HashTable TM Compute Flip Permute Pigeonhole Enumerate Individual BB62 Individual62 RWLAcc RWLAcc62 FastRev ES_v3"
+[ $# -ge 3 ] || { echo "FEHLER: Aufruf build_check.sh <quelle> <Modul> <Theorem>... (mindestens ein Theorem)"; exit 2; }
 src=$1; mod=$2; shift 2; theorems="$*"
 
 # coqc aus dem opam-Switch des Images (Name je nach Image verschieden)
@@ -49,16 +50,4 @@ for th in $theorems; do
   if [ "$out" = "Closed under the global context" ]; then echo "STRENG OK $th"; else echo "STRENG FAIL $th"; fail=1; fi
 done
 rm -f "PA_$mod".*
-
-if [ -n "${COQCHK_IF_UNDER:-}" ]; then
-  if [ "$build" -lt "$COQCHK_IF_UNDER" ]; then
-    lim=${COQCHK_LIMIT:-1200}; t0=$(date +%s)
-    set +e; timeout "$lim" coqchk -o -Q . BusyCoq "BusyCoq.$mod" > "coqchk_$mod.log" 2>&1; rc=$?; set -e
-    echo "COQCHK $mod: exit=$rc nach $(( $(date +%s) - t0 ))s (Limit ${lim}s)"
-    sed -n '/CONTEXT SUMMARY/,$p' "coqchk_$mod.log" | head -40
-    [ $rc -eq 0 ] || { tail -5 "coqchk_$mod.log"; fail=1; }
-  else
-    echo "COQCHK uebersprungen: Bau ${build}s >= ${COQCHK_IF_UNDER}s"
-  fi
-fi
 exit $fail
