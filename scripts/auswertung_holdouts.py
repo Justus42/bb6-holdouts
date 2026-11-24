@@ -23,6 +23,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "data" / "holdouts.json"
 EXPECTED_SHA256 = "84e7b8ac2ca92dedeac98bb2bfd5f57dd5aefdef38ee4da302f9c36df2b66810"
+LIST = ROOT / "data" / "BB6_holdouts_608.txt"
+LIST_SHA256 = "81b29741c6179b56e60123b672ac4b58149869af04271fb05b57f9421e4500a5"
 PIN = "33209bc7dc282b38c8cd6be507bfc551fea56108"
 MIN_PROOFS = 5
 STATUSES = ["open", "pr_open", "solved"]
@@ -42,6 +44,39 @@ out(f"- Datei-SHA-256: `{sha}` (= QUELLE.md)")
 out(f"- generated_at: {d['generated_at']}, Liste vom {d['list']['published']} ({d['list']['count']} Maschinen)")
 out(f"- busycoq.head.sha: `{head}` -> {'passt zum Pin' if head == PIN else 'PASST NICHT zum Pin'} `{PIN[:8]}`")
 out(f"- slugbird-Guide: {d['sources']['slugbird']['as_of']}")
+out("")
+
+# --- Abgleich mit der offiziellen Liste ---------------------------------------
+import re
+lraw = LIST.read_bytes()
+lsha = hashlib.sha256(lraw).hexdigest()
+assert lsha == LIST_SHA256, f"SHA-256 der Liste weicht ab: {lsha}"
+ltext = lraw.decode("ascii")
+L = ltext.split("\n")
+if L and L[-1] == "":
+    L = L[:-1]
+TM_RE = re.compile(r"^([01][LR][A-F]|---){2}(_([01][LR][A-F]|---){2}){5}$")
+out("## Abgleich mit data/BB6_holdouts_608.txt (offizielle Liste)")
+out("")
+out(f"- Liste: SHA-256 `{lsha}` (= QUELLE.md), {len(L)} Zeilen, CRLF: {'ja' if chr(13) in ltext else 'nein'}, "
+    f"Zeilen mit Leer-/Steuerzeichen: {sum(1 for x in L if x != x.strip())}")
+bad = [i + 1 for i, x in enumerate(L) if not TM_RE.match(x)]
+out(f"- Zeilen, die nicht dem 6-Zustand-2-Symbol-Format entsprechen: {bad if bad else 'keine'}")
+dupL = [x for x, k in Counter(L).items() if k > 1]
+dupH = [x for x, k in Counter(h["tm"] for h in H).items() if k > 1]
+out(f"- Duplikate: Liste {len(dupL)}, holdouts.json {len(dupH)}")
+setL, setH = set(L), {h["tm"] for h in H}
+out(f"- Gleiche Menge: {'ja' if setL == setH else 'NEIN'} (nur in Liste: {len(setL - setH)}, nur in JSON: {len(setH - setL)})")
+for x in sorted(setL - setH): out(f"  - nur in Liste: `{x}`")
+for x in sorted(setH - setL): out(f"  - nur in JSON: `{x}`")
+ns = [h["n"] for h in H]
+out(f"- n in JSON: {'1..%d lueckenlos, aufsteigend' % len(H) if ns == list(range(1, len(H) + 1)) else 'NICHT 1..N'}")
+order_dev = [(h["n"], h["tm"], L[h["n"] - 1] if 0 < h["n"] <= len(L) else None) for h in H
+             if not (0 < h["n"] <= len(L) and L[h["n"] - 1] == h["tm"])]
+out(f"- Gleiche Reihenfolge (tm von n == Zeile n): {'ja' if not order_dev else 'NEIN, %d Abweichungen' % len(order_dev)}")
+for n_, a, b in order_dev[:50]: out(f"  - n={n_}: JSON `{a}` / Liste `{b}`")
+alias_hits = sum(1 for h in H for a in h.get("aliases", []) if a.get("tm") in setL)
+out(f"- Aliase in holdouts.json, die selbst in der Liste stehen: {alias_hits}")
 out("")
 
 bc = Counter(h["busycoq"]["status"] for h in H)

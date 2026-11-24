@@ -5,6 +5,16 @@
 - busycoq.head.sha: `33209bc7dc282b38c8cd6be507bfc551fea56108` -> passt zum Pin `33209bc7`
 - slugbird-Guide: November 3, 2026
 
+## Abgleich mit data/BB6_holdouts_608.txt (offizielle Liste)
+
+- Liste: SHA-256 `81b29741c6179b56e60123b672ac4b58149869af04271fb05b57f9421e4500a5` (= QUELLE.md), 608 Zeilen, CRLF: nein, Zeilen mit Leer-/Steuerzeichen: 0
+- Zeilen, die nicht dem 6-Zustand-2-Symbol-Format entsprechen: keine
+- Duplikate: Liste 0, holdouts.json 0
+- Gleiche Menge: ja (nur in Liste: 0, nur in JSON: 0)
+- n in JSON: 1..608 lueckenlos, aufsteigend
+- Gleiche Reihenfolge (tm von n == Zeile n): ja
+- Aliase in holdouts.json, die selbst in der Liste stehen: 0
+
 ## busycoq-Status gesamt
 
 | Status | Anzahl |
