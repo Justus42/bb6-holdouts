@@ -5,9 +5,14 @@ on:
     branches: ["ccr-*", "main"]
   workflow_dispatch:
 
+env:
+  BUSYCOQ_URL: https://github.com/ccz181078/busycoq
+  BUSYCOQ_PIN: 33209bc7dc282b38c8cd6be507bfc551fea56108
+
 jobs:
-  coq-version:
+  m284:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     # Offizielles Image, Tag/Digest am 2026-11-24 per Registry-API verifiziert:
     # coqorg/coq:8.20.1 = coqorg/coq:8.20 -> sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
     container:
@@ -21,3 +26,18 @@ jobs:
         run: echo /home/coq/.opam/4.13.1+flambda/bin >> "$GITHUB_PATH"
       - name: coqc --version
         run: coqc --version
+      - uses: actions/checkout@v4
+      - name: busycoq auf festen Commit klonen
+        run: |
+          git config --global --add safe.directory '*'
+          git init -q busycoq
+          git -C busycoq remote add origin "$BUSYCOQ_URL"
+          git -C busycoq fetch -q --depth 1 origin "$BUSYCOQ_PIN"
+          git -C busycoq checkout -q FETCH_HEAD
+          test "$(git -C busycoq rev-parse HEAD)" = "$BUSYCOQ_PIN"
+      - name: Abhaengigkeiten bauen
+        working-directory: busycoq/verify
+        run: sh "$GITHUB_WORKSPACE/scripts/check_m284.sh" deps
+      - name: M284.v kompilieren + Print Assumptions (streng)
+        working-directory: busycoq/verify
+        run: sh "$GITHUB_WORKSPACE/scripts/check_m284.sh" main
