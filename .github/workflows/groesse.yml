@@ -1,0 +1,88 @@
+name: groesse
+
+# Gruppe 1, Thread "Erhaltene Groesse" (reine Analyse, kein Rocq).
+# Startet bei einem Push, der analyse/gruppe1/groesse/auftrag.txt aendert (Workflow liegt nur auf dem
+# Feature-Branch), oder manuell, sobald er auf main liegt. auftrag.txt: Zeile "bis <Schritte>".
+# Je Start: groesse.py (Programm 1) bis <Schritte>, groesse2.c (Programm 2) auf dessen Protokoll,
+# Vergleich der Aenderungsvektoren (muss zeilengleich sein), Auswertung. Der Sammel-Job legt die
+# Ergebnisse als Commit auf denselben Branch (Artefakte sind aus der Cloud-Sitzung nicht lesbar).
+on:
+  push:
+    paths:
+      - analyse/gruppe1/groesse/auftrag.txt
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lauf:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm 1, Programm 2, Vergleich
+        working-directory: analyse/gruppe1/groesse
+        run: |
+          N=$(awk '$1=="bis"{print $2}' auftrag.txt)
+          s=${{ matrix.start }}
+          mkdir -p aus
+          python3 --version
+          gcc -O2 -Wall -o groesse2 groesse2.c
+          t0=$(date +%s)
+          python3 groesse.py $s "$N" aus/p1_$s | tee aus/log_$s.txt
+          echo "Programm 1: $(( $(date +%s) - t0 )) s" | tee -a aus/log_$s.txt
+          t0=$(date +%s)
+          ./groesse2 $s "$N" aus/p1_${s}_proto.txt aus/p2_${s}_delta.txt | tee -a aus/log_$s.txt
+          echo "Programm 2: $(( $(date +%s) - t0 )) s" | tee -a aus/log_$s.txt
+          LC_ALL=C sort aus/p1_${s}_delta.txt > aus/delta_p1_$s.txt
+          LC_ALL=C sort aus/p2_${s}_delta.txt > aus/delta_p2_$s.txt
+          if cmp aus/delta_p1_$s.txt aus/delta_p2_$s.txt; then
+            echo "$s: Programm 1 und 2 zeilengleich ($(wc -l < aus/delta_p1_$s.txt) Zeilen)" | tee -a aus/log_$s.txt
+          else
+            echo "$s: VERSCHIEDEN" | tee -a aus/log_$s.txt; exit 1
+          fi
+          grep -v -E "^(Kern|Ueb|VS)" aus/p1_${s}_proto.txt | head -3 || true
+          gzip -9 aus/p1_${s}_proto.txt
+          ls -la aus
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: groesse-${{ matrix.start }}
+          path: analyse/gruppe1/groesse/aus/
+
+  sammeln:
+    needs: [lauf]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: art
+      - name: Auswertung und Ergebnisse auf den Branch legen
+        run: |
+          N=$(awk '$1=="bis"{print $2}' analyse/gruppe1/groesse/auftrag.txt)
+          z=analyse/gruppe1/groesse/ergebnisse/actions_$N
+          mkdir -p $z
+          for s in A C D; do
+            cp art/groesse-$s/delta_p1_$s.txt art/groesse-$s/delta_p2_$s.txt art/groesse-$s/log_$s.txt $z/
+          done
+          python3 analyse/gruppe1/groesse/auswertung.py $z/delta_p1_[ACD].txt > $z/auswertung_p1.txt
+          python3 analyse/gruppe1/groesse/auswertung.py $z/delta_p2_[ACD].txt > $z/auswertung_p2.txt
+          cmp $z/auswertung_p1.txt $z/auswertung_p2.txt && echo "Auswertung gleich"
+          echo "Run ${{ github.run_id }}" > $z/RUN.txt
+          cat $z/log_*.txt $z/auswertung_p1.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $z
+          git commit -m "groesse: Ergebnisse bis $N aus Run ${{ github.run_id }}"
+          for i in 1 2 3; do
+            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break
+            sleep 5
+          done
