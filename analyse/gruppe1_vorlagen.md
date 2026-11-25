@@ -155,8 +155,11 @@ mit einer anderen Abgrenzung 24 von 76 (Start A).
   am linken Ende möglich, die keine Regel abdeckt. Das passt zum Thread „Halt als verbotenes Muster“.
   Der kann prüfen, ob „C vor 111“ überhaupt in diesen Fällen entstehen kann.
 - Eine Beweisidee müsste die Lage der Bruchstellen relativ zur Reichweite der Wellen fassen. Das wäre
-  eine neue Art Invariante (regulär **plus** Zählerbedingung), für die es im Pin keine Vorlage gibt.
-  Meine Einschätzung, **unbelegt**: Das ist eher ein Forschungsproblem als Beweisarbeit nach Vorlage.
+  eine Invariante „regulär **plus** Zählerbedingung“. ~~Für die gibt es im Pin keine Vorlage.~~
+  **Korrektur:** Doch, `verify/PR_SBC.v` (busycoq PR #26) ist so eine Vorlage, siehe
+  `analyse/gruppe1_pr26.md`. Meine Einschätzung, **unbelegt**: Uns fehlt vor allem die Gleichung, die die
+  Zahlen bindet. Solange es dafür keinen Kandidaten gibt, ist es eher ein Forschungsproblem als
+  Beweisarbeit nach Vorlage.
 
 ## 5. Nachprüfen
 
