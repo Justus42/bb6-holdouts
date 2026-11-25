@@ -8,7 +8,9 @@ name: verboten
 # Ergebnisse stehen im Job-Log (die Artefakt-Ablage ist aus der Cloud-Sitzung nicht erreichbar).
 on:
   push:
-    branches-ignore: [main]   # Justus 25.11.: kein Start durch Push auf main
+    # Nur auf dem eigenen Thread-Branch (nie main, keine fremden Branches: ein Merge von main in einen anderen
+    # Branch hatte den Lauf dort ausgeloest, Runs 45700138057 und 45700138121, abgebrochen). Handstart bleibt.
+    branches: [claude/project-thread-sz20pr]
     paths:
       - analyse/gruppe1/verboten/auftrag.txt
   workflow_dispatch:
