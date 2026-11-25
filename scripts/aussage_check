@@ -2,15 +2,17 @@
 """Aussage-Pruefung einer busycoq-Beweisdatei VOR dem Bau (nur Text, kein Coq).
 
 Aufruf:
-  scripts/aussage_check <datei.v> <erwarteter Maschinen-String> [--coq <Modul> <kern.v>]
+  scripts/aussage_check <datei.v> <String> [<String> ...] [--coq <Modul> <kern.v>]
   scripts/aussage_check --formen <busycoq/verify>
+  Mehrere erwartete Maschinen als weitere Argumente oder durch Komma getrennt
+  (z. B. "S1,S2"; so uebergibt sie der Workflow pruefen).
 
 Prueft:
-  1. Der erwartete String hat das 6x2-Format und steht in data/BB6_holdouts_608.txt oder
+  1. Jeder erwartete String hat das 6x2-Format und steht in data/BB6_holdouts_608.txt oder
      in "decided" von data/holdouts.json (beide Dateien per SHA-256 aus data/QUELLE.md).
-  2. Jede Maschine der Datei (jedes TM_from_str "...") ist exakt der erwartete String oder
-     sein Spiegel-Zwilling (L/R getauscht, Zustaende beliebig umbenannt); Zwillinge werden
-     gekennzeichnet. Andere Maschinen-Definitionen (TM'_from_str, ": TM", flip, TM_from_str
+  2. Jede Maschine der Datei (jedes TM_from_str "...") ist exakt einer der erwarteten Strings
+     oder Spiegel-Zwilling eines davon (L/R getauscht, Zustaende beliebig umbenannt); Zwillinge
+     werden gekennzeichnet. Andere Maschinen-Definitionen (TM'_from_str, ": TM", flip, TM_from_str
      ohne Literal) fuehren zu FAIL.
   3. Haupttheoreme haben dieselbe Form wie in den gemergten busycoq-Beweisen (abgeleitet
      mit --formen aus den Dateien, die "decided" im Pin nennt):
@@ -18,7 +20,8 @@ Prueft:
        Theorem|Lemma <name> : ~halts <tm> c0.       (haelt nicht ab Leerband)
      mit <tm> := [Eval compute in] (TM_from_str "S") oder inline (TM_from_str "S").
      Keine Binder, nicht in Section/Module Type/Funktor, Beweis endet mit Qed/Defined.
-     Die erwartete Maschine braucht ein Haupttheorem, jede andere Maschine ebenfalls;
+     Jede erwartete Maschine muss exakt vorkommen und ein Haupttheorem haben, jede andere
+     Maschine (Zwilling) ebenfalls;
      widerspruechliche Urteile oder ein Widerspruch zu "verdict" in decided -> FAIL.
   4. c0, halts, TM_from_str usw. werden in der Datei nicht neu definiert.
 
@@ -340,18 +343,21 @@ def check(path, expected, coq=None):
     raw = Path(path).read_bytes()
     print(f"Datei: {path}")
     print(f"  sha256: {hashlib.sha256(raw).hexdigest()}")
-    print(f"Erwartet: {expected}")
-    if not TM_RE.match(expected):
-        print("FAIL: erwarteter String hat nicht das 6x2-Format")
+    print(f"Erwartet: {len(expected)} Maschine(n)")
+    bad = [e for e in expected if not TM_RE.match(e)]
+    for e in bad:
+        print(f"FAIL: erwarteter String {e!r} hat nicht das 6x2-Format")
+    if bad or not expected:
         print("ERGEBNIS: FAIL")
         return 1
     lst, dec = load_data()
-    w = where(expected, lst, dec)
-    if w:
+    for j, e in enumerate(expected):
+        print(f"  E{j + 1} {e}")
+        w = where(e, lst, dec)
         for x in w:
-            print(f"  {x}")
-    else:
-        fails.append("erwarteter String steht weder in BB6_holdouts_608.txt noch in decided")
+            print(f"     {x}")
+        if not w:
+            fails.append(f"E{j + 1} {e} steht weder in BB6_holdouts_608.txt noch in decided")
     try:
         machines, theorems, problems = analyse(raw.decode("utf-8"))
     except (ValueError, UnicodeDecodeError) as e:
@@ -359,7 +365,7 @@ def check(path, expected, coq=None):
         print("ERGEBNIS: FAIL")
         return 1
     fails += problems
-    twins = mirror_twins(expected)
+    twins = [mirror_twins(e) for e in expected]
 
     print(f"Maschinen in der Datei: {len(machines)}")
     rel = []
@@ -369,15 +375,16 @@ def check(path, expected, coq=None):
             r = "FORMAT-FEHLER"
             fails.append(f"{mc['label']} (Zeile {mc['line']}): '{s}' hat nicht das 6x2-Format "
                          "(TM_from_str macht daraus stillschweigend Halteuebergaenge)")
-        elif s == expected:
-            r = "EXAKT"
-        elif s in twins:
-            pis = twins[s]
+        elif s in expected:
+            r = f"EXAKT E{expected.index(s) + 1}"
+        elif any(s in tw for tw in twins):
+            j = next(j for j, tw in enumerate(twins) if s in tw)
+            pis = twins[j][s]
             pi = next((p for p in pis if all(p[q] == q for q in STATES)), pis[0])
-            r = "SPIEGEL-ZWILLING: " + describe_pi(pi)
+            r = f"SPIEGEL-ZWILLING von E{j + 1}: " + describe_pi(pi)
         else:
             r = "FREMD"
-            fails.append(f"{mc['label']} (Zeile {mc['line']}): {s} ist weder der erwartete String noch sein Spiegel-Zwilling")
+            fails.append(f"{mc['label']} (Zeile {mc['line']}): {s} ist weder ein erwarteter String noch Spiegel-Zwilling eines davon")
         rel.append(r)
         print(f"  [{i + 1}] {mc['label']}  Zeile {mc['line']}  {s}")
         print(f"      {r}")
@@ -409,9 +416,12 @@ def check(path, expected, coq=None):
             if want and v and v != {want}:
                 fails.append(f"[{i + 1}] {mc['label']}: Urteil widerspricht decided n={x['n']} verdict={x['verdict']} "
                              "(Datei oder Daten pruefen; decided kann irren, z. B. n=356 gegen CSv1.v)")
-    exact = [i for i, r in enumerate(rel) if r == "EXAKT"]
-    if machines and not any(i in by_machine for i in exact):
-        fails.append("die erwartete Maschine selbst hat kein Haupttheorem")
+    for j, e in enumerate(expected):
+        exact = [i for i, mc in enumerate(machines) if mc["tm"] == e]
+        if not exact:
+            fails.append(f"E{j + 1} {e} kommt in der Datei nicht exakt vor")
+        elif not any(i in by_machine for i in exact):
+            fails.append(f"E{j + 1} {e}: die erwartete Maschine selbst hat kein Haupttheorem")
 
     names = [th["name"] for th in theorems]
     print("Pruefungen:")
@@ -495,14 +505,22 @@ def main(argv):
     if len(argv) == 2 and argv[0] == "--formen":
         return formen(argv[1])
     coq = None
-    if len(argv) == 5 and argv[2] == "--coq":
-        coq = (argv[3], argv[4])
-        argv = argv[:2]
-    if len(argv) != 2:
+    if "--coq" in argv:
+        k = argv.index("--coq")
+        if len(argv) != k + 3:
+            die("FEHLER: --coq <Modul> <kern.v> muss am Ende stehen")
+        coq = (argv[k + 1], argv[k + 2])
+        argv = argv[:k]
+    if len(argv) < 2:
         die(__doc__.split("Prueft:")[0].strip())
     if not Path(argv[0]).is_file():
         die(f"FEHLER: Datei {argv[0]} fehlt")
-    return check(argv[0], argv[1], coq)
+    expected = []
+    for a in argv[1:]:
+        for e in re.split(r"[,\s]+", a.strip()):
+            if e and e not in expected:
+                expected.append(e)
+    return check(argv[0], expected, coq)
 
 
 if __name__ == "__main__":
