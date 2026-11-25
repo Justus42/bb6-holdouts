@@ -1,8 +1,8 @@
 /* Runden-Simulation (Thread 396, 25.11.2026) nach dem Besuchsgesetz aus busycoq PR #59, auf Zellebene, Zaehler n = 2^e - c.
    Gesetz: V(0x)=1x, V(100x)=000V(x), V(110x)=000V(x), V(1010x)=1010V(V(x)),
-           V(1011x)= HALT (Modus 88) bzw. 0001x (Modus 396), V(111x)=HALT.
+           V(1011x)= HALT (Modus 88) bzw. 0001x (Modus 396) bzw. 1000x (Modus 587, Vergleich mit cryptids), V(111x)=HALT.
    Runde: s <- V(10 s), Start s = 1.
-   Aufruf: runde <modus 88|396> <max_runden> [ausgabe_bis_runde] [startwort]  (FEHLER=1: falsche 1011-Regel, FEHLER=2: falsche Rundung im 2^e-c-Zweig)
+   Aufruf: runde <modus 88|396|587> <max_runden> [ausgabe_bis_runde] [startwort]  (FEHLER=1: falsche 1011-Regel, FEHLER=2: falsche Rundung im 2^e-c-Zweig)
    Teil 2: PROTO=1 schreibt ein Protokoll, das runde_b.cpp genauso schreibt (Vergleich zeilenweise):
      K <runde> <pos> <n>   Besuch trifft Block 1011 (pos = Zelle von links, 0 = erste Zelle des Wortes "10 s"; n = ankommende Besuche oder "gross")
      Z <runde> <pos> <n>   Besuch trifft Block, der mit 011 beginnt (nach dem Halt-Schritt 0->1 stuende dort 111)
@@ -64,10 +64,16 @@ static int besuche(int64_t p, cnt n){
       if (ev1011 <= 200 && !proto) { cnt m = n; printf("EREIGNIS 1011 Runde %lld Position %lld (von links) Besuche n = 2^%lld - %lld%s\n",
         (long long)round_no, (long long)(p - st), (long long)m.e, (long long)m.c, (m.c > (i128)INT64_MAX || m.c < (i128)INT64_MIN) ? " (c gekuerzt)" : ""); }
       if (modus == 88) return 2;
+      if (modus == 587){                                    /* 587 (cryptids 2.3): 1011 -> 1000, Besuch endet */
+        setc(p+1,0); setc(p+2,0); setc(p+3,0);
+        n = dec(n); n = norm(n); if (iszero(n)) return 0;
+        b = 0; c = 0;                                       /* weiter als Block 100, Rest ab p+3 */
+      } else {
       setc(p,0); setc(p+1,0); setc(p+2,fehler == 1 ? 1 : 0); /* 0001 (Fehler-Schalter 1: 0011) */
       n = dec(n); n = norm(n); if (iszero(n)) return 0;
       setc(p,1); n = dec(n); n = norm(n); if (iszero(n)) return 0; /* 1001 -> Block 100, Rest beginnt bei p+3 */
       b = 0; c = 0;
+      }
     }
     /* Block 100 oder 110 im Zustand "geht durch", m = n Besuche, Breite 3 */
     {

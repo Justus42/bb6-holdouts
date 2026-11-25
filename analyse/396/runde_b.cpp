@@ -8,6 +8,7 @@
 //   * Bloecke werden nach jedem einzelnen Halt-Schritt (0->1, 1011->0001) neu bestimmt, nicht als feste Abfolge.
 // Ausgabe im gleichen Protokollformat wie runde.c mit PROTO=1 (K, Z, E, H, HALT, ENDE).
 // Aufruf: runde_b <max_runden> [zeit_s] [startwort]     TEST=1: Selbsttest der Zahl gegen unsigned __int128.
+// MODUS=587: 1011-Regel von 587 (V(1011x)=1000x) statt 0001x.
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
@@ -86,6 +87,7 @@ static int selbsttest() {          // Zahl gegen unsigned __int128 auf Zufallsfo
 static std::vector<uint8_t> w;     // Zellen; Wort beginnt bei anf, rechts von w.size() nur Nullen
 static size_t anf;
 static long long runde;
+static bool regel587 = false;     // MODUS=587: Regel V(1011x)=1000x (Vergleich mit cryptids 2.3)
 static uint8_t z(size_t i) { return i < w.size() ? w[i] : 0; }
 static void setze(size_t i, uint8_t b) { if (i >= w.size()) { if (!b) return; w.resize(i + 1, 0); } w[i] = b; }
 static void zeige(const char *tag, size_t p, const Zahl &n) {
@@ -104,7 +106,8 @@ static bool besuche(size_t p, Zahl n, size_t &haltstelle) {
     if (b == 1 && c == 1) { haltstelle = p; return true; }          // 111
     if (b == 0 && c == 1) {
       if (d == 0) { n.verdoppeln(); p += 4; continue; }             // 1010: jeder Besuch schickt zwei weiter
-      zeige("K", p, n);                                             // 1011 -> 0001, Besuch endet
+      zeige("K", p, n);                                             // 1011 -> 0001 (396) bzw. 1000 (587), Besuch endet
+      if (regel587) { setze(p + 2, 0); setze(p + 3, 0); n.minus1(); continue; }
       setze(p, 0); setze(p + 1, 0); setze(p + 2, 0); n.minus1(); continue;
     }
     // 100 oder 110: m Besuche; der erste geht durch (-> 000), dann abwechselnd Ende (-> 100) und durch
@@ -117,6 +120,7 @@ static bool besuche(size_t p, Zahl n, size_t &haltstelle) {
 
 int main(int argc, char **argv) {
   if (getenv("TEST")) return selbsttest();
+  if (getenv("MODUS") && atoi(getenv("MODUS")) == 587) regel587 = true;
   long long maxr = atoll(argv[1]); double zeit = argc > 2 ? atof(argv[2]) : 0; const char *start = argc > 3 ? argv[3] : "1";
   size_t rand_links = 2 * (size_t)maxr + 8;
   w.assign(rand_links, 0); anf = rand_links;
