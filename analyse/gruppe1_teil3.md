@@ -157,6 +157,22 @@ dem Startzustand irgendwann „Halt“ liefert.
 (A wird nur über C1 → E1 erreicht). In Listensprache: Ein Rechtsdurchlauf von C endet an einer Bitfolge,
 die mit `111` beginnt.
 
+**Nachtrag 25.11.2026 (Auflage 1 von Justus): Die Haltebedingungen aus Teil 2 und Teil 3 sind gleichwertig.**
+Teil 2: „B oder D liest 0, rechts davon steht `111`“. Teil 3: „C steht vor `111`“ (gleichbedeutend mit
+„A liest 1“). An der Tabelle 114 (`1RB---_0RC0LF_1LD0RE_1RC0LB_1RD1RA_1LB0LC`) nachgerechnet:
+- Halt gibt es nur bei A1. A wird nur über E1 (`1RA`) erreicht, E nur über C1 (`0RE`). Also hält die
+  Maschine genau dann, wenn C eine 1 liest und die beiden Zellen rechts davon 1 und 1 sind: C vor `111`.
+- C wird nur über drei Übergänge erreicht: B0 (`0RC`), D0 (`1RC`) und F1 (`0LC`).
+- Über B0 und D0 geht der Kopf nach rechts; C liest dann die Zelle rechts der Zelle, auf der B oder D die
+  0 gelesen hat. „C vor `111`“ heißt dort genau „B oder D liest 0 mit `111` rechts davon“.
+- F1 schreibt eine 0 und geht nach links. Rechts von der Zelle, die C dann liest, liegt diese 0, also
+  steht C nicht vor `111`; auf diesem Weg kein Halt.
+- Ab dem Start (leeres Band) steht C ebenfalls nicht vor `111` (betrifft 378, Start in C).
+
+Beide Bedingungen beschreiben also dieselben Halte-Zeitpunkte. Die Rocq-Datei
+`rocq/gruppe1_durchlauf.v` braucht keine der beiden: dort ist „Halt“ einfach „next liefert keinen Zustand“,
+und das tritt nur ein, wenn der Tabelleneintrag fehlt (A1). Details in `analyse/gruppe1_stufe1.md`.
+
 **Zu beweisende Teile in Rocq** (Schritt 4, erst nach OK):
 1. Definitionen und der allgemeine Satz „gültige Beschleunigung ⇒ Halten genau dann, wenn H erreicht“,
    nachgebaut nach cryptids, gegen `TM.v` am Pin.
