@@ -3,12 +3,12 @@ name: linkes_ende_auswertung
 # Gruppe 1, Thread "Linkes Ende, Entscheidungstest": wertet die Artefakte eines linkes_ende-Laufs aus
 # (Formen/Kerne mit formen.py und formen2.awk, Negativkontrollen, VS-Familie, Konsistenz mit dem lokalen
 # Lauf). Grund: die Artefakt-Ablage ist aus der Cloud-Sitzung nicht erreichbar; das Ergebnis steht im Log.
-# Startet bei einem Push, der analyse/gruppe1/linkes_ende/auswertung.txt aendert (Zeile "lauf <Run-ID>").
+# Startet nur von Hand (workflow_dispatch) auf dem Branch, dessen Auftragsdatei gelten soll.
+# analyse/gruppe1/linkes_ende/auswertung.txt: Zeile "lauf <Run-ID>".
 on:
-  push:
-    branches-ignore: [main]   # kein Start durch Push auf main, auch nicht beim Merge (Justus, 25.11.2026)
-    paths:
-      - analyse/gruppe1/linkes_ende/auswertung.txt
+  # Nur Handstart (Justus 25.11.2026): keine Push-Starts. Laeufe startet der Thread selbst,
+  # auf seinem Branch (Actions > Run workflow bzw. API workflow_dispatch mit ref = Thread-Branch).
+  workflow_dispatch:
 
 permissions:
   contents: read

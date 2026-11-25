@@ -59,6 +59,11 @@ Die Images lädt das Setup-Skript der Umgebung; der Hook zieht nichts. Fehlt ein
 
 - Läufe über 10 Minuten nach Actions; lokal nur kurze Tests.
 - Regelmäßig committen und pushen; nichts Wichtiges nur im Scratchpad lassen.
+- Alle Rechen-Workflows starten nur von Hand per `workflow_dispatch`, keine Push-Starts (Justus 25.11.2026).
+  Neue Workflows bekommen nur `workflow_dispatch`. Läufe startet der Thread selbst, auf seinem eigenen
+  Branch (`ref` = Thread-Branch). GitHub startet `workflow_dispatch` nur für Workflows, die schon auf main
+  liegen: Ein neuer Workflow braucht deshalb zuerst einen kleinen PR (Merge nach Justus' OK).
+  Ergebnisse nie nach main zurückschreiben.
 - Workflow `pruefen` startet nur manuell (`workflow_dispatch`): Eingaben `datei`
   (Repo-Pfad oder `pin:<Pfad>`) und `maschine` (erwartete Strings, durch Komma getrennt).
 - Vor Weichenstellungen (Wahl einer Maschine, Einreichung bei busycoq): Zusammenfassung für

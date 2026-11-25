@@ -1,8 +1,7 @@
 name: linkes_ende
 
 # Gruppe 1, Thread "Linkes Ende, Entscheidungstest" (reine Analyse, kein Rocq).
-# Startet bei einem Push, der analyse/gruppe1/linkes_ende/auftrag.txt aendert (Workflow liegt nur auf
-# dem Feature-Branch, workflow_dispatch geht dort nicht), oder manuell, sobald der Workflow auf main liegt.
+# Startet nur von Hand (workflow_dispatch) auf dem Branch, dessen Auftragsdatei gelten soll.
 # auftrag.txt: Zeile "direkt <Schritte>" (direkte Simulation, zweites Programm) und
 #              Zeile "beschleuniger <Schritte>" (Beschleuniger, so weit wie moeglich).
 # Jobs:
@@ -11,10 +10,8 @@ name: linkes_ende
 #                            danach Laufmodus bis 10^16 und (darf am Zeitlimit scheitern) bis <beschleuniger>
 #   vergleich:               Schnappschuesse und Formen bis <direkt> zeilengleich?
 on:
-  push:
-    branches-ignore: [main]   # kein Start durch Push auf main, auch nicht beim Merge (Justus, 25.11.2026)
-    paths:
-      - analyse/gruppe1/linkes_ende/auftrag.txt
+  # Nur Handstart (Justus 25.11.2026): keine Push-Starts. Laeufe startet der Thread selbst,
+  # auf seinem Branch (Actions > Run workflow bzw. API workflow_dispatch mit ref = Thread-Branch).
   workflow_dispatch:
 
 permissions:

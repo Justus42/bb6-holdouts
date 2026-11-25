@@ -1,17 +1,13 @@
 name: zyklus
 
 # Gruppe 1, Thread "Halt als verbotenes Muster": Zyklus-Beschleuniger (zyklus_beschl.py).
-# Startet bei einem Push, der analyse/gruppe1/verboten/zyklus_auftrag.txt aendert.
+# Startet nur von Hand (workflow_dispatch) auf dem Branch, dessen Auftragsdatei gelten soll.
 # zyklus_auftrag.txt: "pruef <N>" (Abgleich mit linkes_ende/beschleuniger.py an allen Zyklusanfaengen bis N,
 #                     dazu jeder Rueckfall ganz nachgerechnet) und "lauf <N>" (so weit wie moeglich, hoechstens N).
 # Ergebnisse stehen im Job-Log.
 on:
-  push:
-    # Nur auf dem eigenen Thread-Branch (nie main, keine fremden Branches: ein Merge von main in einen anderen
-    # Branch hatte den Lauf dort ausgeloest, Runs 45700138057 und 45700138121, abgebrochen). Handstart bleibt.
-    branches: [claude/project-thread-sz20pr]
-    paths:
-      - analyse/gruppe1/verboten/zyklus_auftrag.txt
+  # Nur Handstart (Justus 25.11.2026): keine Push-Starts. Laeufe startet der Thread selbst,
+  # auf seinem Branch (Actions > Run workflow bzw. API workflow_dispatch mit ref = Thread-Branch).
   workflow_dispatch:
 
 permissions:
