@@ -1,0 +1,13 @@
+69 LG | .1 -> 2 | next 
+5262 VS-zuwenig | 0 2 5 -> 1 0 .9 | next 5
+564914 VS-zuwenig | 1 0 6 -> .2 .7 | next 7
+575927 Sonder | .0 .11 7 -> 1 1 1 1 1 1 1 1 1 0 .11 | next 7
+773965 VS-zuwenig | 1 1 1 0 2 5 -> 4 .9 | next 5
+2103637 Sonder | 1 1 1 1 1 1 1 0 .1 .0 14 7 -> 0 3 3 3 3 3 3 3 .10 | next 11
+303825454 links? | 4 5 -> 1 1 1 .8 | next 3
+346736804 VS-zuwenig | 1 1 0 2 5 -> 1 0 .11 | next 5
+559979846 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+560306453 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+622968650 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+623313419 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+691481558 VS-zuwenig | 1 1 1 0 2 5 -> 4 .9 | next 5

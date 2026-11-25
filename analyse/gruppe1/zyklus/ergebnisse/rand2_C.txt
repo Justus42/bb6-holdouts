@@ -1,0 +1,1 @@
+[(('eat', 'LG', True), 24), (('eat', 'N1', True), 22), (('eat', 'N2', True), 8), (('eat', 'UA', True), 1), (('ret', 'LE', True), 1), (('ret', 'LG', True), 22), (('ret', 'N1', True), 9), (('ret', 'N2', True), 23)]
