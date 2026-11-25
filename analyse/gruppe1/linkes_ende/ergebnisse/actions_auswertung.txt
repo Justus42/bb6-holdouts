@@ -1,0 +1,272 @@
+# Auswertung von Run 45614962053 (Workflow linkes_ende_auswertung, Run 45657021990), aus dem Job-Log; lange Zeilen gekuerzt
+### Logs
+--- A b_e16_log_A.txt
+10^14: n=100116810873457 phasen=6447107 token=4424 {'na:rest': 3, 'Ueb-ok': 1455, 'LE0': 545, 'LG': 7442, 'N2': 3217634, 'N1': 3218206, 'na:VS-zuwenig': 97, 'UA': 690, 'VS': 261, 'N2s': 651, 'na:Sonder': 69, 'LE1': 31, 'na:links?': 14, 'Ueb-na:rand_rueck:VS-zuwenig': 2, 'Ueb-na:rand_fressen:Sonder': 6, 'Ueb-na:rand_rueck:links?': 1}
+10^15: n=1001531023409251 phasen=20407523 token=7832 {'na:rest': 3, 'Ueb-ok': 2593, 'LE0': 1004, 'LG': 13120, 'N2': 10193302, 'N1': 10194318, 'na:VS-zuwenig': 185, 'UA': 1218, 'VS': 450, 'N2s': 1115, 'na:Sonder': 116, 'LE1': 53, 'na:links?': 32, 'Ueb-na:rand_rueck:VS-zuwenig': 4, 'Ueb-na:rand_fressen:Sonder': 9, 'Ueb-na:rand_rueck:links?': 1}
+start=A schritte=10000000148669261 phasen=64516883 token=13919 [('LE0', 1715), ('LE1', 121), ('LG', 23458), ('N1', 32241585), ('N2', 32239779), ('N2s', 2027), ('UA', 2179), ('Ueb-na:rand_fressen:Sonder', 11), ('Ueb-na:rand_rueck:VS-zuwenig', 8), ('Ueb-na:rand_rueck:links?', 1), ('Ueb-ok', 4616), ('VS', 813), ('na:Sonder', 191), ('na:VS-zuwenig', 319), ('na:links?', 57), ('na:rest', 3)]
+Laufzeit 2204 s
+--- A b_weit_log_A.txt
+10^15: n=1001531023409251 phasen=20407523 token=7832 {'na:rest': 3, 'Ueb-ok': 2593, 'LE0': 1004, 'LG': 13120, 'N2': 10193302, 'N1': 10194318, 'na:VS-zuwenig': 185, 'UA': 1218, 'VS': 450, 'N2s': 1115, 'na:Sonder': 116, 'LE1': 53, 'na:links?': 32, 'Ueb-na:rand_rueck:VS-zuwenig': 4, 'Ueb-na:rand_fressen:Sonder': 9, 'Ueb-na:rand_rueck:links?': 1}
+10^16: n=10008139580554941 phasen=64539109 token=13919 {'na:rest': 3, 'Ueb-ok': 4617, 'LE0': 1716, 'LG': 23459, 'N2': 32250890, 'N1': 32252697, 'na:VS-zuwenig': 319, 'UA': 2179, 'VS': 813, 'N2s': 2027, 'na:Sonder': 191, 'LE1': 121, 'na:links?': 57, 'Ueb-na:rand_rueck:VS-zuwenig': 8, 'Ueb-na:rand_fressen:Sonder': 11, 'Ueb-na:rand_rueck:links?': 1}
+start=A schritte=100000000101865972 phasen=204066180 token=24781 [('LE0', 3107), ('LE1', 218), ('LG', 41907), ('N1', 102003045), ('N2', 101999842), ('N2s', 3552), ('UA', 3865), ('Ueb-na:rand_fressen:Sonder', 12), ('Ueb-na:rand_rueck:Sonder', 1), ('Ueb-na:rand_rueck:VS-zuwenig', 17), ('Ueb-na:rand_rueck:links?', 1), ('Ueb-ok', 8215), ('VS', 1454), ('na:Sonder', 308), ('na:VS-zuwenig', 541), ('na:li
+Laufzeit 9994 s
+--- A d_log
+start=A schritte=1000000000000 breite=1162173 schnappschuesse=642050 A_liest_1=0 rekorde_phase=48 rekorde_uebergang=4
+Laufzeit 6429 s
+--- C b_e16_log_C.txt
+10^14: n=100256101779557 phasen=6450972 token=4423 {'Ueb-na:kurz': 1, 'na:rest': 2, 'LG': 7439, 'Ueb-ok': 1460, 'N2': 3219636, 'N1': 3220177, 'na:VS-zuwenig': 102, 'N2s': 604, 'na:Sonder': 40, 'UA': 659, 'LE0': 548, 'VS': 241, 'LE1': 49, 'Ueb-na:rand_fressen:Sonder': 3, 'na:links?': 10, 'Ueb-na:rand_rueck:VS-zuwenig': 1}
+10^15: n=1000145847245508 phasen=20394015 token=7838 {'Ueb-na:kurz': 1, 'na:rest': 2, 'LG': 13215, 'Ueb-ok': 2596, 'N2': 10186577, 'N1': 10187556, 'na:VS-zuwenig': 173, 'N2s': 1093, 'na:Sonder': 76, 'UA': 1179, 'LE0': 997, 'VS': 441, 'LE1': 80, 'Ueb-na:rand_fressen:Sonder': 5, 'na:links?': 19, 'Ueb-na:rand_rueck:VS-zuwenig': 4, 'Ueb-na:rand_rueck:Sonder': 1}
+start=C schritte=10000000102889387 phasen=64517938 token=13905 [('LE0', 1793), ('LE1', 136), ('LG', 23357), ('N1', 32242246), ('N2', 32240537), ('N2s', 1905), ('UA', 2071), ('Ueb-na:kurz', 1), ('Ueb-na:rand_fressen:Sonder', 7), ('Ueb-na:rand_rueck:Sonder', 2), ('Ueb-na:rand_rueck:VS-zuwenig', 7), ('Ueb-ok', 4619), ('VS', 770), ('na:Sonder', 136), ('na:VS-zuwenig', 309), ('na:links?', 40), ('na:res
+Laufzeit 1357 s
+--- C b_weit_log_C.txt
+10^15: n=1000145847245508 phasen=20394015 token=7838 {'Ueb-na:kurz': 1, 'na:rest': 2, 'LG': 13215, 'Ueb-ok': 2596, 'N2': 10186577, 'N1': 10187556, 'na:VS-zuwenig': 173, 'N2s': 1093, 'na:Sonder': 76, 'UA': 1179, 'LE0': 997, 'VS': 441, 'LE1': 80, 'Ueb-na:rand_fressen:Sonder': 5, 'na:links?': 19, 'Ueb-na:rand_rueck:VS-zuwenig': 4, 'Ueb-na:rand_rueck:Sonder': 1}
+10^16: n=10003507741150650 phasen=64525679 token=13946 {'Ueb-na:kurz': 1, 'na:rest': 2, 'LG': 23399, 'Ueb-ok': 4620, 'N2': 32244385, 'N1': 32246095, 'na:VS-zuwenig': 309, 'N2s': 1905, 'na:Sonder': 136, 'UA': 2071, 'LE0': 1794, 'VS': 770, 'LE1': 136, 'Ueb-na:rand_fressen:Sonder': 7, 'na:links?': 40, 'Ueb-na:rand_rueck:VS-zuwenig': 7, 'Ueb-na:rand_rueck:Sonder': 2}
+start=C schritte=100000000908662646 phasen=204061203 token=24747 [('LE0', 3252), ('LE1', 239), ('LG', 41534), ('N1', 102000858), ('N2', 101997826), ('N2s', 3364), ('UA', 3652), ('Ueb-na:kurz', 1), ('Ueb-na:rand_fressen:Sonder', 17), ('Ueb-na:rand_rueck:Sonder', 2), ('Ueb-na:rand_rueck:VS-zuwenig', 11), ('Ueb-ok', 8215), ('VS', 1362), ('na:Sonder', 242), ('na:VS-zuwenig', 549), ('na:links?', 77), (
+Laufzeit 6334 s
+--- C d_log
+start=C schritte=1000000000000 breite=1163057 schnappschuesse=642176 A_liest_1=0 rekorde_phase=57 rekorde_uebergang=3
+Laufzeit 5691 s
+--- D b_e16_log_D.txt
+10^14: n=100031975207894 phasen=6445053 token=4391 {'na:rest': 2, 'LG': 7445, 'Ueb-ok': 1462, 'N2': 3216619, 'N1': 3217186, 'LE0': 562, 'na:VS-zuwenig': 111, 'N2s': 616, 'na:Sonder': 54, 'UA': 695, 'LE1': 32, 'VS': 248, 'na:links?': 19, 'Ueb-na:rand_rueck:VS-zuwenig': 1, 'Ueb-na:rand_fressen:Sonder': 1}
+10^15: n=1001477689497770 phasen=20406185 token=7825 {'na:rest': 2, 'LG': 13246, 'Ueb-ok': 2599, 'N2': 10192571, 'N1': 10193586, 'LE0': 1012, 'na:VS-zuwenig': 185, 'N2s': 1103, 'na:Sonder': 100, 'UA': 1244, 'LE1': 54, 'VS': 446, 'na:links?': 30, 'Ueb-na:rand_rueck:VS-zuwenig': 5, 'Ueb-na:rand_fressen:Sonder': 2}
+start=D schritte=10000000149632118 phasen=64518357 token=13913 [('LE0', 1792), ('LE1', 111), ('LG', 23523), ('N1', 32242298), ('N2', 32240517), ('N2s', 1970), ('UA', 2181), ('Ueb-na:rand_fressen:Sonder', 2), ('Ueb-na:rand_rueck:Sonder', 2), ('Ueb-na:rand_rueck:VS-zuwenig', 7), ('Ueb-na:rand_rueck:links?', 1), ('Ueb-ok', 4624), ('VS', 784), ('na:Sonder', 162), ('na:VS-zuwenig', 336), ('na:links?', 
+Laufzeit 2628 s
+--- D b_weit_log_D.txt
+10^15: n=1001477689497770 phasen=20406185 token=7825 {'na:rest': 2, 'LG': 13246, 'Ueb-ok': 2599, 'N2': 10192571, 'N1': 10193586, 'LE0': 1012, 'na:VS-zuwenig': 185, 'N2s': 1103, 'na:Sonder': 100, 'UA': 1244, 'LE1': 54, 'VS': 446, 'na:links?': 30, 'Ueb-na:rand_rueck:VS-zuwenig': 5, 'Ueb-na:rand_fressen:Sonder': 2}
+10^16: n=10005285543137592 phasen=64530505 token=13910 {'na:rest': 2, 'LG': 23523, 'Ueb-ok': 4624, 'N2': 32246590, 'N1': 32248372, 'LE0': 1792, 'na:VS-zuwenig': 336, 'N2s': 1970, 'na:Sonder': 162, 'UA': 2181, 'LE1': 111, 'VS': 785, 'na:links?': 45, 'Ueb-na:rand_rueck:VS-zuwenig': 7, 'Ueb-na:rand_fressen:Sonder': 2, 'Ueb-na:rand_rueck:links?': 1, 'Ueb-na:rand_rueck:Sonder': 2}
+start=D schritte=100000001125435878 phasen=204072439 token=24741 [('LE0', 3204), ('LE1', 210), ('LG', 41771), ('N1', 102006200), ('N2', 102002998), ('N2s', 3540), ('UA', 3886), ('Ueb-na:rand_fressen:Sonder', 8), ('Ueb-na:rand_rueck:Sonder', 5), ('Ueb-na:rand_rueck:VS-zuwenig', 15), ('Ueb-na:rand_rueck:links?', 1), ('Ueb-ok', 8217), ('VS', 1412), ('na:Sonder', 283), ('na:VS-zuwenig', 595), ('na:lin
+Laufzeit 11982 s
+--- D d_log
+start=D schritte=1000000000000 breite=1161825 schnappschuesse=642089 A_liest_1=0 rekorde_phase=64 rekorde_uebergang=1
+Laufzeit 5050 s
+### Rueckfall-Dateien (weitester Lauf je Start)
+A: b_weit_A_rueckfall.txt  Zeilen 975  letzte n 99900249089894349
+A: bis 1e15 gleich mit lokalem Lauf
+A: bis 1e16 gleich mit 1e16-Lauf
+A Uebergaenge:      12 Ueb-na:rand_fressen:Sonder       1 Ueb-na:rand_rueck:Sonder      17 Ueb-na:rand_rueck:VS-zuwenig       1 Ueb-na:rand_rueck:links?    8215 Ueb-ok 
+C: b_weit_C_rueckfall.txt  Zeilen 901  letzte n 99479455470254068
+C: bis 1e15 gleich mit lokalem Lauf
+C: bis 1e16 gleich mit 1e16-Lauf
+C Uebergaenge:       1 Ueb-na:kurz      17 Ueb-na:rand_fressen:Sonder       2 Ueb-na:rand_rueck:Sonder      11 Ueb-na:rand_rueck:VS-zuwenig    8215 Ueb-ok 
+D: b_weit_D_rueckfall.txt  Zeilen 1001  letzte n 96866445048220571
+D: bis 1e15 gleich mit lokalem Lauf
+D: bis 1e16 gleich mit 1e16-Lauf
+D Uebergaenge:       8 Ueb-na:rand_fressen:Sonder       5 Ueb-na:rand_rueck:Sonder      15 Ueb-na:rand_rueck:VS-zuwenig       1 Ueb-na:rand_rueck:links?    8217 Ueb-ok 
+### formen.py
+== b_weit_A_rueckfall.txt: Faelle 975, Formen 57, Kerne 18, Kernmuster 11
+  10^1..10^2  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^2..10^3  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^5..10^6  Faelle     3  neue Formen   3  neue Kerne  1  neue Kernmuster  1
+  10^6..10^7  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^8..10^9  Faelle     7  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle     8  neue Formen   5  neue Kerne  4  neue Kernmuster  3
+  10^10..10^11  Faelle     9  neue Formen   3  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    20  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^12..10^13  Faelle    49  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle    91  neue Formen   8  neue Kerne  2  neue Kernmuster  0
+  10^14..10^15  Faelle   158  neue Formen   7  neue Kerne  1  neue Kernmuster  0
+  10^15..10^16  Faelle   240  neue Formen   8  neue Kerne  2  neue Kernmuster  0
+  10^16..10^17  Faelle   385  neue Formen  12  neue Kerne  0  neue Kernmuster  0
+== b_weit_C_rueckfall.txt: Faelle 901, Formen 56, Kerne 15, Kernmuster 10
+  10^1..10^2  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^2..10^3  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^3..10^4  Faelle     2  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     1  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^7..10^8  Faelle     8  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^8..10^9  Faelle     5  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^9..10^10  Faelle     4  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^10..10^11  Faelle    19  neue Formen   1  neue Kerne  1  neue Kernmuster  0
+  10^11..10^12  Faelle    17  neue Formen   3  neue Kerne  3  neue Kernmuster  2
+  10^12..10^13  Faelle    18  neue Formen   4  neue Kerne  1  neue Kernmuster  0
+  10^13..10^14  Faelle    81  neue Formen   3  neue Kerne  0  neue Kernmuster  0
+  10^14..10^15  Faelle   122  neue Formen   6  neue Kerne  1  neue Kernmuster  0
+  10^15..10^16  Faelle   223  neue Formen  12  neue Kerne  1  neue Kernmuster  1
+  10^16..10^17  Faelle   397  neue Formen  16  neue Kerne  1  neue Kernmuster  0
+== b_weit_D_rueckfall.txt: Faelle 1001, Formen 64, Kerne 19, Kernmuster 13
+  10^2..10^3  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^5..10^6  Faelle     2  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^6..10^7  Faelle     2  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^7..10^8  Faelle     3  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^9..10^10  Faelle    12  neue Formen   5  neue Kerne  4  neue Kernmuster  4
+  10^10..10^11  Faelle    16  neue Formen   3  neue Kerne  0  neue Kernmuster  0
+  10^11..10^12  Faelle    22  neue Formen   7  neue Kerne  4  neue Kernmuster  1
+  10^12..10^13  Faelle    43  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle    79  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^14..10^15  Faelle   137  neue Formen   8  neue Kerne  1  neue Kernmuster  1
+  10^15..10^16  Faelle   233  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^16..10^17  Faelle   444  neue Formen  16  neue Kerne  3  neue Kernmuster  2
+== alle Starts zusammen: Faelle 2877, Formen 91, Kerne 20, Kernmuster 13
+  10^1..10^2  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^2..10^3  Faelle     5  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^6..10^7  Faelle     3  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^7..10^8  Faelle    11  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle    18  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle    24  neue Formen   8  neue Kerne  3  neue Kernmuster  3
+  10^10..10^11  Faelle    44  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    59  neue Formen   9  neue Kerne  3  neue Kernmuster  1
+  10^12..10^13  Faelle   110  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle   251  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^14..10^15  Faelle   417  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^15..10^16  Faelle   696  neue Formen  19  neue Kerne  1  neue Kernmuster  0
+  10^16..10^17  Faelle  1226  neue Formen  15  neue Kerne  1  neue Kernmuster  1
+Kerne (erstes Auftreten):
+  2.10e+01  R frei .o
+  4.60e+01  keine Grenze
+  3.58e+03  R frei 0 e
+  4.26e+03  R frei .0 .o
+  2.10e+06  R frei 0 .o .0 e
+  5.00e+07  I frei 0 .0 e
+  7.42e+07  I frei 0 e
+  3.04e+08  R frei e
+  3.52e+08  I frei 0 .o .0 e
+  3.09e+09  I frei 0 0
+  3.09e+09  I frei 0 .0 .o
+  5.93e+09  R frei .o .o
+  1.63e+10  I alt e .0 e
+  2.96e+11  I alt 0 e
+  4.13e+11  I frei 0 .e e .0 e
+  4.99e+11  R frei 0 .0 e
+  6.87e+13  R frei 0 0
+  5.70e+14  R alt 0 e
+  3.27e+15  R frei 0 .0 .o
+  8.22e+16  I frei 0 0 e
+### formen2.awk (alle Starts zusammen)
+Faelle 2877, Formen 91, Kerne 20, Kernmuster 13
+  10^1..10^2  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^2..10^3  Faelle     5  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^6..10^7  Faelle     3  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^7..10^8  Faelle    11  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle    18  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle    24  neue Formen   8  neue Kerne  3  neue Kernmuster  3
+  10^10..10^11  Faelle    44  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    59  neue Formen   9  neue Kerne  3  neue Kernmuster  1
+  10^12..10^13  Faelle   110  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle   251  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^14..10^15  Faelle   417  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^15..10^16  Faelle   696  neue Formen  19  neue Kerne  1  neue Kernmuster  0
+  10^16..10^17  Faelle  1226  neue Formen  15  neue Kerne  1  neue Kernmuster  1
+### formen2.awk b_weit_A_rueckfall.txt
+Faelle 975, Formen 57, Kerne 18, Kernmuster 11
+  10^1..10^2  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^2..10^3  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^5..10^6  Faelle     3  neue Formen   3  neue Kerne  1  neue Kernmuster  1
+  10^6..10^7  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^8..10^9  Faelle     7  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle     8  neue Formen   5  neue Kerne  4  neue Kernmuster  3
+  10^10..10^11  Faelle     9  neue Formen   3  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    20  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^12..10^13  Faelle    49  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle    91  neue Formen   8  neue Kerne  2  neue Kernmuster  0
+  10^14..10^15  Faelle   158  neue Formen   7  neue Kerne  1  neue Kernmuster  0
+  10^15..10^16  Faelle   240  neue Formen   8  neue Kerne  2  neue Kernmuster  0
+  10^16..10^17  Faelle   385  neue Formen  12  neue Kerne  0  neue Kernmuster  0
+### formen2.awk b_weit_C_rueckfall.txt
+Faelle 901, Formen 56, Kerne 15, Kernmuster 10
+  10^1..10^2  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^2..10^3  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^3..10^4  Faelle     2  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     1  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^7..10^8  Faelle     8  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^8..10^9  Faelle     5  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^9..10^10  Faelle     4  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^10..10^11  Faelle    19  neue Formen   1  neue Kerne  1  neue Kernmuster  0
+  10^11..10^12  Faelle    17  neue Formen   3  neue Kerne  3  neue Kernmuster  2
+  10^12..10^13  Faelle    18  neue Formen   4  neue Kerne  1  neue Kernmuster  0
+  10^13..10^14  Faelle    81  neue Formen   3  neue Kerne  0  neue Kernmuster  0
+  10^14..10^15  Faelle   122  neue Formen   6  neue Kerne  1  neue Kernmuster  0
+  10^15..10^16  Faelle   223  neue Formen  12  neue Kerne  1  neue Kernmuster  1
+  10^16..10^17  Faelle   397  neue Formen  16  neue Kerne  1  neue Kernmuster  0
+### formen2.awk b_weit_D_rueckfall.txt
+Faelle 1001, Formen 64, Kerne 19, Kernmuster 13
+  10^2..10^3  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^5..10^6  Faelle     2  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^6..10^7  Faelle     2  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^7..10^8  Faelle     3  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^9..10^10  Faelle    12  neue Formen   5  neue Kerne  4  neue Kernmuster  4
+  10^10..10^11  Faelle    16  neue Formen   3  neue Kerne  0  neue Kernmuster  0
+  10^11..10^12  Faelle    22  neue Formen   7  neue Kerne  4  neue Kernmuster  1
+  10^12..10^13  Faelle    43  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle    79  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^14..10^15  Faelle   137  neue Formen   8  neue Kerne  1  neue Kernmuster  1
+  10^15..10^16  Faelle   233  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^16..10^17  Faelle   444  neue Formen  16  neue Kerne  3  neue Kernmuster  2
+### Negativkontrollen (Gesamtzeile muss sich aendern)
+formen.py FORMEN_FEHLER=kern: == alle Starts zusammen: Faelle 2877, Formen 91, Kerne 13, Kernmuster 13
+formen2.awk FEHLER=kern: Faelle 2877, Formen 91, Kerne 13, Kernmuster 13
+formen.py FORMEN_FEHLER=fenster: == alle Starts zusammen: Faelle 2877, Formen 186, Kerne 14, Kernmuster 13
+formen2.awk FEHLER=fenster: Faelle 2877, Formen 186, Kerne 14, Kernmuster 13
+### abdeck.py (VS-Familie gegen alle Faelle)
+ 1285 R frei 0 e                    VS-Familie: ok 1253 falsch 0
+  414 I frei 0 e                    VS-Familie: ok 403 falsch 0
+  396 R frei .0 .o                  VS-Familie: ok 0 falsch 0
+  251 R frei e                      VS-Familie: ok 0 falsch 0
+  184 I frei 0 .0 e                 VS-Familie: ok 0 falsch 0
+  116 I frei 0 .o .0 e              VS-Familie: ok 0 falsch 0
+   41 I frei 0 .0 .o                VS-Familie: ok 0 falsch 0
+   40 R frei 0 .0 e                 VS-Familie: ok 0 falsch 0
+   37 R frei .o .o                  VS-Familie: ok 0 falsch 0
+   37 I frei 0 0                    VS-Familie: ok 0 falsch 0
+   26 I alt 0 e                     VS-Familie: ok 0 falsch 0
+   18 R frei 0 .o .0 e              VS-Familie: ok 0 falsch 0
+   13 R frei .o                     VS-Familie: ok 0 falsch 0
+    7 keine Grenze                  VS-Familie: ok 0 falsch 0
+    3 I alt e .0 e                  VS-Familie: ok 0 falsch 0
+    3 R frei 0 0                    VS-Familie: ok 0 falsch 0
+    2 R alt 0 e                     VS-Familie: ok 0 falsch 0
+    2 R frei 0 .0 .o                VS-Familie: ok 0 falsch 0
+    1 I frei 0 .e e .0 e            VS-Familie: ok 0 falsch 0
+    1 I frei 0 0 e                  VS-Familie: ok 0 falsch 0
+
+# vergleich-Job von Run 45614962053 (direkt.c gegen Beschleuniger bis 1e12)
+A: Schnappschuesse gleich (642050 Zeilen)
+A: Formen gleich (52 Zeilen)
+start=A schritte=1000000000000 breite=1162173 schnappschuesse=642050 A_liest_1=0 rekorde_phase=48 rekorde_uebergang=4
+Laufzeit 6429 s
+C: Schnappschuesse gleich (642176 Zeilen)
+C: Formen gleich (60 Zeilen)
+start=C schritte=1000000000000 breite=1163057 schnappschuesse=642176 A_liest_1=0 rekorde_phase=57 rekorde_uebergang=3
+Laufzeit 5691 s
+D: Schnappschuesse gleich (642089 Zeilen)
+D: Formen gleich (65 Zeilen)
+start=D schritte=1000000000000 breite=1161825 schnappschuesse=642089 A_liest_1=0 rekorde_phase=64 rekorde_uebergang=1
+Laufzeit 5050 s
+
+# neukern.py aus dem zweiten Auswertungslauf (Run 45658664733); die Zeilen davor sind dort identisch
+Kern | erstes Auftreten | Datei | Art | Form (gekuerzt)
+R frei .o              2.100e+01 b_weit_C_rueckfall.txt Ueb-na:kurz  R  -> 
+keine Grenze           4.600e+01 b_weit_A_rueckfall.txt na:rest  R .p -> p+1
+R frei 0 e             3.582e+03 b_weit_C_rueckfall.txt na:VS-zuwenig  R 1 0 p -> .2 .p+1
+R frei .0 .o           4.261e+03 b_weit_C_rueckfall.txt na:Sonder  R .0 .7 p -> 1 1 1 1 1 0 .p+4
+R frei 0 .o .0 e       2.095e+06 b_weit_A_rueckfall.txt na:Sonder  R 1 1 1 1 1 1 1 0 .1 .0 14 p -> 0 3 3 3 3 3 3 3 .p+3
+I frei 0 .0 e          4.997e+07 b_weit_D_rueckfall.txt na:Sonder  I 1 1 0 .0 2 p -> 0 3 .p+3
+I frei 0 e             7.418e+07 b_weit_D_rueckfall.txt na:VS-zuwenig  I 1 0 2 p -> 0 .p+6
+R frei e               3.037e+08 b_weit_A_rueckfall.txt na:links?  R 4 p -> 1 1 1 .p+3
+I frei 0 .o .0 e       3.516e+08 b_weit_C_rueckfall.txt na:Sonder  I 1 1 1 1 1 0 .1 .0 14 p -> 5 3 3 3 3 3 .p+3
+I frei 0 0             3.086e+09 b_weit_D_rueckfall.txt na:Sonder  I 1 1 1 0 0 p -> 0 .1 .p+4
+I frei 0 .0 .o         3.087e+09 b_weit_D_rueckfall.txt na:Sonder  I 0 .0 .19 p -> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 .p+6
+R frei .o .o           5.925e+09 b_weit_A_rueckfall.txt Ueb-na:rand_fressen:Sonder  R .1 .5 p -> 1 1 1 1 1 0 .p+4
+I alt e .0 e           1.630e+10 b_weit_A_rueckfall.txt na:Sonder  I 0 .2 3 2 .0 16 p -> 1 1 1 1 1 1 1 1 1 1 3 3 5 .p+5
+I alt 0 e              2.960e+11 b_weit_C_rueckfall.txt na:VS-zuwenig  I 1 0 .2 3 3 3 0 4 p -> 0 .0 3 5 4 .p+6
+I frei 0 .e e .0 e     4.131e+11 b_weit_D_rueckfall.txt na:Sonder  I 1 1 1 1 1 1 1 1 0 .2 2 .0 16 p -> 0 3 3 3 3 3 3 3 1 3 .p+5
+R frei 0 .0 e          4.992e+11 b_weit_D_rueckfall.txt na:Sonder  R 0 .0 p -> .2 .p
+R frei 0 0             6.866e+13 b_weit_A_rueckfall.txt na:Sonder  R 1 0 p -> .2 .p+1
+R alt 0 e              5.699e+14 b_weit_A_rueckfall.txt na:VS-zuwenig  R 0 .2 3 3 3 0 4 p -> 3 5 4 .p+6
+R frei 0 .0 .o         3.273e+15 b_weit_A_rueckfall.txt na:Sonder  R 0 .p -> .p+2
+I frei 0 0 e           8.216e+16 b_weit_D_rueckfall.txt na:VS-zuwenig  I 0 0 p -> .p+2
+alt-Faelle je Zehnerpotenz (Faelle, davon alt): {'10^1': (3, 0), '10^2': (5, 0), '10^3': (3, 0), '10^4': (1, 0), '10^5': (6, 0), '10^6': (3, 0), '10^7': (11, 0), '10^8': (18, 0), '10^9': (24, 0), '10^10': (44, 1), '10^11': (59, 2), '10^12': (110, 0), '10^13': (251, 3), '10^14': (417, 1), '10^15': (696, 6), '10^16': (1226, 18)}
+Faelle der Kerne mit erstem Auftreten ab 1e+15:
+  3.273e+15 b_weit_A_rueckfall.txt na:Sonder R frei 0 .0 .o  R 0 .p -> .p+2
+  7.257e+16 b_weit_D_rueckfall.txt na:Sonder R frei 0 .0 .o  R 1 1 1 1 1 1 1 1 0 .0 .15 p -> 5 3 3 3 3 3 2 .p+4
+  8.216e+16 b_weit_D_rueckfall.txt na:VS-zuwenig I frei 0 0 e  I 0 0 p -> .p+2
