@@ -2,7 +2,7 @@
 """Aussage-Pruefung einer busycoq-Beweisdatei VOR dem Bau (nur Text, kein Coq).
 
 Aufruf:
-  scripts/aussage_check <datei.v> <String> [<String> ...] [--coq <Modul> <kern.v>]
+  scripts/aussage_check <datei.v> <String> [<String> ...] [--modell <R>] [--coq <Modul> <kern.v>]
   scripts/aussage_check --formen <busycoq/verify>
   Mehrere erwartete Maschinen als weitere Argumente oder durch Komma getrennt
   (z. B. "S1,S2"; so uebergibt sie der Workflow pruefen).
@@ -19,15 +19,24 @@ Prueft:
        Theorem|Lemma <name> : halts <tm> c0.        (haelt ab Leerband)
        Theorem|Lemma <name> : ~halts <tm> c0.       (haelt nicht ab Leerband)
      mit <tm> := [Eval compute in] (TM_from_str "S") oder inline (TM_from_str "S").
+     Nur mit --modell <R> (Referenz-Tabelle R, 6x2) zusaetzlich die Genau-dann-wenn-Form einer
+     bewiesenen Beschleunigung:
+       Theorem|Lemma <name> : halts <tm> c0 <-> <P> (<start> X).
+     <P> und <start> sind oberste Definitionen der Datei, fuer alle solchen Saetze dieselben.
+     X muss der Zustand von R sein, der dem Start A der Maschine entspricht: Maschine =
+     pi(R) oder pi(Spiegel(R)) mit pi(X) = A. Ein anderer Start oder nur eine Richtung
+     (-> statt <->) ist kein Haupttheorem -> FAIL.
      Keine Binder, nicht in Section/Module Type/Funktor, Beweis endet mit Qed/Defined.
      Jede erwartete Maschine muss exakt vorkommen und ein Haupttheorem haben, jede andere
-     Maschine (Zwilling) ebenfalls;
+     Maschine (Zwilling) ebenfalls (gezaehlt je String: eine benannte Definition und ein
+     Haupttheorem mit demselben String als Literal decken einander ab);
      widerspruechliche Urteile oder ein Widerspruch zu "verdict" in decided -> FAIL.
   4. c0, halts, TM_from_str usw. werden in der Datei nicht neu definiert.
 
 Ausgabe: Bericht, dann "HAUPTTHEOREME: <A.b> ..." und "ERGEBNIS: OK|FAIL". Exit 0 = OK,
 1 = FAIL, 2 = Aufruffehler. Mit --coq wird zusaetzlich eine Coq-Datei geschrieben, die nach
-dem Bau die Aussagen im Kern abgleicht (Definition <..> : halts (TM_from_str "S") c0 := M.x).
+dem Bau die Aussagen im Kern abgleicht (Definition <..> : halts (TM_from_str "S") c0 := M.x,
+bei der Genau-dann-wenn-Form ... : halts (TM_from_str "S") c0 <-> M.P (M.start X) := M.x).
 Die Textpruefung ersetzt diesen Abgleich nicht, sie faengt Fehler nur vor dem langen Bau ab.
 """
 import hashlib
@@ -51,6 +60,9 @@ THM_KW = r"(?:Theorem|Lemma|Corollary|Fact|Remark|Proposition|Property|Example)"
 # Form der Haupttheoreme (aus dem Pin abgeleitet, siehe --formen)
 MAIN_NAMED = re.compile(rf"^(~\s*)?halts\s+({QID})\s+c0$")
 MAIN_INLINE = re.compile(r'^(~\s*)?halts\s+\(\s*TM_from_str\s+"([^"]*)"\s*\)\s+c0$')
+# Genau-dann-wenn-Form einer Beschleunigung (nur mit --modell): halts <tm> c0 <-> P (start X)
+MAIN_IFF = re.compile(rf'^halts\s+(?:\(\s*TM_from_str\s+"([^"]*)"\s*\)|({QID}))\s+c0\s*<->\s*'
+                      rf'\(?\s*({ID})\s*\(\s*({ID})\s+([A-F])\s*\)\s*\)?$')
 # Maschinen-Definitionen (aus dem Pin): Definition tm := [Eval compute in] (TM_from_str "S").
 MACHINE_DEF = re.compile(
     rf'^(?:Local\s+)?Definition\s+({ID})\s*(?::\s*TM\s*)?:=\s*'
@@ -223,6 +235,7 @@ def analyse(src):
         machines.append({"tm": s, "label": label, "line": line, "how": how})
         return len(machines) - 1
 
+    topdefs = {}    # oberste Definitionen (ausserhalb Module/Section): Name -> (Zeile, Text)
     pending = None  # Haupttheorem, dessen Beweisende noch gesucht wird
     for idx, (s, line) in enumerate(sents):
         t = norm(s)
@@ -263,6 +276,8 @@ def analyse(src):
         m = re.match(rf"^(?:Local\s+|Global\s+|Polymorphic\s+|Monomorphic\s+)*{DEF_KW}\s+({ID})", t0)
         if m and m.group(1) in PROTECTED:
             problems.append(f"Zeile {line}: definiert geschuetzten Namen {m.group(1)}")
+        if m and not stack:
+            topdefs.setdefault(m.group(1), (line, t0))
         if re.match(rf"^(?:Local\s+|Global\s+)*{BINDER_KW}\b", t0):
             head = re.sub(rf"^(?:Local\s+|Global\s+)*{BINDER_KW}\s*", "", t0)
             groups = re.findall(r"[({\[`]+\s*([^:(){}\[\]]*?)\s*:", head) or [head.split(":")[0]]
@@ -309,8 +324,19 @@ def analyse(src):
             if rest.startswith(":"):
                 stmt = norm(rest[1:])
                 mn, mi = MAIN_NAMED.match(stmt), MAIN_INLINE.match(stmt)
-                target, how = None, None
-                if mn:
+                mf = MAIN_IFF.match(stmt)
+                target, how, iff = None, None, None
+                if mf:
+                    if mf.group(1) is not None:
+                        target = add_machine(mf.group(1), f"{'.'.join(modpath() + (name,))} (inline)", line, "inline")
+                        mi_used.add(mf.group(1))
+                    else:
+                        target = resolve(mf.group(2))
+                        if target is None:
+                            problems.append(f"Zeile {line}: {name}: Maschine {mf.group(2)} nicht als TM_from_str-Definition in der Datei gefunden")
+                    neg = None
+                    iff = {"pred": mf.group(3), "start": mf.group(4), "q": mf.group(5)}
+                elif mn:
                     target = resolve(mn.group(2))
                     if target is None:
                         problems.append(f"Zeile {line}: {name}: Maschine {mn.group(2)} nicht als TM_from_str-Definition in der Datei gefunden")
@@ -322,7 +348,8 @@ def analyse(src):
                 if target is not None:
                     ctx = [a for a, _ in stack if a in ("Section", "ModuleType", "Functor")]
                     th = {"name": ".".join(modpath() + (name,)), "kw": kw, "line": line, "machine": target,
-                          "verdict": "nonhalt" if neg else "halt", "stmt": stmt, "end": None, "ctx": ctx}
+                          "verdict": "iff" if iff else ("nonhalt" if neg else "halt"), "iff": iff,
+                          "top": not stack, "stmt": stmt, "end": None, "ctx": ctx}
                     theorems.append(th)
                     pending = th
         for lit in inl:
@@ -334,11 +361,27 @@ def analyse(src):
         pending["end"] = "Dateiende ohne Qed"
     if stack:
         problems.append(f"Struktur nicht geschlossen: {stack}")
-    return machines, theorems, problems
+    return machines, theorems, problems, topdefs
+
+
+def modell_starts(ref, s):
+    """Alle Zustaende X von ref mit s = pi(ref) oder s = pi(Spiegel(ref)) und pi(X) = A."""
+    e = parse_tm(ref)
+    res = set()
+    for spiegel in (False, True):
+        for perm in itertools.permutations(STATES):
+            pi = dict(zip(STATES, perm))
+            t = {}
+            for (q, sym), tr in e.items():
+                d = tr and (("L" if tr[1] == "R" else "R") if spiegel else tr[1])
+                t[(pi[q], sym)] = None if tr is None else (tr[0], d, pi[tr[2]])
+            if tm_str(t) == s:
+                res.add((next(q for q in STATES if pi[q] == "A"), spiegel))
+    return res
 
 
 # --- Hauptpruefung -------------------------------------------------------------------
-def check(path, expected, coq=None):
+def check(path, expected, coq=None, modell=None):
     fails = []
     raw = Path(path).read_bytes()
     print(f"Datei: {path}")
@@ -359,13 +402,18 @@ def check(path, expected, coq=None):
         if not w:
             fails.append(f"E{j + 1} {e} steht weder in BB6_holdouts_608.txt noch in decided")
     try:
-        machines, theorems, problems = analyse(raw.decode("utf-8"))
+        machines, theorems, problems, topdefs = analyse(raw.decode("utf-8"))
     except (ValueError, UnicodeDecodeError) as e:
         print(f"FAIL: Datei nicht lesbar: {e}")
         print("ERGEBNIS: FAIL")
         return 1
     fails += problems
     twins = [mirror_twins(e) for e in expected]
+    if modell is not None:
+        print(f"Modell-Referenz (--modell): {modell}")
+        if not TM_RE.match(modell):
+            fails.append(f"--modell {modell!r} hat nicht das 6x2-Format")
+            modell = ""
 
     print(f"Maschinen in der Datei: {len(machines)}")
     rel = []
@@ -399,28 +447,60 @@ def check(path, expected, coq=None):
     for th in theorems:
         mc = machines[th["machine"]]
         print(f"  {th['name']}  Zeile {th['line']}  {th['kw']} : {th['stmt']}  -> [{th['machine'] + 1}] "
-              f"({'haelt' if th['verdict'] == 'halt' else 'haelt nicht'}), Ende: {th['end']}")
+              f"({ {'halt': 'haelt', 'nonhalt': 'haelt nicht', 'iff': 'genau dann wenn'}[th['verdict']]}), Ende: {th['end']}")
         if th["end"] not in ("Qed", "Defined"):
             fails.append(f"{th['name']}: Beweis endet nicht mit Qed/Defined ({th['end']})")
         if th["ctx"]:
             fails.append(f"{th['name']}: steht in {'/'.join(th['ctx'])}; Aussage waere dort nicht die gepruefte")
+        if th["iff"]:
+            ff = th["iff"]
+            if modell is None:
+                fails.append(f"{th['name']}: Genau-dann-wenn-Form nur mit --modell <Referenz> zulaessig")
+            elif modell:
+                ok = modell_starts(modell, mc["tm"])
+                if not ok:
+                    fails.append(f"{th['name']}: Maschine {mc['tm']} ist weder Umbenennung noch Spiegel-Zwilling von --modell")
+                else:
+                    for x, sp in sorted(ok):
+                        print(f"      erwarteter Modell-Start: {x} ({'Spiegel, ' if sp else ''}Zustand {x} der Referenz = Start A dieser Maschine)")
+                    if ff["q"] not in {x for x, _ in ok}:
+                        fails.append(f"{th['name']}: Modell-Start {ff['q']} passt nicht zur Maschine "
+                                     f"(erwartet {' oder '.join(sorted({x for x, _ in ok}))})")
+            if not th["top"]:
+                fails.append(f"{th['name']}: Genau-dann-wenn-Satz nicht auf oberster Ebene")
+            for nm in (ff["pred"], ff["start"]):
+                if nm in PROTECTED:
+                    fails.append(f"{th['name']}: {nm} ist ein geschuetzter Name")
+                elif nm not in topdefs:
+                    fails.append(f"{th['name']}: {nm} ist keine oberste Definition dieser Datei")
         by_machine.setdefault(th["machine"], set()).add(th["verdict"])
+    iffs = [th["iff"] for th in theorems if th["iff"]]
+    if iffs:
+        if len({(f["pred"], f["start"]) for f in iffs}) > 1:
+            fails.append("Genau-dann-wenn-Saetze benutzen verschiedene Modelle (Praedikat/Start)")
+        for nm in sorted({f["start"] for f in iffs} | {f["pred"] for f in iffs}):
+            if nm in topdefs:
+                print(f"  Modell-Definition {nm} (Zeile {topdefs[nm][0]}): {topdefs[nm][1][:160]}")
+    # Abdeckung je String: benannte Definition und Literal derselben Maschine zaehlen zusammen
+    by_string = {}
+    for i, v in by_machine.items():
+        by_string.setdefault(machines[i]["tm"], set()).update(v)
     for i, mc in enumerate(machines):
-        v = by_machine.get(i, set())
+        v = by_string.get(mc["tm"], set())
         if not v:
             fails.append(f"[{i + 1}] {mc['label']}: kein Haupttheorem der Form [~]halts <tm> c0")
-        if len(v) > 1:
+        if {"halt", "nonhalt"} <= v:
             fails.append(f"[{i + 1}] {mc['label']}: widerspruechliche Haupttheoreme (halts und ~halts)")
         for x in dec.get(mc["tm"], []):
             want = {"halts": "halt", "non-halting": "nonhalt"}.get(x["verdict"])
-            if want and v and v != {want}:
+            if want and (v - {"iff"}) and (v - {"iff"}) != {want}:
                 fails.append(f"[{i + 1}] {mc['label']}: Urteil widerspricht decided n={x['n']} verdict={x['verdict']} "
                              "(Datei oder Daten pruefen; decided kann irren, z. B. n=356 gegen CSv1.v)")
     for j, e in enumerate(expected):
         exact = [i for i, mc in enumerate(machines) if mc["tm"] == e]
         if not exact:
             fails.append(f"E{j + 1} {e} kommt in der Datei nicht exakt vor")
-        elif not any(i in by_machine for i in exact):
+        elif e not in by_string:
             fails.append(f"E{j + 1} {e}: die erwartete Maschine selbst hat kein Haupttheorem")
 
     names = [th["name"] for th in theorems]
@@ -444,6 +524,11 @@ def check(path, expected, coq=None):
                  f"From BusyCoq Require {mod}.", ""]
         for k, th in enumerate(theorems):
             s = machines[th["machine"]]["tm"]
+            if th["iff"]:
+                ff = th["iff"]
+                lines.append(f'Definition aussage_{k + 1} : halts (TM_from_str "{s}") c0 <-> '
+                             f'{mod}.{ff["pred"]} ({mod}.{ff["start"]} {ff["q"]}) := {mod}.{th["name"]}.')
+                continue
             neg = "~ " if th["verdict"] == "nonhalt" else ""
             lines.append(f'Definition aussage_{k + 1} : {neg}halts (TM_from_str "{s}") c0 := {mod}.{th["name"]}.')
         Path(out).write_text("\n".join(lines) + "\n")
@@ -511,6 +596,13 @@ def main(argv):
             die("FEHLER: --coq <Modul> <kern.v> muss am Ende stehen")
         coq = (argv[k + 1], argv[k + 2])
         argv = argv[:k]
+    modell = None
+    if "--modell" in argv:
+        k = argv.index("--modell")
+        if len(argv) < k + 2:
+            die("FEHLER: --modell <Referenz-String>")
+        modell = argv[k + 1]
+        argv = argv[:k] + argv[k + 2:]
     if len(argv) < 2:
         die(__doc__.split("Prueft:")[0].strip())
     if not Path(argv[0]).is_file():
@@ -520,7 +612,7 @@ def main(argv):
         for e in re.split(r"[,\s]+", a.strip()):
             if e and e not in expected:
                 expected.append(e)
-    return check(argv[0], expected, coq)
+    return check(argv[0], expected, coq, modell)
 
 
 if __name__ == "__main__":
