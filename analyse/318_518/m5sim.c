@@ -10,14 +10,33 @@
  *   m5sim zyklen <tm> <start> <N> <K> Gibt Schritt, Zustand und Band (linkes Ende bis vor den Kopf)
  *                                     an jedem Rechts-Rekord aus, dem ein Ausflug von mindestens
  *                                     K Schritten vorausging (= Beginn eines Zyklus).
+ *   m5sim hash   <tm> <start> <N> <K> Wie zyklen, gibt aber statt des Bandes Schritt, Zustand, Laenge
+ *                                     und CRC-32 (wie zlib.crc32) des Bandes aus.
+ *   m5sim weiter <tm> <zustand> <N> <K> Liest ein Band (Zeichen 0/1) von stdin, Kopf rechts davon auf
+ *                                     einer leeren Zelle, Zustand <zustand>; rechnet bis zum naechsten
+ *                                     Zyklusbeginn (wie zyklen, Schwelle K) oder hoechstens N Schritte.
+ *                                     Ausgabe: Schritte, Zustand, neues Band (bzw. "LIMIT").
  * Band: Array fester Groesse, Start in der Mitte. Halteuebergang "---" beendet den Lauf.
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define W (1<<22)
+#define W (1<<26)
 static unsigned char tape[W];
+static unsigned long crctab[256];
+static void crcinit(void) {
+  for (unsigned long n = 0; n < 256; n++) {
+    unsigned long c = n;
+    for (int k = 0; k < 8; k++) c = (c & 1) ? 0xEDB88320UL ^ (c >> 1) : c >> 1;
+    crctab[n] = c;
+  }
+}
+static unsigned long crc(long a, long b) {
+  unsigned long c = 0xFFFFFFFFUL;
+  for (long q = a; q < b; q++) c = crctab[(c ^ ('0' + tape[q])) & 0xFF] ^ (c >> 8);
+  return c ^ 0xFFFFFFFFUL;
+}
 
 
 typedef struct { int n; int wr[8][2], mv[8][2], nx[8][2], h[8][2]; } M;
@@ -93,8 +112,37 @@ int main(int argc, char **argv) {
         if (cnt[x][y]) printf("%c%d %c%d %lld\n", 'A' + x / 2, x % 2, 'A' + y / 2, y % 2, cnt[x][y]);
     return 0;
   }
-  if (!strcmp(argv[1], "links") || !strcmp(argv[1], "zyklen")) {
-    int zyk = !strcmp(argv[1], "zyklen");
+  if (!strcmp(argv[1], "weiter")) {
+    long long K = atoll(argv[5]);
+    static char buf[W];
+    if (!fgets(buf, sizeof buf, stdin)) return 2;
+    long L = (long)strcspn(buf, "\r\n");
+    lo = W / 4; for (long q = 0; q < L; q++) tape[lo + q] = buf[q] - '0';
+    p = lo + L; hi = p;
+    long long last = 0;
+    for (i = 0; i < N; i++) {
+      int s = tape[p];
+      if (m.h[st][s]) { printf("HALT %lld\n", i + 1); return 0; }
+      tape[p] = m.wr[st][s]; p += m.mv[st][s]; st = m.nx[st][s];
+      if (p <= 0 || p >= W - 1) { printf("Band zu klein\n"); return 3; }
+      if (p < lo) lo = p;
+      if (p > hi) {
+        hi = p;
+        if (i + 1 - last >= K) {
+          printf("%lld %c ", i + 1, 'A' + st);
+          for (long q = lo; q < hi; q++) putchar('0' + tape[q]);
+          putchar('\n');
+          return 0;
+        }
+        last = i + 1;
+      }
+    }
+    printf("LIMIT\n");
+    return 0;
+  }
+  if (!strcmp(argv[1], "links") || !strcmp(argv[1], "zyklen") || !strcmp(argv[1], "hash")) {
+    int zyk = strcmp(argv[1], "links") != 0, hsh = !strcmp(argv[1], "hash");
+    crcinit();
     long long K = zyk ? atoll(argv[5]) : 0, last = 0;
     for (i = 0; i < N; i++) {
       int s = tape[p];
@@ -105,9 +153,12 @@ int main(int argc, char **argv) {
       if (p > hi) {
         hi = p;
         if (zyk && i + 1 - last >= K) {
-          printf("%lld %c ", i + 1, 'A' + st);
-          for (long q = lo; q < hi; q++) putchar('0' + tape[q]);
-          putchar('\n');
+          if (hsh) printf("%lld %c %ld %lu\n", i + 1, 'A' + st, hi - lo, crc(lo, hi));
+          else {
+            printf("%lld %c ", i + 1, 'A' + st);
+            for (long q = lo; q < hi; q++) putchar('0' + tape[q]);
+            putchar('\n');
+          }
         }
         last = i + 1;
       }
