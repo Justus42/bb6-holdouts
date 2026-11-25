@@ -1,0 +1,3 @@
+laeufe=200000 halte=1164 K=1164 K2=1164 Negativkontrollen N1=72 N2=0 (muessen < halte sein)
+laeufe=20000 halte=17365 K=7367 K2=428 Negativkontrollen N1=4 N2=221 (muessen < halte sein)
+Gegenprobe: Halte ohne K: 9998 (muss > 0 sein)

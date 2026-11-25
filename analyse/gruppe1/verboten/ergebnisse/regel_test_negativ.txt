@@ -1,0 +1,2 @@
+Negativkontrolle: Laeufe 3000  Halte 8  davon mit K(C) 8  Laeufe mit K(C) 8
+Negativkontrolle SCHLAEGT AN
