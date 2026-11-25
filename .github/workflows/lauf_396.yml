@@ -8,6 +8,7 @@ name: lauf_396
 #   lauf (88, 396): runde.c nach dem Besuchsgesetz aus busycoq PR #59 bis <R> Runden oder Halt
 on:
   push:
+    branches-ignore: [main]   # kein erneuter Lauf beim Merge
     paths:
       - analyse/396/auftrag.txt
 
