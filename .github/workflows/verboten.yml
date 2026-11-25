@@ -1,0 +1,83 @@
+name: verboten
+
+# Gruppe 1, Thread "Halt als verbotenes Muster" (reine Analyse, kein Rocq).
+# Startet bei einem Push, der analyse/gruppe1/verboten/auftrag.txt aendert (Workflow liegt nur auf dem
+# Feature-Branch), oder manuell, sobald er auf main liegt.
+# auftrag.txt: "direkt <N>" (zaehl_direkt.c, Programm 1), "durchlauf <N>" (zaehl_durchlauf.py, Programm 2,
+#              Vergleich mit Programm 1), "beschleuniger <N>" (zaehl_beschl.py, Rueckfall-Phasen bis N).
+# Ergebnisse stehen im Job-Log (die Artefakt-Ablage ist aus der Cloud-Sitzung nicht erreichbar).
+on:
+  push:
+    paths:
+      - analyse/gruppe1/verboten/auftrag.txt
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  direkt:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm 1 (direkt) bis N, danach Vergleich der Rueckfall-Phasen mit dem Beschleuniger
+        working-directory: analyse/gruppe1/verboten
+        run: |
+          N=$(awk '$1=="direkt"{print $2}' auftrag.txt)
+          s=${{ matrix.start }}
+          gcc -O2 -o zaehl_direkt zaehl_direkt.c
+          start=$(date +%s)
+          ./zaehl_direkt $s "$N" | tee d_$s.txt
+          echo "Laufzeit $(( $(date +%s) - start )) s"
+          python3 -I zaehl_beschl.py $s "$N" /tmp/zb_$s > zb_$s.txt
+          tail -n 1 /tmp/zb_${s}_rueckfall.txt | cut -c1-80
+          grep "^stand ende" zb_$s.txt | sed 's/^stand ende/phase/' | sort > x1
+          grep -E "^phase (ueb|vs|na) " d_$s.txt | sort > x2
+          grep "^phasen ende" zb_$s.txt | sed 's/^phasen ende/phasen/' | sort > y1
+          grep -E "^phasen (ueb|vs|na) " d_$s.txt | sort > y2
+          if cmp x1 x2 && cmp y1 y2; then echo "$s: Rueckfall-Phasen bis $N: Programm 1 = Beschleuniger ($(wc -l < x1) Zeilen, $(cat y1 | tr '\n' ' '))"; else echo "$s: VERSCHIEDEN"; diff x1 x2; diff y1 y2; exit 1; fi
+
+  durchlauf:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm 2 (Durchlaufmodell) gegen Programm 1, alle Phasen
+        working-directory: analyse/gruppe1/verboten
+        run: |
+          N=$(awk '$1=="durchlauf"{print $2}' auftrag.txt)
+          s=${{ matrix.start }}
+          gcc -O2 -o zaehl_direkt zaehl_direkt.c
+          ./zaehl_direkt $s "$N" | grep '^gesamt' > d_$s.txt
+          start=$(date +%s)
+          python3 -I zaehl_durchlauf.py $s "$N" | tee p_$s.txt
+          echo "Laufzeit $(( $(date +%s) - start )) s"
+          if cmp d_$s.txt p_$s.txt; then echo "$s: gesamt bis $N: Programm 1 = Programm 2 ($(wc -l < p_$s.txt) Zeilen)"; else echo "$s: VERSCHIEDEN"; diff d_$s.txt p_$s.txt; exit 1; fi
+
+  beschleuniger:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Rueckfall-Phasen bis N (Beschleuniger)
+        working-directory: analyse/gruppe1/verboten
+        run: |
+          N=$(awk '$1=="beschleuniger"{print $2}' auftrag.txt)
+          s=${{ matrix.start }}
+          start=$(date +%s)
+          python3 -I zaehl_beschl.py $s "$N" /tmp/zb_$s | tee zb_$s.txt
+          echo "Laufzeit $(( $(date +%s) - start )) s"
+          echo "Rueckfall-Saetze: $(wc -l < /tmp/zb_${s}_rueckfall.txt)"

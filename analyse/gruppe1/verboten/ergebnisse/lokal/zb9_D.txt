@@ -1,0 +1,351 @@
+10^1: n=180 phasen=1 token=1 {'na:rest': 1}
+phasen 10^1 ueb 0
+phasen 10^1 vs 0
+phasen 10^1 na 1
+stand 10^1 na C 001 1
+stand 10^1 na C 100 3
+stand 10^1 na C 101 1
+stand 10^1 na D 000 1
+stand 10^1 na D 010 2
+stand 10^1 na D 100 1
+stand 10^1 na E 000 1
+stand 10^1 na E 001 2
+stand 10^1 na E 010 1
+10^2: n=180 phasen=1 token=1 {'na:rest': 1}
+phasen 10^2 ueb 0
+phasen 10^2 vs 0
+phasen 10^2 na 1
+stand 10^2 na C 001 1
+stand 10^2 na C 100 3
+stand 10^2 na C 101 1
+stand 10^2 na D 000 1
+stand 10^2 na D 010 2
+stand 10^2 na D 100 1
+stand 10^2 na E 000 1
+stand 10^2 na E 001 2
+stand 10^2 na E 010 1
+10^3: n=2741 phasen=16 token=4 {'na:rest': 2, 'LG': 4, 'Ueb-ok': 2, 'N2': 4, 'N1': 4}
+phasen 10^3 ueb 2
+stand 10^3 ueb A 000 11
+stand 10^3 ueb A 001 11
+stand 10^3 ueb B 001 11
+stand 10^3 ueb B 010 11
+stand 10^3 ueb C 000 20
+stand 10^3 ueb C 001 2
+stand 10^3 ueb C 010 22
+stand 10^3 ueb C 100 192
+stand 10^3 ueb C 101 4
+stand 10^3 ueb C 110 22
+stand 10^3 ueb D 000 22
+stand 10^3 ueb D 001 8
+stand 10^3 ueb D 010 162
+stand 10^3 ueb D 011 8
+stand 10^3 ueb D 100 4
+stand 10^3 ueb E 000 30
+stand 10^3 ueb E 001 170
+stand 10^3 ueb E 010 4
+stand 10^3 ueb E 100 22
+phasen 10^3 vs 0
+phasen 10^3 na 2
+stand 10^3 na A 001 1
+stand 10^3 na B 010 1
+stand 10^3 na C 001 2
+stand 10^3 na C 010 1
+stand 10^3 na C 100 6
+stand 10^3 na C 101 2
+stand 10^3 na C 110 1
+stand 10^3 na D 000 2
+stand 10^3 na D 010 4
+stand 10^3 na D 100 2
+stand 10^3 na E 000 2
+stand 10^3 na E 001 4
+stand 10^3 na E 010 2
+stand 10^3 na E 100 1
+10^4: n=20427 phasen=60 token=14 {'na:rest': 2, 'LG': 16, 'Ueb-ok': 4, 'N2': 18, 'N1': 18, 'LE0': 2}
+phasen 10^4 ueb 4
+stand 10^4 ueb A 000 37
+stand 10^4 ueb A 001 43
+stand 10^4 ueb B 001 37
+stand 10^4 ueb B 010 43
+stand 10^4 ueb C 000 52
+stand 10^4 ueb C 001 4
+stand 10^4 ueb C 010 80
+stand 10^4 ueb C 100 868
+stand 10^4 ueb C 101 8
+stand 10^4 ueb C 110 80
+stand 10^4 ueb D 000 56
+stand 10^4 ueb D 001 36
+stand 10^4 ueb D 010 760
+stand 10^4 ueb D 011 36
+stand 10^4 ueb D 100 8
+stand 10^4 ueb E 000 92
+stand 10^4 ueb E 001 796
+stand 10^4 ueb E 010 8
+stand 10^4 ueb E 100 80
+phasen 10^4 vs 0
+phasen 10^4 na 2
+stand 10^4 na A 001 1
+stand 10^4 na B 010 1
+stand 10^4 na C 001 2
+stand 10^4 na C 010 1
+stand 10^4 na C 100 6
+stand 10^4 na C 101 2
+stand 10^4 na C 110 1
+stand 10^4 na D 000 2
+stand 10^4 na D 010 4
+stand 10^4 na D 100 2
+stand 10^4 na E 000 2
+stand 10^4 na E 001 4
+stand 10^4 na E 010 2
+stand 10^4 na E 100 1
+10^5: n=158071 phasen=196 token=26 {'na:rest': 2, 'LG': 33, 'Ueb-ok': 8, 'N2': 74, 'N1': 74, 'LE0': 5}
+phasen 10^5 ueb 8
+stand 10^5 ueb A 000 74
+stand 10^5 ueb A 001 162
+stand 10^5 ueb B 001 74
+stand 10^5 ueb B 010 162
+stand 10^5 ueb C 000 164
+stand 10^5 ueb C 001 8
+stand 10^5 ueb C 010 236
+stand 10^5 ueb C 100 4940
+stand 10^5 ueb C 101 16
+stand 10^5 ueb C 110 236
+stand 10^5 ueb D 000 172
+stand 10^5 ueb D 001 148
+stand 10^5 ueb D 010 4532
+stand 10^5 ueb D 011 148
+stand 10^5 ueb D 100 16
+stand 10^5 ueb E 000 320
+stand 10^5 ueb E 001 4680
+stand 10^5 ueb E 010 16
+stand 10^5 ueb E 100 236
+phasen 10^5 vs 0
+phasen 10^5 na 2
+stand 10^5 na A 001 1
+stand 10^5 na B 010 1
+stand 10^5 na C 001 2
+stand 10^5 na C 010 1
+stand 10^5 na C 100 6
+stand 10^5 na C 101 2
+stand 10^5 na C 110 1
+stand 10^5 na D 000 2
+stand 10^5 na D 010 4
+stand 10^5 na D 100 2
+stand 10^5 na E 000 2
+stand 10^5 na E 001 4
+stand 10^5 na E 010 2
+stand 10^5 na E 100 1
+10^6: n=1046567 phasen=582 token=31 {'na:rest': 2, 'LG': 46, 'Ueb-ok': 13, 'N2': 253, 'N1': 254, 'LE0': 8, 'na:VS-zuwenig': 2, 'N2s': 2, 'na:Sonder': 1, 'UA': 1}
+phasen 10^6 ueb 13
+stand 10^6 ueb A 000 105
+stand 10^6 ueb A 001 472
+stand 10^6 ueb B 001 105
+stand 10^6 ueb B 010 472
+stand 10^6 ueb C 000 379
+stand 10^6 ueb C 001 13
+stand 10^6 ueb C 010 577
+stand 10^6 ueb C 100 18273
+stand 10^6 ueb C 101 26
+stand 10^6 ueb C 110 577
+stand 10^6 ueb D 000 392
+stand 10^6 ueb D 001 452
+stand 10^6 ueb D 010 17114
+stand 10^6 ueb D 011 452
+stand 10^6 ueb D 100 26
+stand 10^6 ueb E 000 844
+stand 10^6 ueb E 001 17566
+stand 10^6 ueb E 010 26
+stand 10^6 ueb E 100 577
+phasen 10^6 vs 0
+phasen 10^6 na 5
+stand 10^6 na A 000 15
+stand 10^6 na A 001 101
+stand 10^6 na B 001 15
+stand 10^6 na B 010 101
+stand 10^6 na C 001 15
+stand 10^6 na C 010 118
+stand 10^6 na C 100 1996
+stand 10^6 na C 101 18
+stand 10^6 na C 110 116
+stand 10^6 na D 000 15
+stand 10^6 na D 001 96
+stand 10^6 na D 010 1797
+stand 10^6 na D 011 94
+stand 10^6 na D 100 15
+stand 10^6 na D 101 1
+stand 10^6 na D 110 2
+stand 10^6 na E 000 111
+stand 10^6 na E 001 1891
+stand 10^6 na E 010 16
+stand 10^6 na E 011 2
+stand 10^6 na E 100 116
+10^7: n=10538314 phasen=1899 token=83 {'na:rest': 2, 'LG': 113, 'Ueb-ok': 25, 'N2': 864, 'N1': 866, 'LE0': 16, 'na:VS-zuwenig': 3, 'N2s': 6, 'na:Sonder': 1, 'UA': 2, 'LE1': 1}
+phasen 10^7 ueb 25
+stand 10^7 ueb A 000 248
+stand 10^7 ueb A 001 1776
+stand 10^7 ueb B 001 248
+stand 10^7 ueb B 010 1776
+stand 10^7 ueb C 000 1279
+stand 10^7 ueb C 001 25
+stand 10^7 ueb C 010 2024
+stand 10^7 ueb C 100 119238
+stand 10^7 ueb C 101 50
+stand 10^7 ueb C 110 2024
+stand 10^7 ueb D 000 1304
+stand 10^7 ueb D 001 1736
+stand 10^7 ueb D 010 114908
+stand 10^7 ueb D 011 1736
+stand 10^7 ueb D 100 50
+stand 10^7 ueb E 000 3040
+stand 10^7 ueb E 001 116644
+stand 10^7 ueb E 010 50
+stand 10^7 ueb E 100 2024
+phasen 10^7 vs 0
+phasen 10^7 na 6
+stand 10^7 na A 000 16
+stand 10^7 na A 001 156
+stand 10^7 na B 001 16
+stand 10^7 na B 010 156
+stand 10^7 na C 001 19
+stand 10^7 na C 010 175
+stand 10^7 na C 100 3436
+stand 10^7 na C 101 23
+stand 10^7 na C 110 172
+stand 10^7 na D 000 19
+stand 10^7 na D 001 150
+stand 10^7 na D 010 3127
+stand 10^7 na D 011 147
+stand 10^7 na D 100 19
+stand 10^7 na D 101 1
+stand 10^7 na D 110 3
+stand 10^7 na E 000 169
+stand 10^7 na E 001 3274
+stand 10^7 na E 010 20
+stand 10^7 na E 011 3
+stand 10^7 na E 100 172
+10^8: n=106921469 phasen=6356 token=142 {'na:rest': 2, 'LG': 220, 'Ueb-ok': 46, 'N2': 3006, 'N1': 3017, 'LE0': 25, 'na:VS-zuwenig': 5, 'N2s': 14, 'na:Sonder': 2, 'UA': 14, 'LE1': 1, 'VS': 4}
+phasen 10^8 ueb 46
+stand 10^8 ueb A 000 583
+stand 10^8 ueb A 001 6137
+stand 10^8 ueb B 001 583
+stand 10^8 ueb B 010 6137
+stand 10^8 ueb C 000 4096
+stand 10^8 ueb C 001 46
+stand 10^8 ueb C 010 6720
+stand 10^8 ueb C 100 698451
+stand 10^8 ueb C 101 92
+stand 10^8 ueb C 110 6720
+stand 10^8 ueb D 000 4142
+stand 10^8 ueb D 001 6076
+stand 10^8 ueb D 010 683567
+stand 10^8 ueb D 011 6076
+stand 10^8 ueb D 100 92
+stand 10^8 ueb E 000 10218
+stand 10^8 ueb E 001 689643
+stand 10^8 ueb E 010 92
+stand 10^8 ueb E 100 6720
+phasen 10^8 vs 4
+stand 10^8 vs A 001 406
+stand 10^8 vs B 010 406
+stand 10^8 vs C 001 16
+stand 10^8 vs C 010 410
+stand 10^8 vs C 100 18744
+stand 10^8 vs C 101 20
+stand 10^8 vs C 110 406
+stand 10^8 vs D 000 16
+stand 10^8 vs D 001 410
+stand 10^8 vs D 010 17932
+stand 10^8 vs D 011 406
+stand 10^8 vs D 100 16
+stand 10^8 vs D 110 4
+stand 10^8 vs E 000 426
+stand 10^8 vs E 001 18338
+stand 10^8 vs E 010 16
+stand 10^8 vs E 011 4
+stand 10^8 vs E 100 406
+phasen 10^8 na 9
+stand 10^8 na A 000 18
+stand 10^8 na A 001 458
+stand 10^8 na B 001 18
+stand 10^8 na B 010 458
+stand 10^8 na C 000 1
+stand 10^8 na C 001 29
+stand 10^8 na C 010 481
+stand 10^8 na C 100 17673
+stand 10^8 na C 101 36
+stand 10^8 na C 110 476
+stand 10^8 na D 000 30
+stand 10^8 na D 001 450
+stand 10^8 na D 010 16761
+stand 10^8 na D 011 445
+stand 10^8 na D 100 30
+stand 10^8 na D 101 1
+stand 10^8 na D 110 5
+stand 10^8 na E 000 480
+stand 10^8 na E 001 17206
+stand 10^8 na E 010 31
+stand 10^8 na E 011 5
+stand 10^8 na E 100 476
+start=D schritte=1000014436 phasen=19937 token=240 [('LE0', 42), ('LE1', 3), ('LG', 385), ('N1', 9681), ('N2', 9657), ('N2s', 34), ('UA', 30), ('Ueb-ok', 81), ('VS', 9), ('na:Sonder', 3), ('na:VS-zuwenig', 10), ('na:rest', 2)]
+phasen ende ueb 81
+stand ende ueb A 000 962
+stand ende ueb A 001 19355
+stand ende ueb B 001 962
+stand ende ueb B 010 19355
+stand ende ueb C 000 12333
+stand ende ueb C 001 81
+stand ende ueb C 010 20317
+stand ende ueb C 100 3711435
+stand ende ueb C 101 162
+stand ende ueb C 110 20317
+stand ende ueb D 000 12414
+stand ende ueb D 001 19255
+stand ende ueb D 010 3664705
+stand ende ueb D 011 19255
+stand ende ueb D 100 162
+stand ende ueb E 000 31669
+stand ende ueb E 001 3683960
+stand ende ueb E 010 162
+stand ende ueb E 100 20317
+phasen ende vs 9
+stand ende vs A 001 1266
+stand ende vs B 010 1266
+stand ende vs C 001 40
+stand ende vs C 010 1275
+stand ende vs C 100 81520
+stand ende vs C 101 49
+stand ende vs C 110 1266
+stand ende vs D 000 40
+stand ende vs D 001 1275
+stand ende vs D 010 78986
+stand ende vs D 011 1266
+stand ende vs D 100 40
+stand ende vs D 110 9
+stand ende vs E 000 1315
+stand ende vs E 001 80252
+stand ende vs E 010 40
+stand ende vs E 011 9
+stand ende vs E 100 1266
+phasen ende na 15
+stand ende na A 000 79
+stand ende na A 001 1499
+stand ende na B 001 79
+stand ende na B 010 1499
+stand ende na C 000 1
+stand ende na C 001 62
+stand ende na C 010 1588
+stand ende na C 100 93652
+stand ende na C 101 75
+stand ende na C 110 1578
+stand ende na D 000 63
+stand ende na D 001 1478
+stand ende na D 010 90672
+stand ende na D 011 1468
+stand ende na D 100 63
+stand ende na D 101 2
+stand ende na D 110 10
+stand ende na E 000 1541
+stand ende na E 001 92140
+stand ende na E 010 65
+stand ende na E 011 10
+stand ende na E 100 1578
