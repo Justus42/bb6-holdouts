@@ -12,7 +12,7 @@ Regeln (in busycoq je Maschine per shift_rule bewiesen):
 Der Loeser soll eine Invariante finden, die von init erreicht wird, unter allen Regeln erhalten
 bleibt und keinen schlechten Zustand enthaelt.
 
-Aufruf: python3 chc_rgr.py [variante]   variante: ok (Standard) | fehler_lov | fehler_init
+Aufruf: python3 chc_rgr.py [variante]   variante: ok (Standard) | fehler_rov | fehler_init
 Ausgabe: Ergebnis (unsat = schlecht unerreichbar = Invariante gefunden), Invariante als SMT-LIB-Text.
 """
 import sys, time
@@ -30,16 +30,16 @@ def baue(variante):
     nn = z3.And(a >= 0, b >= 0, c >= 0, d >= 0)
     # init
     if variante == 'fehler_init':
-        fp.rule(Inv(0, 1, 1, 0))       # Negativkontrolle: Start, von dem aus das System haengt
+        fp.rule(Inv(0, 2, 3, 0))       # Negativkontrolle: nach einem Inc-Schritt (1,1,2,1), keine Regel passt
     else:
         fp.rule(Inv(4, 5, 2, 1))
     # Inc: (n1, 2+n2, 2+n3, n4) -> (1+n1, 1+n2, 1+n3, 1+n4)
     fp.rule(Inv(a + 1, b + 1, c + 1, d + 1), [Inv(a, b + 2, c + 2, d), nn])
     # ROv: (n1, 1+n2, 1, n4) -> (2+n1, 1+n2, 1+n4, 0)
-    fp.rule(Inv(a + 2, b + 1, d + 1, 0), [Inv(a, b + 1, 1, d), nn])
+    rov_plus = 1 if variante == 'fehler_rov' else 2   # Negativkontrolle: 1+n1 statt 2+n1 (System haengt nach 246 Regelschritten)
+    fp.rule(Inv(a + rov_plus, b + 1, d + 1, 0), [Inv(a, b + 1, 1, d), nn])
     # LOv: (4+n1, 1, 2+n3, n4) -> (3, 1+n1, 2+n3, 1+n4)
-    neu_a = 2 if variante == 'fehler_lov' else 3   # Negativkontrolle: 2 statt 3
-    fp.rule(Inv(neu_a, a + 1, c + 2, d + 1), [Inv(a + 4, 1, c + 2, d), nn])
+    fp.rule(Inv(3, a + 1, c + 2, d + 1), [Inv(a + 4, 1, c + 2, d), nn])
     # schlecht: keine Regel passt
     inc_ok = z3.And(b >= 2, c >= 2)
     rov_ok = z3.And(b >= 1, c == 1)
