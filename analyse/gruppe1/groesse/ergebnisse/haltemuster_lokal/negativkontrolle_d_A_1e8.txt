@@ -1,0 +1,2 @@
+start=A bis=100006854 geprueft={'Rueckfall': 17, 'Uebergang': 45, 'LE0': 17, 'LG': 253, 'N2': 2896, 'N1': 2913, 'UA': 23, 'N2s': 23, 'LE1': 1} abweichungen_automat=0
+C> 0 1 1: 4871

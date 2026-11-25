@@ -1,0 +1,10 @@
+start=A bis=100006854 geprueft={'Rueckfall': 17, 'Uebergang': 45, 'LE0': 17, 'LG': 253, 'N2': 2896, 'N1': 2913, 'UA': 23, 'N2s': 23, 'LE1': 1} abweichungen_automat=0
+C> 0 1 1: 0
+  LE0        D> 0 1 1:      8 mal, Abstand zur Grenze +36..+160 Zellen (7 Werte, gerade 7)
+  LG         D> 0 1 1:   3939 mal, Abstand zur Grenze +1..+233 Zellen (65 Werte, gerade 0)
+  N1         D> 0 1 1:    119 mal, Abstand zur Grenze +0..+154 Zellen (29 Werte, gerade 29)
+  N2         D> 0 1 1:    100 mal, Abstand zur Grenze +4..+148 Zellen (27 Werte, gerade 27)
+  Rueckfall  D> 0 1 1:     60 mal, Abstand zur Grenze -1..+35 Zellen (11 Werte, gerade 0)
+  Rueckfall  E> 0 1 1:     12 mal, Abstand zur Grenze +6..+44 Zellen (5 Werte, gerade 5)
+  UA         D> 0 1 1:      8 mal, Abstand zur Grenze +7..+39 Zellen (2 Werte, gerade 0)
+  Uebergang  D> 0 1 1:    637 mal, Abstand zur Grenze +0..+241 Zellen (81 Werte, gerade 10)

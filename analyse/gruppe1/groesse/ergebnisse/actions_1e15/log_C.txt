@@ -1,0 +1,5 @@
+start=C schritte=1000000048512471 summenfehler=0 klassen=35
+Programm 1: 711 s
+start=C schritte=1000000048512471 automatenphasen=20389709 ereignisse=3317 vs_selbst=441 uebergaenge_selbst=2595 fehler=0
+Programm 2: 236 s
+C: Programm 1 und 2 zeilengleich (6755 Zeilen)
