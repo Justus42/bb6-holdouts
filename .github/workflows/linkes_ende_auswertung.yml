@@ -1,0 +1,36 @@
+name: linkes_ende_auswertung
+
+# Gruppe 1, Thread "Linkes Ende, Entscheidungstest": wertet die Artefakte eines linkes_ende-Laufs aus
+# (Formen/Kerne mit formen.py und formen2.awk, Negativkontrollen, VS-Familie, Konsistenz mit dem lokalen
+# Lauf). Grund: die Artefakt-Ablage ist aus der Cloud-Sitzung nicht erreichbar; das Ergebnis steht im Log.
+# Startet bei einem Push, der analyse/gruppe1/linkes_ende/auswertung.txt aendert (Zeile "lauf <Run-ID>").
+on:
+  push:
+    paths:
+      - analyse/gruppe1/linkes_ende/auswertung.txt
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  auswertung:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Lauf-ID lesen
+        id: lauf
+        run: echo "id=$(awk '$1=="lauf"{print $2}' analyse/gruppe1/linkes_ende/auswertung.txt)" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: art
+          run-id: ${{ steps.lauf.outputs.id }}
+          github-token: ${{ github.token }}
+      - name: Auswertung
+        run: |
+          bash analyse/gruppe1/linkes_ende/auswertung.sh "$PWD/art" | tee auswertung_log.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: auswertung
+          path: auswertung_log.txt

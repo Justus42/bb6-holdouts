@@ -12,3 +12,5 @@ VS: Proben 60000, Gestalten 1103, davon gepruefte: exakt linear 875, nicht linea
   Gruppen (k, Kernzahlen): 849  Gestalten je Gruppe -> Anzahl Gruppen: {1: 817, 2: 32}  max: 2
 0 0: Proben 60000, Gestalten 137, davon gepruefte: exakt linear 115, nicht linear 0; ohne Ergebnis 7162
   Gruppen (k, Kernzahlen): 81  Gestalten je Gruppe -> Anzahl Gruppen: {1: 63, 2: 6, 3: 8, 4: 4}  max: 4
+e: Proben 60000, Gestalten 12, davon gepruefte: exakt linear 12, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 12  Gestalten je Gruppe -> Anzahl Gruppen: {1: 12}  max: 1
