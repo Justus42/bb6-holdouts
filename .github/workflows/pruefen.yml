@@ -2,7 +2,8 @@ name: pruefen
 
 # Prueft eine Beweisdatei fuer eine Maschine, nur manuell:
 #   1. aussage_check (Text, vor dem Bau): Maschinen = erwarteter String oder Spiegel-Zwilling,
-#      String in der Liste oder in decided, Haupttheoreme in der Form der gemergten Beweise.
+#      String in der Liste oder in decided, Haupttheoreme in der Form der gemergten Beweise;
+#      mit Eingabe modell auch die Genau-dann-wenn-Form einer Beschleunigung (Start geprueft).
 #   2. Bau im nativen UND im VM-Image (Digests am 2026-11-24 per Registry-API verifiziert),
 #      jeweils Print Assumptions streng fuer alle Haupttheoreme und Kern-Abgleich der Aussagen.
 # Beide Bau-Jobs bekommen per Artefakt genau die Bytes, die aussage_check gesehen hat (SHA-256).
@@ -18,6 +19,10 @@ on:
         description: "erwartete Maschinen-Strings (6x2, Halt als ---), mehrere durch Komma getrennt"
         required: true
         default: "1RB1LE_0RC0LC_1LD0RA_0LA0LF_0LC0LE_0LD---"
+      modell:
+        description: "nur fuer Beschleunigungs-Saetze (halts ... c0 <-> P (start X)): Referenz-Tabelle des Modells, sonst leer"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -61,9 +66,12 @@ jobs:
         shell: bash
         env:
           MASCHINE: ${{ inputs.maschine }}
+          MODELL: ${{ inputs.modell }}
         run: |
           set -euo pipefail
-          scripts/aussage_check "pruefling/$MOD.v" "$MASCHINE" --coq "$MOD" "pruefling/Kern_$MOD.v" | tee pruefling/aussage.log
+          extra=()
+          [ -z "$MODELL" ] || extra=(--modell "$MODELL")
+          scripts/aussage_check "pruefling/$MOD.v" "$MASCHINE" "${extra[@]}" --coq "$MOD" "pruefling/Kern_$MOD.v" | tee pruefling/aussage.log
           thms=$(sed -n 's/^HAUPTTHEOREME: //p' pruefling/aussage.log)
           [ -n "$thms" ] || { echo "FEHLER: keine Haupttheoreme"; exit 1; }
           echo "thms=$thms" >> "$GITHUB_OUTPUT"
