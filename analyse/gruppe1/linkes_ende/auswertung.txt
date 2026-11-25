@@ -1,2 +1,2 @@
 lauf 45614962053
-# Testlauf: nur direkt-Artefakte vorhanden
+# Hauptauswertung nach Ende aller Jobs (25.11., 16:45 UTC)
