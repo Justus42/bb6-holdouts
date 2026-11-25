@@ -1,5 +1,5 @@
 start=D schritte=1000000000371074 summenfehler=0 klassen=36
-Programm 1: 708 s
+Programm 1: 468 s
 start=D schritte=1000000000371074 automatenphasen=20389659 ereignisse=3368 vs_selbst=445 uebergaenge_selbst=2599 fehler=0
-Programm 2: 234 s
+Programm 2: 161 s
 D: Programm 1 und 2 zeilengleich (6750 Zeilen)
