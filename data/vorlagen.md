@@ -15,11 +15,49 @@ anderes daran arbeitet.
 
 ## Auf einen Blick
 
-- Spiegel-Zwillingspaare unter den Kandidaten (wie TM1/TM2 in PR_Loop4Mono, jeweils mit anderem
-  Startzustand): 31/222, 114/378, 141/315, 274/518, 367/378
-- In der Simulation bandgleich (ohne Zwillinge zu sein): 318/518
-- Spiegel-Zwilling einer gemergten Maschine (decided): keiner der Kandidaten
-- Naehe zu PR_Loop4Mono TM1: 4–5/12 bei allen Kandidaten (zum Vergleich: ein Spiegel-Zwilling haette 12/12)
+- **Gruppen** (gleiche Tabelle bis auf Umbenennung der Zustaende, mit oder ohne Spiegelung,
+  Startzustand beliebig): {31,222} {114,367,378} {141,315} {274,518} {318,322}
+  - 31 -> 222: gespiegelt, Zustaende A..F hier = D A B E F C dort, Start A dort = Zustand B hier
+  - 114 -> 367: ungespiegelt, Zustaende A..F hier = E C B A D F dort, Start A dort = Zustand D hier
+  - 114 -> 378: gespiegelt, Zustaende A..F hier = F D A B C E dort, Start A dort = Zustand C hier
+  - 141 -> 315: gespiegelt, Zustaende A..F hier = D E B C A F dort, Start A dort = Zustand E hier
+  - 274 -> 518: gespiegelt, Zustaende A..F hier = D A B C E F dort, Start A dort = Zustand B hier
+  - 318 -> 322: ungespiegelt, Zustaende A..F hier = E D A B C F dort, Start A dort = Zustand C hier
+  - 367 -> 378: gespiegelt, Zustaende A..F hier = B A D C F E dort, Start A dort = Zustand B hier
+- **Abgleich** mit der unabhaengigen Zaehlung {31,222} {114,367,378} {141,315} {274,518} {318,322}: stimmt ueberein.
+  Abweichung zur Fassung vom 24.11.2026: Dort wurden nur Spiegel-Zwillinge gesucht (immer mit
+  Spiegelung). Dadurch fehlte 318/322 (ungespiegelt, anderer Start), und 114/367 (ungespiegelt)
+  war nur indirekt ueber 378 sichtbar. Die damalige Angabe "318/518 bandgleich" beruhte nur auf
+  3 Mio. Simulationsschritten; sie ist unten durch einen Tabellenvergleich ersetzt. 318 und 518
+  haben keine gleiche Tabelle und gehoeren deshalb nicht in eine Gruppe.
+- Verwandte in Liste oder decided ausserhalb der Kandidaten: keine
+- **Laufgleich bis zum Halten: 318 und 518** (ungespiegelt; Tabellenvergleich, keine Simulation noetig). Erreichbare Zustandspaare ab (A,A), ueber beide
+  Symbole: (A,A), (B,B), (C,C), (D,D), (E,A), (F,E), (F,F). Die Zuordnung ist **keine** Umbenennung: ein Zustand der einen Maschine entspricht teils zwei Zustaenden der anderen.
+  Fuer jedes Paar und Symbol stimmen Schreiben und Bewegen ueberein (7 Paare x 2 Symbole, davon 2 Haltefaelle, bleiben 12):
+
+  | Paar | liest | 318 | 518 |
+  |---|---|---|---|
+  | (A,A) | 0 | A0=1RB | A0=1RB |
+  | (B,B) | 0 | B0=0RC | B0=0RC |
+  | (B,B) | 1 | B1=1RA | B1=1RA |
+  | (C,C) | 0 | C0=1RD | C0=1RD |
+  | (C,C) | 1 | C1=1RF | C1=1RF |
+  | (D,D) | 0 | D0=1LE | D0=1LA |
+  | (D,D) | 1 | D1=0LF | D1=0LE |
+  | (E,A) | 0 | E0=1RB | A0=1RB |
+  | (E,A) | 1 | E1=0LD | A1=0LD |
+  | (F,E) | 0 | F0=0RE | E0=0RA |
+  | (F,E) | 1 | F1=0LC | E1=0LC |
+  | (F,F) | 0 | F0=0RE | F0=0RA |
+
+  Ausnahmen sind nur die Haltefelder:
+  - Paar (A,A) liest 1: 318 haelt, 518 macht A1=0LD weiter.
+  - Paar (F,F) liest 1: 518 haelt, 318 macht F1=0LC weiter.
+  Also: Ab Leerband laufen beide Schritt fuer Schritt gleich (gleiches Band, gleicher Kopf), bis
+  eine ihr Haltefeld erreicht; das gilt fuer jede Schrittzahl, nicht nur fuer die Simulation. Ob das
+  je geschieht, ist die offene Haltefrage selbst; daraus folgt nichts ueber Halten oder Nicht-Halten.
+  In 3.000.000 Simulationsschritten erreicht keine der beiden ihr Haltefeld.
+- Naehe zu PR_Loop4Mono TM1: 4–5/12 bei allen Kandidaten (zum Vergleich: gleiche Tabelle haette 12/12)
 - Monotone list: Beweise im Pin 4x haelt, 10x haelt nicht
 - Shift-overflow structural counter: Beweise im Pin 5x haelt, 7x haelt nicht
 
@@ -55,7 +93,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 
 - slugbird: Status `rules`, simuliert 1.6e14 Schritte; busycoq: `open`, keine PR
 - Aequivalente Maschinen laut holdouts.json: 2, busycoq erwaehnt sie in Eqv_v2.v
-- Spiegel-Zwillinge in Liste/decided: n=378 (Start A dort = Zustand C hier)
+- Gruppe {114,367,378}; Verwandte: n=367 (ungespiegelt, Zustaende A..F hier = E C B A D F dort, Start A dort = Zustand D hier); n=378 (gespiegelt, Zustaende A..F hier = F D A B C E dort, Start A dort = Zustand C hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/FARv1.v` 4/12 (n=462); `verify/Loop4Mono_v2.v` 4/12 (n=306); `verify/Loop4Mono_v3.v` 4/12 (n=80); `verify/Loop4Mono_v5.v` 4/12 (n=177); `verify/Loop4Mono_v6.v` 4/12 (n=79); `verify/PR_Loop4Mono.v` 4/12 (n=652); `verify/Loop4Mono_v4.v` 3/12 (n=76)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Monotone list (dieselbe wie PR_Loop4Mono)
@@ -65,7 +103,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 ### n=141 `1RB0LE_0RC---_1RD0LA_1RE0RA_1LC0LF_0RC1LC`
 
 - slugbird: Status `rules`, simuliert 4.0e15 Schritte; busycoq: `open`, keine PR
-- Spiegel-Zwillinge in Liste/decided: n=315 (Start A dort = Zustand E hier)
+- Gruppe {141,315}; Verwandte: n=315 (gespiegelt, Zustaende A..F hier = D E B C A F dort, Start A dort = Zustand E hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/Loop4Mono_v2.v` 5/12 (n=306); `verify/FARv1.v` 4/12 (n=462); `verify/Loop4Mono_v3.v` 4/12 (n=80); `verify/Loop4Mono_v5.v` 4/12 (n=177); `verify/Loop4Mono_v6.v` 4/12 (n=79); `verify/PR_Loop4Mono.v` 4/12 (n=652); `verify/Loop4Mono_v4.v` 3/12 (n=76)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Monotone list (dieselbe wie PR_Loop4Mono)
@@ -75,7 +113,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 ### n=315 `1RB0RF_1LC0RD_1LA0LD_1LE0RA_0LB---_0LB1RB`
 
 - slugbird: Status `rules`, simuliert 4.4e15 Schritte; busycoq: `open`, keine PR
-- Spiegel-Zwillinge in Liste/decided: n=141 (Start A dort = Zustand D hier)
+- Gruppe {141,315}; Verwandte: n=141 (gespiegelt, Zustaende A..F hier = E C D A B F dort, Start A dort = Zustand D hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/Loop4Mono_v2.v` 5/12 (n=306); `verify/FARv1.v` 4/12 (n=462); `verify/Loop4Mono_v3.v` 4/12 (n=80); `verify/Loop4Mono_v5.v` 4/12 (n=177); `verify/Loop4Mono_v6.v` 4/12 (n=79); `verify/PR_Loop4Mono.v` 4/12 (n=652); `verify/Loop4Mono_v4.v` 3/12 (n=76)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Monotone list (dieselbe wie PR_Loop4Mono)
@@ -85,7 +123,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 ### n=367 `1RB0LC_1LA0RD_0RB0LF_1RA1RE_1RC---_1LC0LB`
 
 - slugbird: Status `rules`, simuliert 2.0e14 Schritte; busycoq: `open`, keine PR
-- Spiegel-Zwillinge in Liste/decided: n=378 (Start A dort = Zustand B hier)
+- Gruppe {114,367,378}; Verwandte: n=114 (ungespiegelt, Zustaende A..F hier = D C B E A F dort, Start A dort = Zustand E hier); n=378 (gespiegelt, Zustaende A..F hier = B A D C F E dort, Start A dort = Zustand B hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/FARv1.v` 4/12 (n=462); `verify/Loop4Mono_v2.v` 4/12 (n=306); `verify/Loop4Mono_v3.v` 4/12 (n=80); `verify/Loop4Mono_v5.v` 4/12 (n=177); `verify/Loop4Mono_v6.v` 4/12 (n=79); `verify/PR_Loop4Mono.v` 4/12 (n=652); `verify/Loop4Mono_v4.v` 3/12 (n=76)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Monotone list (dieselbe wie PR_Loop4Mono)
@@ -95,7 +133,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 ### n=378 `1RB0LC_1LA0RD_1LB1LF_0LA0RE_1RD0RA_1LD---`
 
 - slugbird: Status `rules`, simuliert 2.0e14 Schritte; busycoq: `open`, keine PR
-- Spiegel-Zwillinge in Liste/decided: n=114 (Start A dort = Zustand F hier); n=367 (Start A dort = Zustand B hier)
+- Gruppe {114,367,378}; Verwandte: n=114 (gespiegelt, Zustaende A..F hier = C D E B F A dort, Start A dort = Zustand F hier); n=367 (gespiegelt, Zustaende A..F hier = B A D C F E dort, Start A dort = Zustand B hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/FARv1.v` 4/12 (n=462); `verify/Loop4Mono_v2.v` 4/12 (n=306); `verify/Loop4Mono_v3.v` 4/12 (n=80); `verify/Loop4Mono_v5.v` 4/12 (n=177); `verify/Loop4Mono_v6.v` 4/12 (n=79); `verify/PR_Loop4Mono.v` 4/12 (n=652); `verify/Loop4Mono_v4.v` 3/12 (n=76)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Monotone list (dieselbe wie PR_Loop4Mono)
@@ -123,7 +161,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 
 - slugbird: Status `rules`, simuliert 1.0e17 Schritte; busycoq: `open`, keine PR
 - Aequivalente Maschinen laut holdouts.json: 1, busycoq erwaehnt sie in Eqv_v2.v
-- Spiegel-Zwillinge in Liste/decided: n=222 (Start A dort = Zustand B hier)
+- Gruppe {31,222}; Verwandte: n=222 (gespiegelt, Zustaende A..F hier = D A B E F C dort, Start A dort = Zustand B hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/SBCv6a.v` 5/12 (n=926); `verify/SOBLv1.v` 5/12 (n=441); `verify/PR_SOBL.v` 4/12 (n=47); `verify/SBCv10.v` 4/12 (n=49); `verify/SOBLv2.v` 4/12 (n=151); `verify/SBCv6a2.v` 3/12 (n=1386); `verify/SOBLv3.v` 3/12 (n=729)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Shift-overflow structural counter (PR_Loop4Mono: Monotone list)
@@ -133,7 +171,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 ### n=222 `1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---`
 
 - slugbird: Status `rules`, simuliert 1.0e17 Schritte; busycoq: `open`, keine PR
-- Spiegel-Zwillinge in Liste/decided: n=31 (Start A dort = Zustand D hier)
+- Gruppe {31,222}; Verwandte: n=31 (gespiegelt, Zustaende A..F hier = B C F A D E dort, Start A dort = Zustand D hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/SBCv6a.v` 5/12 (n=926); `verify/SOBLv1.v` 5/12 (n=441); `verify/PR_SOBL.v` 4/12 (n=47); `verify/SBCv10.v` 4/12 (n=49); `verify/SOBLv2.v` 4/12 (n=151); `verify/SBCv6a2.v` 3/12 (n=1386); `verify/SOBLv3.v` 3/12 (n=729)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Shift-overflow structural counter (PR_Loop4Mono: Monotone list)
@@ -144,7 +182,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 
 - slugbird: Status `rules`, simuliert 1.0e17 Schritte; busycoq: `open`, keine PR
 - Aequivalente Maschinen laut holdouts.json: 1, busycoq erwaehnt sie in Eqv_v2.v
-- Spiegel-Zwillinge in Liste/decided: n=518 (Start A dort = Zustand B hier)
+- Gruppe {274,518}; Verwandte: n=518 (gespiegelt, Zustaende A..F hier = D A B C E F dort, Start A dort = Zustand B hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/SBCv6a.v` 5/12 (n=376); `verify/SBCv10.v` 4/12 (n=49); `verify/SBCv6a2.v` 4/12 (n=1386); `verify/SOBLv1.v` 4/12 (n=441); `verify/SOBLv2.v` 4/12 (n=151); `verify/PR_SOBL.v` 3/12 (n=47); `verify/SOBLv3.v` 3/12 (n=729)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Shift-overflow structural counter (PR_Loop4Mono: Monotone list)
@@ -155,8 +193,8 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 
 - slugbird: Status `rules`, simuliert 1.0e20 Schritte; busycoq: `open`, keine PR
 - Aequivalente Maschinen laut holdouts.json: 1, busycoq erwaehnt sie in Eqv_v2.v
-- Spiegel-Zwillinge in Liste/decided: keine
-- In der Simulation bandgleich mit n=518 (gleiche Rekordschritte und Baender)
+- Gruppe {318,322}; Verwandte: n=322 (ungespiegelt, Zustaende A..F hier = E D A B C F dort, Start A dort = Zustand C hier)
+- Laufgleich bis zum Halten mit n=518 (Tabellenvergleich, siehe Auf einen Blick)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/SBCv10.v` 5/12 (n=49); `verify/SBCv6a.v` 5/12 (n=376); `verify/SOBLv1.v` 5/12 (n=1349); `verify/PR_SOBL.v` 4/12 (n=47); `verify/SBCv6a2.v` 4/12 (n=1386); `verify/SOBLv2.v` 4/12 (n=151); `verify/SOBLv3.v` 3/12 (n=729)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Shift-overflow structural counter (PR_Loop4Mono: Monotone list)
@@ -167,7 +205,7 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 
 - slugbird: Status `rules`, simuliert 1.0e17 Schritte; busycoq: `open`, keine PR
 - Aequivalente Maschinen laut holdouts.json: 1, busycoq erwaehnt sie in Eqv_v2.v
-- Spiegel-Zwillinge in Liste/decided: keine
+- Gruppe {318,322}; Verwandte: n=318 (ungespiegelt, Zustaende A..F hier = C D E B A F dort, Start A dort = Zustand E hier)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/SBCv10.v` 5/12 (n=49); `verify/SBCv6a.v` 5/12 (n=376); `verify/SOBLv1.v` 5/12 (n=1349); `verify/PR_SOBL.v` 4/12 (n=47); `verify/SBCv6a2.v` 4/12 (n=1386); `verify/SOBLv2.v` 4/12 (n=151); `verify/SOBLv3.v` 3/12 (n=729)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Shift-overflow structural counter (PR_Loop4Mono: Monotone list)
@@ -177,8 +215,8 @@ Start A (gespiegelt); `?` = in keiner dieser Formen gefunden.
 ### n=518 `1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---`
 
 - slugbird: Status `rules`, simuliert 1.0e17 Schritte; busycoq: `open`, keine PR
-- Spiegel-Zwillinge in Liste/decided: n=274 (Start A dort = Zustand D hier)
-- In der Simulation bandgleich mit n=318 (gleiche Rekordschritte und Baender)
+- Gruppe {274,518}; Verwandte: n=274 (gespiegelt, Zustaende A..F hier = B C D A E F dort, Start A dort = Zustand D hier)
+- Laufgleich bis zum Halten mit n=318 (Tabellenvergleich, siehe Auf einen Blick)
 - Vorlagen (Naehe zur naechsten decided-Maschine der Datei): `verify/SBCv6a.v` 5/12 (n=376); `verify/SBCv10.v` 4/12 (n=49); `verify/SBCv6a2.v` 4/12 (n=1386); `verify/SOBLv1.v` 4/12 (n=441); `verify/SOBLv2.v` 4/12 (n=151); `verify/PR_SOBL.v` 3/12 (n=47); `verify/SOBLv3.v` 3/12 (n=729)
 - Unterschied zu `PR_Loop4Mono.v`:
   - Klasse: Shift-overflow structural counter (PR_Loop4Mono: Monotone list)

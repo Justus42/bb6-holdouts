@@ -5,7 +5,10 @@
 Fuer jede Maschine aus data/kandidaten.csv dieser Klassen:
   - die gemergten Beweisdateien derselben Klasse ("file" in "decided"), mit Pfad im Pin,
     geordnet nach struktureller Naehe (gleiche Uebergaenge unter bester Spiegelung/Umbenennung)
-  - Spiegel-Zwillinge in Liste oder decided (wie TM1/TM2 in PR_Loop4Mono.v)
+  - Verwandte: gleiche Tabelle bis auf Umbenennung der Zustaende, mit oder ohne Spiegelung,
+    Startzustand beliebig (wie TM1/TM2 in PR_Loop4Mono.v); Gruppen und Abgleich mit einer
+    unabhaengigen Zaehlung
+  - Laufgleichheit per Tabellenvergleich (Paarrelation ab (A,A)), nicht per Simulation
   - worin sie sich von PR_Loop4Mono.v unterscheidet: Klasse, Uebergangstabelle, Halteuebergang,
     beobachtetes Verhalten in einer kurzen Simulation (Beobachtung, kein Beweis)
 
@@ -52,6 +55,59 @@ def best_match(a, b):
                 k += tb[(pi[q], s)] == x
             best = max(best, k)
     return best
+
+
+# Unabhaengige Zaehlung (Orchestrator, Auftrag vom 25.11.2026), nur zum Abgleich
+ORCHESTRATOR = [{114, 367, 378}, {141, 315}, {31, 222}, {274, 518}, {318, 322}]
+
+
+def images(m):
+    """{Tabelle: [(gespiegelt, pi)]}: alle pi(flip^f(m)), pi beliebige Umbenennung (auch von A)."""
+    e = ac.parse_tm(m)
+    res = {}
+    for f in (False, True):
+        for perm in itertools.permutations(STATES):
+            pi = dict(zip(STATES, perm))
+            t = {}
+            for (q, s), tr in e.items():
+                t[(pi[q], s)] = None if tr is None else (tr[0], ({"L": "R", "R": "L"}[tr[1]] if f else tr[1]), pi[tr[2]])
+            res.setdefault(ac.tm_str(t), []).append((f, pi))
+    return res
+
+
+def describe_rel(f, pi):
+    inv = {v: k for k, v in pi.items()}
+    ren = " ".join(pi[q] for q in STATES)
+    start = "gleicher Start A" if pi["A"] == "A" else f"Start A dort = Zustand {inv['A']} hier"
+    return f"{'gespiegelt' if f else 'ungespiegelt'}, Zustaende A..F hier = {ren} dort, {start}"
+
+
+def run_relation(a, b, flip):
+    """Paarrelation ab (A,A) ueber beide Symbole. Stimmen fuer jedes erreichbare Paar Schreiben und
+    Bewegen ueberein (ausser wo eine Seite haelt), laufen a und b ab Leerband Schritt fuer Schritt
+    gleich (gleiches Band, gleicher Kopf), bis eine ihr Haltefeld erreicht. Rueckgabe (R, Stopps)
+    oder None bei Konflikt."""
+    ta, tb = ac.parse_tm(a), ac.parse_tm(b)
+    R, todo, stops, rows = {("A", "A")}, [("A", "A")], [], []
+    while todo:
+        p, q = todo.pop()
+        for s in (0, 1):
+            x, y = ta[(p, s)], tb[(q, s)]
+            if x is None or y is None:
+                stops.append((p, q, s, x, y))
+                continue
+            if x[0] != y[0] or x[1] != ({"L": "R", "R": "L"}[y[1]] if flip else y[1]):
+                return None
+            rows.append((p, q, s, x, y))
+            n = (x[2], y[2])
+            if n not in R:
+                R.add(n)
+                todo.append(n)
+    return sorted(R), sorted(stops), sorted(rows)
+
+
+def tr_s(x):
+    return "---" if x is None else "".join(x)
 
 
 def de(n):
@@ -201,20 +257,79 @@ def main():
     w("")
     # Ueberblick
     cm = {r["Maschinen-String"]: r["n"] for r in cands}
-    pairs = sorted({tuple(sorted((cm[a], cm[b]), key=int)) for a in cm for b in cm
-                    if a != b and b in ac.mirror_twins(a)}, key=lambda p: (int(p[0]), int(p[1])))
-    same = sorted({tuple(sorted((cm[a], cm[b]), key=int)) for a in cm for b in cm
-                   if a != b and sims[a]["trace"] == sims[b]["trace"]})
-    dec_tw = [cm[a] for a in cm if any(x["tm"] in ac.mirror_twins(a) for x in dec)]
+    im = {a: images(a) for a in cm}
+    rel = {}  # (a, b) -> [(f, pi)], b = pi(flip^f(a))
+    for a in cm:
+        for b in cm:
+            if a != b and b in im[a]:
+                rel[(a, b)] = im[a][b]
+    parent = {a: a for a in cm}
+
+    def find(x):
+        while parent[x] != x:
+            x = parent[x]
+        return x
+    for a, b in rel:
+        parent[find(a)] = find(b)
+    groups = {}
+    for a in cm:
+        groups.setdefault(find(a), set()).add(int(cm[a]))
+    groups = sorted(groups.values(), key=lambda g: min(g))
+    outside = {cm[a]: [f"Liste n={n2}" for t2, n2 in lst.items() if t2 in im[a] and t2 not in cm]
+               + [f"decided n={x['n']}" for x in dec if x["tm"] in im[a]] for a in cm}
+    runs = []
+    for a, b in itertools.combinations(cm, 2):
+        for f in (False, True):
+            rr = run_relation(a, b, f)
+            if rr:
+                runs.append((a, b, f, rr))
     near = {a: best_match(a, TM1) for a in cm}
+    fmt_g = lambda gs: " ".join("{" + ",".join(str(x) for x in sorted(g)) + "}" for g in gs)
+    orch = sorted(ORCHESTRATOR, key=lambda g: min(g))
     w("## Auf einen Blick")
     w("")
-    w("- Spiegel-Zwillingspaare unter den Kandidaten (wie TM1/TM2 in PR_Loop4Mono, jeweils mit anderem")
-    w("  Startzustand): " + ", ".join(f"{a}/{b}" for a, b in pairs))
-    w("- In der Simulation bandgleich (ohne Zwillinge zu sein): " + (", ".join(f"{a}/{b}" for a, b in same) or "keine"))
-    w("- Spiegel-Zwilling einer gemergten Maschine (decided): " + (", ".join(dec_tw) or "keiner der Kandidaten"))
+    w("- **Gruppen** (gleiche Tabelle bis auf Umbenennung der Zustaende, mit oder ohne Spiegelung,")
+    w(f"  Startzustand beliebig): {fmt_g(groups)}")
+    for (a, b), lst_ab in sorted(rel.items(), key=lambda kv: (int(cm[kv[0][0]]), int(cm[kv[0][1]]))):
+        if int(cm[a]) < int(cm[b]):
+            w(f"  - {cm[a]} -> {cm[b]}: " + "; ".join(describe_rel(f, pi) for f, pi in lst_ab))
+    w(f"- **Abgleich** mit der unabhaengigen Zaehlung {fmt_g(orch)}: "
+      + ("stimmt ueberein." if [set(g) for g in groups] == [set(g) for g in orch] else
+         "WEICHT AB: nur hier " + fmt_g([g for g in groups if g not in orch]) + ", nur dort " + fmt_g([g for g in orch if g not in groups])))
+    w("  Abweichung zur Fassung vom 24.11.2026: Dort wurden nur Spiegel-Zwillinge gesucht (immer mit")
+    w("  Spiegelung). Dadurch fehlte 318/322 (ungespiegelt, anderer Start), und 114/367 (ungespiegelt)")
+    w("  war nur indirekt ueber 378 sichtbar. Die damalige Angabe \"318/518 bandgleich\" beruhte nur auf")
+    w("  3 Mio. Simulationsschritten; sie ist unten durch einen Tabellenvergleich ersetzt. 318 und 518")
+    w("  haben keine gleiche Tabelle und gehoeren deshalb nicht in eine Gruppe.")
+    w("- Verwandte in Liste oder decided ausserhalb der Kandidaten: "
+      + (", ".join(f"{n}: {v}" for n, v in outside.items() if v) or "keine"))
+    for a, b, f, (R, stops, rows) in runs:
+        w(f"- **Laufgleich bis zum Halten: {cm[a]} und {cm[b]}** ({'gespiegelt' if f else 'ungespiegelt'};"
+          " Tabellenvergleich, keine Simulation noetig). Erreichbare Zustandspaare ab (A,A), ueber beide")
+        w("  Symbole: " + ", ".join(f"({p},{q})" for p, q in R) + ". Die Zuordnung ist "
+          + ("eine Umbenennung." if len({p for p, _ in R}) == len(R) == len({q for _, q in R}) else
+             "**keine** Umbenennung: ein Zustand der einen Maschine entspricht teils zwei Zustaenden der anderen."))
+        w(f"  Fuer jedes Paar und Symbol stimmen Schreiben und Bewegen ueberein ({len(R)} Paare x 2 Symbole,"
+          f" davon {len(stops)} Haltefaelle, bleiben {len(rows)}):")
+        w("")
+        w(f"  | Paar | liest | {cm[a]} | {cm[b]} |")
+        w("  |---|---|---|---|")
+        for p, q, s, x, y in rows:
+            w(f"  | ({p},{q}) | {s} | {p}{s}={tr_s(x)} | {q}{s}={tr_s(y)} |")
+        w("")
+        w("  Ausnahmen sind nur die Haltefelder:")
+        for p, q, s, x, y in stops:
+            who = cm[a] if x is None else cm[b]
+            other = (cm[b], f"{q}{s}={tr_s(y)}") if x is None else (cm[a], f"{p}{s}={tr_s(x)}")
+            w(f"  - Paar ({p},{q}) liest {s}: {who} haelt, {other[0]} macht {other[1]} weiter.")
+        w(f"  Also: Ab Leerband laufen beide Schritt fuer Schritt gleich (gleiches Band, gleicher Kopf), bis")
+        w("  eine ihr Haltefeld erreicht; das gilt fuer jede Schrittzahl, nicht nur fuer die Simulation. Ob das")
+        w("  je geschieht, ist die offene Haltefrage selbst; daraus folgt nichts ueber Halten oder Nicht-Halten.")
+        hs = [cm[m] for m in (a, b) if sims[m]["halt"] is not None]
+        w(f"  In {de(N_SIM)} Simulationsschritten erreicht " + ("keine der beiden ihr Haltefeld." if not hs else
+                                                            f"n={', '.join(hs)} das Haltefeld."))
     w(f"- Naehe zu PR_Loop4Mono TM1: {min(near.values())}–{max(near.values())}/12 bei allen Kandidaten"
-      " (zum Vergleich: ein Spiegel-Zwilling haette 12/12)")
+      " (zum Vergleich: gleiche Tabelle haette 12/12)")
     for k in KLASSEN:
         cnt = Counter(verdict(fe, x["tm"])[0] for (kk, _), fe in files.items() if kk == k for x in fe["entries"])
         w(f"- {k}: Beweise im Pin " + ", ".join(f"{v}x {u}" for u, v in sorted(cnt.items())))
@@ -263,20 +378,13 @@ def main():
                 w(f"- Aequivalente Maschinen laut holdouts.json: {len(h['aliases'])}"
                   + (", busycoq erwaehnt sie in " + ", ".join(sorted({x['file'] for x in h['busycoq']['mentioned_in']}))
                      if h["busycoq"]["mentioned_in"] else ""))
-            tw = ac.mirror_twins(m)
-            twl = []
-            for t2, n2 in lst.items():
-                if t2 in tw and t2 != m:
-                    pi = tw[t2][0]
-                    inv = {v: kk for kk, v in pi.items()}
-                    twl.append(f"n={n2} (Start A dort = Zustand {inv['A']} hier)")
-            for x in dec:
-                if x["tm"] in tw and x["tm"] != m:
-                    twl.append(f"decided n={x['n']} {x['file']}")
-            w("- Spiegel-Zwillinge in Liste/decided: " + ("; ".join(twl) if twl else "keine"))
-            same = [r2["n"] for r2 in cands if r2 is not r and sims[r2["Maschinen-String"]]["trace"] == s["trace"]]
-            if same:
-                w(f"- In der Simulation bandgleich mit n={', '.join(same)} (gleiche Rekordschritte und Baender)")
+            g = next(g for g in groups if int(r["n"]) in g)
+            vw = [f"n={cm[b]} ({describe_rel(*rel[(m, b)][0])})" for b in cm if (m, b) in rel]
+            w(f"- Gruppe {fmt_g([g])}; Verwandte: " + ("; ".join(vw) if vw else "keine")
+              + (f"; ausserhalb der Kandidaten: {', '.join(outside[r['n']])}" if outside[r["n"]] else ""))
+            for a, b, f, _ in runs:
+                if m in (a, b):
+                    w(f"- Laufgleich bis zum Halten mit n={cm[b] if m == a else cm[a]} (Tabellenvergleich, siehe Auf einen Blick)")
             ranked = sorted(((max(best_match(m, x["tm"]) for x in fe["entries"]), fn,
                               max(fe["entries"], key=lambda x: best_match(m, x["tm"]))["n"]) for fn, fe in fl),
                             key=lambda z: (-z[0], z[1]))
