@@ -23,7 +23,8 @@ Analysen. Früherer Name: `bb6-vortest`.
 
 ## Daten
 
-`data/holdouts.json` ist vom 10.11.2026. Neuere Beweise (z. B. noch nicht gemergte) fehlen darin.
+`data/holdouts.json` ist vom 10.11.2026. Neuere Beweise (z. B. noch nicht gemergte) fehlen darin. Neu geholt am 25.11.2026: unverändert (`data/holdouts_2026-11-25.json`); Abgleich mit busycoq in
+`analyse/stand/datenabgleich.md`. Gesamtstand: `STATUS.md` (englisch `STATUS.en.md`).
 Der Status einer Maschine ist deshalb nie als aktuell anzusehen.
 
 ## Prüfweg

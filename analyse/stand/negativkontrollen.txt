@@ -1,0 +1,11 @@
+Negativkontrollen pr_abgleich.py / kanon_abgleich.py / pr_abgleich2.sh (25.11.2026)
+
+Kopie des bare Repos; zwei kuenstliche PR-Refs auf BB6 aufgesetzt:
+  refs/pr/999: verify/Negativ.v mit dem Alias von 396 1RB0LB_0RC0LD_1LD1RE_0LA0RB_0RD0RF_0LA---
+  refs/pr/998: zusaetzlich verify/Negativ2.v mit 1LC0RC_1RD1LF_0LB0RE_0RA0LC_0RA---_0LD0LE
+               (396 umbenannt und gespiegelt; steht nicht in holdouts.json)
+
+pr_abgleich.py:   PR 999 holdouts=396 ; PR 998 holdouts=396 (nur ueber Negativ.v, Negativ2.v erwartungsgemaess nicht)
+kanon_abgleich.py: TREFFER PR 999 Negativ.v -> [396]; TREFFER PR 998 Negativ.v und Negativ2.v -> [396]
+pr_abgleich2.sh:  PR 999: 396 ; n=396 zusaetzlich: PR999[verify/Negativ.v]
+Ohne die kuenstlichen Refs: kein Treffer fuer 396 (alle drei Programme). Alle Kontrollen schlagen an.

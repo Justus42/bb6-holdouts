@@ -1,0 +1,58 @@
+PR 62	neu	02bef43a	2026-11-09|Dennis Koshta|Nonhalting for two more starts of the long translated cycler table	dateien=4	strings=3	holdouts=38 59 124
+PR 63	neu	265f4c43	2026-11-09|Dennis Koshta|Translated cycler proof for 1RB0LA_1LC0RD_0LD1LA_1LF0RE_1LB1RE_1RD---	dateien=4	strings=2	holdouts=38 131
+PR 64	neu	6fedfbeb	2026-11-09|Dennis Koshta|Halting proof for 1RB0RB_0LC1RA_1RD1LC_1LA1LE_1LF0LD_---0LA	dateien=1	strings=1	holdouts=293
+PR 65	neu	f7f821f6	2026-11-09|Dennis Koshta|Add SOBCv5_TimeBound: explicit lower bounds on the halting time and the number of ones of the BB(6) champion	dateien=1	strings=2	holdouts=-
+PR 66	neu	d518d258	2026-11-10|Dennis Koshta|Add Halt_1RB1LB_1RC0RD.v: 1RB1LB_1RC0RD_0LA1RE_0RF1LC_1LA0RB_---1LC halts	dateien=1	strings=2	holdouts=568
+PR 67	neu	1f98c7a2	2026-11-07|Alex Havrilla|Add nonhalting proofs for BB(6) subtower twin holdouts #56 and #445	dateien=2	strings=3	holdouts=56 445
+PR 68	neu	34748a33	2026-11-09|Alex Havrilla|Prove 1RB1LF_1RC1RB_1RD0RB_0LE0LF_---1LD_0LE1LA nonhalting	dateien=1	strings=1	holdouts=221
+PR 69	neu	f862617a	2026-11-14|Claude|Prove 1RB0LF_1LC0LA_1RA0RD_---1RE_1LA1RC_0LB0RC nonhalting (opaque-block certificate)	dateien=2	strings=2	holdouts=42 140
+PR 70	neu	5784ad83	2026-11-14|Claude|Prove 1RB0RD_1RC0LF_1LA0LB_---1RE_1LB1RA_0LC0RA nonhalting (opaque-block certificate)	dateien=2	strings=2	holdouts=42 140
+PR 71	neu	625a3270	2026-11-14|Claude|Prove 1RB0RC_0RC1RC_0LD0RA_1LE0LF_0LA1LC_---1LA nonhalting (verified symbolic executor)	dateien=1	strings=1	holdouts=236
+PR 72	neu	c5d5cdb1	2026-11-14|Claude|Prove 1RB0LB_0RC0LE_1RD0RF_1LB1RB_0LA0RE_1RE--- halts (visit law with two forms of visit)	dateien=2	strings=2	holdouts=123 223
+PR 73	neu	390b1258	2026-11-14|Claude|Prove 1RB0LB_0RC0LE_1RD0RF_1LB1RB_0LA1RB_1RE--- halts (visit law with two forms of visit)	dateien=2	strings=2	holdouts=123 223
+PR 74	neu	272e2808	2026-11-15|Claude|Prove 1RB0RC_1LA0LD_1RB0RD_1LE0RF_0LB0RB_1RC--- nonhalting (bouncer with a fixed far end)	dateien=1	strings=1	holdouts=125
+PR 75	neu	edca3f4e	2026-11-16|Claude|Prove 1RB1LE_0LC1RE_---1LD_0RD1LA_0RF1RF_1RA0LB halts	dateien=1	strings=1	holdouts=87
+PR 76	neu	594cece3	2026-11-16|Claude|Prove 1RB1RD_1RC1RB_1LD0RA_1RA0LE_1LF0LC_---1LE halts	dateien=1	strings=1	holdouts=581
+PR 77	neu	7e615fbe	2026-11-16|Claude|Eqv_TailWord: 1RB---_1LC0RF_1LD0LC_0RE0LF_0RD1LA_1RB0LE halts iff 1RB0RA_0LC0RF_0LB1RD_1LE---_1RA0LF_1LE0RC halts	dateien=1	strings=2	holdouts=117 405
+PR 78	neu	453cb4a0	2026-11-14|Alex Havrilla|Prove 1RB0LD_1LC0RD_1LA0LC_1RE0LB_1RB1RF_0LD--- nonhalting	dateien=1	strings=1	holdouts=104
+PR 79	neu	391dcb97	2026-11-14|Alex Havrilla|Add non-halting proof for BB(6) holdout 1RB0LC_1RC1RF_1LD0RA_1LE0LD_1RC0LA_0LA---	dateien=1	strings=1	holdouts=58
+PR 80	neu	a0b2af8f	2026-11-15|Alex Havrilla|Prove 1RB1RE_1LC0RA_1LA0LD_1LB0LF_0RB0LE_0LA--- and 1RB0RF_1RC0LD_1RD0RA_1LB1LE_0LB0RE_0RD--- do not halt	dateien=2	strings=2	holdouts=176 600
+PR 81	neu	06818bd2	2026-11-15|Alex Havrilla|Prove 1RB---_1RC0LE_1RD1RF_1LB0LB_0RD0LD_0RC0RA halts	dateien=1	strings=1	holdouts=566
+PR 82	neu	eb9728c4	2026-11-15|Alex Havrilla|Prove 1RB0LE_1RC1RA_1LD0RE_1LA1LD_1LD0RF_0RA--- and 1RB0LC_1RC1RA_1LD0RE_1LA1LD_0RA1RF_0LC--- halt	dateien=2	strings=4	holdouts=244 279
+PR 83	neu	6a205cba	2026-11-15|Alex Havrilla|Prove 1RB1RE_0RC0RF_1LC1RD_1RA0LE_0RA0LD_0RA--- halts	dateien=1	strings=1	holdouts=220
+PR 84	neu	07ec3536	2026-11-15|Alex Havrilla|Prove 1RB0LE_1RC1RB_1LD0RE_1LA1LC_1RB0LF_0LC--- and 1RB0LE_1RC1RB_1LD0RA_1LA1LC_0LC1LF_0RA--- halt	dateien=2	strings=2	holdouts=339 473
+PR 85	neu	ccfbc839	2026-11-15|Alex Havrilla|Prove 1RB0RA_0RC1LD_0LD0RE_1LB1LE_1RA0LF_0LC--- does not halt	dateien=1	strings=1	holdouts=390
+PR 86	neu	4f774cf9	2026-11-15|Alex Havrilla|Prove 1RB0RE_1LC0RA_1RE1LD_0LB0LF_1RA1RA_0LD--- does not halt (#428)	dateien=1	strings=1	holdouts=428
+PR 87	neu	afce978b	2026-11-15|Alex Havrilla|Prove 1RB0LF_1RC0RB_0RD1LE_0LE0RA_1LC1LA_0LD--- (#44 in 608) nonhalting	dateien=1	strings=1	holdouts=44
+PR 88	neu	26ca40a8	2026-11-15|Alex Havrilla|Prove 1RB0RD_1RC0LF_0LA0RB_1RE---_1LB1RA_0LE0LF (#286 in 608) halts	dateien=1	strings=1	holdouts=286
+PR 89	neu	32445556	2026-11-15|Alex Havrilla|Prove 1RB1RD_0LC0LB_0RE0LD_1LB0RB_1RF---_0RA0RC (#228 in 608) halts	dateien=1	strings=1	holdouts=228
+PR 90	neu	b6aa8911	2026-11-16|Alex Havrilla|Nonhalt of 1RB1LC_1LA0RD_1LA0LA_---1RE_1RB0RF_1RC0RA	dateien=1	strings=1	holdouts=302
+PR 91	neu	c72cd7e6	2026-11-17|Alex Havrilla|Prove 1RB1LD_1LC0RF_0RD0LB_1LB0LE_1LA---_0RA0RF halting	dateien=1	strings=1	holdouts=5
+PR 92	neu	ad5d79bc	2026-11-15|Alex Havrilla|Prove non-halting for 1RB0RE_1LC0LB_1RD0LB_1RF0LA_1RC---_0RA0LD	dateien=1	strings=1	holdouts=121
+PR 93	neu	aaa730e0	2026-11-15|Alex Havrilla|Prove 1RB1RD_1LC0RE_1LD1LC_1RA0LE_1LC0RF_0RD--- and 1RB1RD_1LC0RE_1LD1LC_1RA0LB_0RD0RF_0RD--- halt (#489 and #598)	dateien=2	strings=4	holdouts=489 598
+PR 94	neu	42828dcd	2026-11-17|Alex Havrilla|Prove 1RB0RA_0RC0LE_1LC0LD_1RA1LF_---1LD_1LD1LB halting	dateien=1	strings=1	holdouts=235
+PR 95	neu	3812175c	2026-11-16|Alex Havrilla|Prove 1RB0RE_1LC1LF_1RA0LD_1LB1LA_1RB1RC_---0LA does not halt	dateien=1	strings=1	holdouts=300
+PR 96	neu	57150156	2026-11-17|Alex Havrilla|Nonhalt of 1RB1LF_0LC0RE_1LA1RD_0LB1LB_1RC1RD_0LD---	dateien=1	strings=1	holdouts=122
+PR 97	neu	81e92440	2026-11-18|Alex Havrilla|Nonhalt of 1RB0LE_1RC0LB_1RD0RC_1LA1RC_---1LF_1LB1LD	dateien=1	strings=1	holdouts=585
+PR 98	neu	b70e0449	2026-11-18|Claude|Print Assumptions halt at the end of the file	dateien=1	strings=2	holdouts=539 608
+PR 99	neu	bc0826af	2026-11-18|valu42|Connect the published blank-tape halting theorem for BB(6) ID 181655	dateien=1	strings=1	holdouts=608
+PR 100	neu	cdbb2630	2026-11-18|valu42|Prove halting of BB(6) line 448 from the blank tape	dateien=1	strings=2	holdouts=448 608
+PR 101	neu	89a6fed8	2026-11-18|valu42|Prove halting of 1RB1RD_1LC0RE_1LD1LC_1RA0LB_0RD0RF_0LC---	dateien=1	strings=2	holdouts=448 608
+PR 102	neu	51427c58	2026-11-18|valu42|Prove halting of 1RB0LE_1RC1RB_1LD0RA_1LA1LC_0LC0LF_0RB---	dateien=1	strings=2	holdouts=247 608
+PR 103	neu	fe5cd9c9	2026-11-19|Alex Havrilla|Prove non-halting of 1RB1LF_0RC0RB_0LD1RB_1LE0LB_0LA1LC_0LB---	dateien=1	strings=1	holdouts=211
+PR 104	neu	fa58c7cb	2026-11-19|Alex Havrilla|Prove non-halting of 1RB1LC_1LA1RF_0RD1RD_0RA0LE_1LA0LE_0RC---	dateien=1	strings=1	holdouts=238
+PR 105	neu	8b9d0b36	2026-11-19|Alex Havrilla|Prove halting of 1RB1LE_1LC1RE_1LE1LD_1LC0LA_1RF0LA_---0RA	dateien=1	strings=1	holdouts=500
+PR 106	neu	1ac594f3	2026-11-19|Alex Havrilla|Prove halting of 1RB0LD_0RC0LE_1RD1RA_0RE1RF_1LF0RC_0LA---	dateien=1	strings=1	holdouts=446
+PR 107	neu	9f5dac21	2026-11-19|Alex Havrilla|Prove non-halting of 1RB0LA_0RC0LE_0RD1RC_1LD1RE_1LA1RF_---0RB	dateien=1	strings=1	holdouts=137
+PR 108	neu	b70e0449	2026-11-18|Claude|Print Assumptions halt at the end of the file	dateien=1	strings=2	holdouts=539 608
+PR 109	neu	6dc49dfe	2026-11-18|Claude|Prove 1RB1RA_1LC0RD_1LD1LB_1LE0LF_0RA---_0LB0LE halts (PR 93's fast engine changed for T4, from start A, plus a detour lemma)	dateien=1	strings=2	holdouts=608
+PR 110	neu	50174332	2026-11-22|Alex Havrilla|Prove 1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC and 1RB0LA_1LC1RF_---1LD_1RE0LA_1RA0RB_1RE0RF do not halt	dateien=2	strings=2	holdouts=259 578
+PR 111	neu	1e879210	2026-11-22|Alex Havrilla|Prove 1RB0RC_1RC1LB_1LD1RA_1LE0LB_---1LF_0LF0LC halts	dateien=1	strings=1	holdouts=273
+PR 112	neu	5aa77717	2026-11-22|Alex Havrilla|Prove 1RB0LC_0LA1RD_1LA0RE_1RE0RF_1LF---_1LB1RF does not halt	dateien=1	strings=1	holdouts=119
+PR 113	neu	5d1a6ae1	2026-11-24|Alex Havrilla|Prove 1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC--- does not halt	dateien=1	strings=1	holdouts=74
+PR 114	neu	7d210471	2026-11-25|Alex Havrilla|Prove 1RB1LE_1RC1RF_0RD0LB_1LD0RA_0LA0LE_0RC--- does not halt	dateien=1	strings=1	holdouts=304
+PR 115	neu	39bcfcd9	2026-11-25|Alex Havrilla|Prove 1RB0LF_1LC0LA_---1RD_1RF1RE_1LF1RD_1LB0RE does not halt	dateien=1	strings=1	holdouts=437
+PR 116	neu	8202418b	2026-11-25|Alex Havrilla|Prove 1RB1LD_1RC0LA_1LA0RE_1LB1LA_1RF0RB_---0LB does not halt	dateien=1	strings=1	holdouts=380
+PR 117	neu	d7bb2311	2026-11-25|Alex Havrilla|Prove 1RB0LC_1LC0RE_1RA1LD_1LA1LC_1RF0RA_---0LA does not halt	dateien=1	strings=1	holdouts=521
+PR 118	neu	c2814b21	2026-11-25|Alex Havrilla|Prove 1RB1RF_1LC0RF_1LE0LD_1RC0LB_---1RA_1LB1RA does not halt	dateien=1	strings=1	holdouts=501
+PR 119	neu	7154862a	2026-11-25|Alex Havrilla|Prove 1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC does not halt	dateien=1	strings=1	holdouts=364
