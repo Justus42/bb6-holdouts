@@ -12,6 +12,7 @@ name: linkes_ende
 #   vergleich:               Schnappschuesse und Formen bis <direkt> zeilengleich?
 on:
   push:
+    branches-ignore: [main]   # kein Start durch Push auf main, auch nicht beim Merge (Justus, 25.11.2026)
     paths:
       - analyse/gruppe1/linkes_ende/auftrag.txt
   workflow_dispatch:
