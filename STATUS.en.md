@@ -128,6 +128,7 @@ Shown by **table comparison** [VK, section F12]:
 | 88 and 396 equal round by round, not step by step | round 27 (about 1.57 million steps) simulated directly | 3 routes to the round model agree (`direkt.c` 27 rounds, `naiv.py` 34 rounds, `runde.c`) | [396 §4, §5] |
 | 88 halts in round 161,211, as computed in PR #59 | – | 1 own (`runde.c`), run 45676623019 | [396 §4] |
 | 396: no halt, only two 1011 events (rounds 161,211 and 194,647) | round 260,000 (word of 1,615,087 cells) | 1 for the long run (`runde.c`), run 45676623019 | [396 §4] |
+| Visit-law family among all 608 (mirrored, all state pairs): exactly 88, **110**, 312, 396, 449, 587; 110 = 396 except `V(111x)`, round-identical until the first visit hits 111 | all words up to length 12; 27 rounds direct | 2 (`suche_a.py`, `suche_b.c`), identical | [FB] `analyse/besuchsgesetz.md` |
 
 ### Running
 
