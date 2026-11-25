@@ -367,7 +367,7 @@ int main(int argc, char **argv) {
           zaehle("J", k3, b);
         } else {
           char km[256]; kernmuster(&L, tail, 1, km);
-          snprintf(kl, sizeof kl, "Kern:%s", km); zaehle(kl, a, b);
+          snprintf(kl, sizeof kl, "KernUeb:%s", km); zaehle(kl, a, b);
         }
       } else {
         char km[256]; kernmuster(&L, tail, 0, km);

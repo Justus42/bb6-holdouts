@@ -5,6 +5,7 @@ name: haltemuster
 # Ergebnis wird als Commit auf denselben Branch gelegt (Artefakte sind aus der Cloud-Sitzung nicht lesbar).
 on:
   push:
+    branches-ignore: [main]
     paths:
       - analyse/gruppe1/groesse/auftrag_halt.txt
   workflow_dispatch:

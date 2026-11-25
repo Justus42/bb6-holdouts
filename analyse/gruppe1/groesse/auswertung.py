@@ -43,6 +43,8 @@ def gruppe(kl):
         return "VS"
     if kl.startswith("Kern:"):
         return "linkes Ende"
+    if kl.startswith("KernUeb:"):
+        return "Uebergang linkes Ende"
     return "Uebergang"
 
 
@@ -128,7 +130,7 @@ def schreib(w):
 
 def main(dateien):
     d = lies(dateien)
-    reihen = sorted(d, key=lambda k: (["Automat", "VS", "Uebergang", "linkes Ende"].index(gruppe(k)), k))
+    reihen = sorted(d, key=lambda k: (["Automat", "VS", "Uebergang", "linkes Ende", "Uebergang linkes Ende"].index(gruppe(k)), k))
     print("== 1. Aenderung je Klasse (0 = bleibt gleich, +c = fester Betrag, var a..b (k) = k verschiedene Werte)")
     kopf = "%-26s %9s  " % ("Klasse", "Faelle") + " ".join("%-15s" % n for n in ALLE) + \
         " %-15s %-15s" % ("S+r", "x+4y")
@@ -153,7 +155,7 @@ def main(dateien):
                 ("GRUPPE alle Phasen (Automat, VS, linkes Ende)", gruppen["Automat"] + gruppen["VS"] +
                  gruppen["linkes Ende"]),
                 ("GRUPPE alles (mit Uebergaengen gesamt)", gruppen["Automat"] + gruppen["VS"] +
-                 gruppen["linkes Ende"] + ["Ueb gesamt"])]
+                 gruppen["linkes Ende"] + ["Ueb gesamt"] + gruppen["Uebergang linkes Ende"])]
     for name, kls in auswahl:
         vek = [v for kl in kls if kl in d for v in d[kl]]
         if not vek:

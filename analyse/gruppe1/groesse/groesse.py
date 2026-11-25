@@ -15,8 +15,9 @@ Ereignisklassen (je Phase genau eine, Zyklusuebergaenge zusaetzlich zerlegt):
   N1 N2 N2s UA LE0 LE1 LG        Automatenregeln (Phase ohne Simulation, Aenderung aus dem Fenster
                                  um die Grenze gerechnet, laufend aufsummiert)
   VS                             VS-Regel aus PR 9 (Rueckfall, Ergebnis = Vorhersage)
-  Kern:<Kernmuster>              Phasen und Uebergaenge, die Automat bzw. Zyklusfunktion nicht erklaeren
-                                 (Kernmuster wie formen.py, ohne die Marken R/I und frei/alt)
+  Kern:<Kernmuster>              Phasen, die der Automat nicht erklaert (Kernmuster wie formen.py, ohne
+                                 die Marken R/I und frei/alt)
+  KernUeb:<Kernmuster>           Zyklusuebergaenge, die die Zyklusfunktion nicht erklaert
   Ueb gesamt                     jeder erklaerte Zyklusuebergang (Schnappschuss r=0 bis naechster)
   UebRueck:<Regel> UebFress:<Regel> Fressen J
                                  Teile eines erklaerten Uebergangs nach der Zyklusfunktion (PR 9);
@@ -176,6 +177,8 @@ def lauf(start, N, praefix):
             buche("UebFress:" + w2, diff(f1, f2))
             buche("Fressen", diff(f2, f3))
             buche("J", diff(f3, fn))
+        elif art.startswith("Ueb"):
+            buche("KernUeb:" + muster(art, vor, vortail, t2, tl2), dv)
         else:
             buche("Kern:" + muster(art, vor, vortail, t2, tl2), dv)
         proto.write(f"{n} {r} {art} {dn} {r2} | {zeile(vor, vortail)} | {zeile(t2, tl2)}\n")

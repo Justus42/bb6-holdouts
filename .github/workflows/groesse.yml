@@ -2,12 +2,13 @@ name: groesse
 
 # Gruppe 1, Thread "Erhaltene Groesse" (reine Analyse, kein Rocq).
 # Startet bei einem Push, der analyse/gruppe1/groesse/auftrag.txt aendert (Workflow liegt nur auf dem
-# Feature-Branch), oder manuell, sobald er auf main liegt. auftrag.txt: Zeile "bis <Schritte>".
+# Feature-Branch; nie durch Push auf main), oder manuell (workflow_dispatch), sobald er auf main liegt. auftrag.txt: Zeile "bis <Schritte>".
 # Je Start: groesse.py (Programm 1) bis <Schritte>, groesse2.c (Programm 2) auf dessen Protokoll,
 # Vergleich der Aenderungsvektoren (muss zeilengleich sein), Auswertung. Der Sammel-Job legt die
 # Ergebnisse als Commit auf denselben Branch (Artefakte sind aus der Cloud-Sitzung nicht lesbar).
 on:
   push:
+    branches-ignore: [main]
     paths:
       - analyse/gruppe1/groesse/auftrag.txt
   workflow_dispatch:
