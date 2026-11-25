@@ -1,8 +1,2 @@
-N1   Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 6  Typen: 
-N2   Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 16  Typen: 
-N2s  Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 10  Typen: 
-UA   Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 7  Typen: 
-LE0  Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 11  Typen: 
-LE1  Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 8  Typen: 
-LG   Proben    300  Regel falsch 0  mit K(C) 0  Halt/ohne Schnappschuss 11  Typen: 
-K(C) gesamt: 0
+Negativkontrolle: Laeufe 3000  Halte 8  davon mit K(C) 8  Laeufe mit K(C) 8
+Negativkontrolle SCHLAEGT AN

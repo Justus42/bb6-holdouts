@@ -29,7 +29,11 @@ Negativkontrolle: ZB_FEHLER=paar (Paarkosten +1 je Paar), ZB_FEHLER=lokal (Eichu
   ZB_FEHLER=ueb (Zyklusuebergang 1 Schritt zu viel):
   der Abgleich mit beschleuniger.py muss dann scheitern.
 """
+import base64
 import bisect
+import gzip
+import random
+import time
 import os
 import sys
 
@@ -45,6 +49,20 @@ from zaehl_durchlauf import Zaehler  # noqa: E402
 FEHLER = os.environ.get("ZB_FEHLER", "")
 K = 8              # Token, die an jedem Ende eines verkuerzten Laufs stehen bleiben
 RL, RR = 80, 40    # Token am linken / rechten Ende, die nie verkuerzt werden
+STICH_AB = 10**12   # Stichproben ab hier
+STICH_JE = 30       # Stichproben je Zehnerpotenz
+
+
+VERFOLGEN = 5       # nach K(C): so viele Phasen einzeln ganz mit dem Durchlaufmodell
+
+
+T0 = time.time()
+
+
+class Stop(Exception):
+    pass
+
+
 KOST = {"N1": 11, "N2": 21, "N2s": 15, "UA": 15, "LE0": 25, "LE1": 17, "LG": 11}
 SEP = {"0": 0, "1": 1, "": 2}
 SEPS = ["0", "1", ""]
@@ -126,12 +144,65 @@ class ZBand:
         if not self.regulaer(self.lo):
             self.irr.insert(0, self.lo)
 
+    def kurz(self):
+        """Verkuerzte Liste fuer eine lokale Rechnung: Laeufe regulaerer Token im Inneren (nicht in den
+        ersten RL und letzten RR Token) mit mehr als 2K+2 Token werden bis auf je K Token an beiden Seiten
+        weggelassen. Rueckgabe (kurz, schnitte); schnitte = [(Position in kurz, a, e)], weggelassen ist
+        [a, e) im Feld."""
+        lo, hi = self.lo, self.hi
+        grenzen = [lo + RL - 1] + [i for i in self.irr if lo + RL <= i < hi - RR] + [hi - RR]
+        teile = []
+        for x, y in zip(grenzen, grenzen[1:]):
+            a0, e0 = x + 1, y          # regulaerer Lauf [a0, e0)
+            if e0 - a0 > 2 * K + 2:
+                teile.append((a0 + K, e0 - K))
+        kurz = []
+        schnitte = []
+        pos = lo
+        for a, e in teile:
+            kurz.extend(zip([SEPS[c] for c in self.sep[pos:a].tolist()], self.val[pos:a].tolist()))
+            schnitte.append((len(kurz), a, e))
+            pos = e
+        kurz.extend(zip([SEPS[c] for c in self.sep[pos:hi].tolist()], self.val[pos:hi].tolist()))
+        return kurz, schnitte
+
+    def einsetzen(self, Y, d, schnitte, lkurz):
+        """Ergebnis Y der kurzen Rechnung zurueckschreiben; alle Schnitte sind in Y um d verschoben."""
+        if not schnitte:
+            self.setze_liste(Y)
+            return
+        sp0, a0, _ = schnitte[0]
+        spl, _, el = schnitte[-1]
+        neu_lo = a0 - (sp0 + d)
+        neu_hi = el + (len(Y) - (spl + d))
+        if neu_lo < 0 or neu_hi > len(self.val):
+            # Feld zu klein: ganz neu aufbauen
+            out = []
+            pos = 0
+            for sp, a, e in schnitte:
+                out.extend(Y[pos:sp + d])
+                out.extend(zip([SEPS[c] for c in self.sep[a:e].tolist()], self.val[a:e].tolist()))
+                pos = sp + d
+            out.extend(Y[pos:])
+            self.setze_liste(out)
+            return
+        def schreib(ziel, stueck):
+            if stueck:
+                self.sep[ziel:ziel + len(stueck)] = [SEP[t] for t, _ in stueck]
+                self.val[ziel:ziel + len(stueck)] = [v for _, v in stueck]
+        schreib(neu_lo, Y[0:sp0 + d])
+        for (sp, a, e), (sp2, a2, e2) in zip(schnitte, schnitte[1:]):
+            schreib(e, Y[sp + d:sp2 + d])
+        schreib(el, Y[spl + d:])
+        self.lo, self.hi = neu_lo, neu_hi
+        self.neu_irr()
+
     def summe(self, a, b):
         return int(self.val[a:b].sum()) if b > a else 0
 
 
 class Lauf:
-    def __init__(self, start, modus, schnapp=None):
+    def __init__(self, start, modus, schnapp=None, stich_ab=None):
         n, tok, tail, r = bs.anlauf(start, 10**30)
         self.n, self.r = n, r
         self.b = ZBand(tok, tail)
@@ -144,6 +215,15 @@ class Lauf:
         self.phasen = 0
         self.zyklen = 0
         self.out = open(schnapp, "w") if schnapp else None
+        self.start = "ABCDEF"[start]
+        # Stichproben: ab STICH_AB an STICH_JE Stellen je Zehnerpotenz (gleichmaessig in log n) wird eine
+        # zufaellige Automatenphase im naechsten Zyklus ganz mit dem Durchlaufmodell gerechnet
+        self.rng = random.Random(1000 + start)
+        self.stich_ziel_n = stich_ab if stich_ab is not None else STICH_AB
+        self.ziel_r = None
+        self.stich = {"gerechnet": 0, "gleich": 0, "rueckfall": 0}
+        self.kc_auftreten = []   # n der Schnappschuesse vor K(C)
+        self.verfolgen = 0       # noch einzeln zu rechnende Phasen nach K(C)
         self.grenze_neu()
 
     def z(self, k, d=1):
@@ -204,7 +284,7 @@ class Lauf:
             self.grenze_neu()
             return "LE1", kosten0 + KOST["LE1"]
         if g >= 1 and ((s == 0 and k % 2 == 1) or (s == 1 and k % 2 == 0)):
-            if s == 1 and self.r >= 4:
+            if s == 1 and self.r >= 4 and self.r != self.ziel_r:
                 erg = self.paare(p, j, k)
                 if erg is not None:
                     return erg
@@ -229,6 +309,8 @@ class Lauf:
         start = (q + 1) if q is not None else b.lo
         M = p - start                     # regulaere Token links der Grenze
         P = min(M, self.r // 2)
+        if self.ziel_r is not None and self.r > self.ziel_r:
+            P = min(P, (self.r - self.ziel_r) // 2)
         if P < 2:
             return None
         kk = b.val[p - P + 1:p + 1][::-1].copy()   # val[p], val[p-1], ..., val[p-P+1]
@@ -255,38 +337,153 @@ class Lauf:
         return "PAAR", kosten
 
     # ---- Rueckfall
+    def sichern(self):
+        b = self.b
+        return (b.sep[b.lo:b.hi].copy(), b.val[b.lo:b.hi].copy(), b.tail, self.n, self.r)
+
+    def kandidat(self, grund, gesichert, stop=True):
+        """Haltekandidat oder Abweichung: Schnappschuss davor sichern (Datei und Log), Lauf beenden.
+        stop=False (Auftreten von K(C)): nur sichern; das Muster ist notwendig, nicht hinreichend, der Lauf
+        geht weiter und die folgenden VERFOLGEN Phasen werden einzeln ganz mit dem Durchlaufmodell gerechnet."""
+        sep, val, tail, n, r = gesichert
+        tok = [(SEPS[a], int(v)) for a, v in zip(sep.tolist(), val.tolist())]
+        text = f"start={self.start} n={n} r={r} tail={tail}\n{bs.zeile(tok, tail)}\n"
+        name = f"kandidat_{self.start}_{n}.txt.gz"
+        with gzip.open(name, "wt") as f:
+            f.write(text)
+        print(f"KANDIDAT ({grund}) Start {self.start} bei n={n} r={r}: Schnappschuss in {name}", flush=True)
+        print("KANDIDAT-SCHNAPPSCHUSS-BASE64 " + base64.b64encode(gzip.compress(text.encode())).decode(), flush=True)
+        if not stop:
+            self.kc_auftreten.append(n)
+            self.verfolgen = VERFOLGEN
+            return
+        self.halt = f"Kandidat bei n={n} ({grund})"
+        raise Stop()
+
     def rueckfall(self, art):
         b = self.b
-        X = b.tok()
         tail = b.tail
+        vorher = self.sichern()
+        kc_vorher = self.kc
+        if self.modus == "pruef":
+            X = b.tok()
+        kurz, schnitte = b.kurz()
         try:
-            erg = (uebergang(X, tail, self) if self.r == 0 else None) or lokal(X, tail, self.r, self)
+            erg = (uebergang(kurz, schnitte, tail, b, self) if self.r == 0 else None) \
+                or lokal(kurz, schnitte, tail, self.r, b, self)
+            if erg is None:      # Einsetzen nicht eindeutig: ganze Liste rechnen
+                self.lokal_ganz += 1
+                Xg = b.tok()
+                t2, tl2, r2, dn, kc = rechne(Xg, tail, self.r, self)
+                self.kc += kc
+                b.tail = tl2
+                b.setze_liste(t2)
+            else:
+                Y, d, tl2, r2, dn = erg
+                b.tail = tl2
+                b.einsetzen(Y, d, schnitte, len(kurz))
         except bs.Halt as h:
-            self.halt = self.n + h.args[0]
-            raise
+            self.kandidat(f"Halt im Rueckfall, {h.args[0]} Schritte nach dem Schnappschuss", vorher)
+        if self.kc > kc_vorher:
+            self.kandidat("K(C) im Rueckfall", vorher, stop=False)
         if self.modus == "pruef":
             zb.Z = {"ueb": Zaehler(), "vs": Zaehler(), "na": Zaehler()}
             ganz = bs.rueckfall(X, tail, self.r)
-            if ganz[:4] != erg[:4]:
+            if (ganz[0], ganz[1], ganz[2], ganz[3]) != (b.tok(), b.tail, r2, dn):
                 self.vergleich_fehler += 1
-                print(f"ABWEICHUNG lokal/ganz bei n={self.n} art={art} dn {erg[3]} / {ganz[3]}", flush=True)
-        t2, tl2, r2, dn = erg[:4]
-        b.tail = tl2
-        b.setze_liste(t2)
+                print(f"ABWEICHUNG lokal/ganz bei n={self.n} art={art} dn {dn} / {ganz[3]}", flush=True)
         self.n += dn
         self.r = r2
         self.grenze_neu()
 
+    def stichprobe(self):
+        """Eine Automatenphase ganz mit dem Durchlaufmodell rechnen und mit der Regel vergleichen."""
+        vorher = self.sichern()
+        X = self.b.tok()
+        tail = self.b.tail
+        kc0 = self.kc
+        try:
+            Y, tl2, r2, dn, kc = rechne(X, tail, self.r, self)
+        except bs.Halt as h:
+            self.kandidat(f"Halt in Stichprobe, {h.args[0]} Schritte nach dem Schnappschuss", vorher)
+        self.kc = kc0 + kc
+        self.stich["gerechnet"] += 1
+        if kc:
+            self.kandidat("K(C) in Stichprobe", vorher, stop=False)
+        g, kosten = self.schritt()        # r == ziel_r: Einzelschritt, kein Paar-Buendel
+        self.ziel_r = None
+        if kosten is None:
+            # Regel greift nicht: dann ist es ohnehin ein Rueckfall; Ergebnis der ganzen Rechnung nehmen
+            self.stich["rueckfall"] += 1
+            self.b.tail = tl2
+            self.b.setze_liste(Y)
+            self.n += dn
+            self.r = r2
+            self.grenze_neu()
+            self.z("rf:" + g)
+            self.phasen += 1
+            return
+        if FEHLER == "stich":
+            kosten += 1
+        if g == "PAAR" or (self.b.tok(), self.b.tail, self.r - 1, kosten) != (Y, tl2, r2, dn):
+            self.kandidat(f"Stichprobe weicht von Regel {g} ab", vorher)
+        self.stich["gleich"] += 1
+        self.stich["regel:" + g] = self.stich.get("regel:" + g, 0) + 1
+        self.n += kosten
+        self.r -= 1
+        self.z(g)
+        self.phasen += 1
+
+    def voll_phase(self):
+        """Nach K(C): eine Phase ganz mit dem Durchlaufmodell (keine Regel, kein Kuerzen); Halt -> Kandidat."""
+        self.verfolgen -= 1
+        vorher = self.sichern()
+        try:
+            Y, tl2, r2, dn, kc = rechne(self.b.tok(), self.b.tail, self.r, self)
+        except bs.Halt as h:
+            self.kandidat(f"Halt nach K(C), {h.args[0]} Schritte nach dem Schnappschuss", vorher)
+        self.kc += kc
+        if kc:
+            self.kandidat("K(C) erneut", vorher, stop=False)
+        if self.r == 0:
+            self.zyklen += 1
+        self.b.tail = tl2
+        self.b.setze_liste(Y)
+        self.n += dn
+        self.r = r2
+        self.grenze_neu()
+        self.z("verfolgt")
+        self.phasen += 1
+
     def lauf(self, N):
         naechste = 10
+        try:
+            self._lauf(N)
+        except Stop:
+            pass
+        self.bericht("ende")
+        if self.out:
+            self.out.close()
+
+    def _lauf(self, N):
+        naechste = 10
         while self.n < N and self.halt is None:
-            if self.r == 0:
+            if self.verfolgen:
+                self.voll_phase()
+            elif self.r == 0:
                 self.zyklen += 1
                 if self.out:
                     self.out.write(f"{self.n} 0 {bs.crc(self.b.tok(), self.b.tail)}\n")
                 self.rueckfall("ueb")
                 self.z("ueb")
                 self.phasen += 1
+                self.ziel_r = None
+                if self.n >= self.stich_ziel_n and self.r >= 1:
+                    self.ziel_r = self.rng.randint(1, self.r)
+                    while self.stich_ziel_n <= self.n:
+                        self.stich_ziel_n *= 10 ** (1 / STICH_JE)
+            elif self.r == self.ziel_r:
+                self.stichprobe()
             else:
                 g, kosten = self.schritt()
                 if kosten is not None:
@@ -302,17 +499,38 @@ class Lauf:
             while self.n >= naechste:
                 self.bericht(f"10^{len(str(naechste)) - 1}")
                 naechste *= 10
-        self.bericht("ende")
-        if self.out:
-            self.out.close()
 
     def bericht(self, k):
-        print(f"{k}: n={self.n} phasen={self.phasen} zyklen={self.zyklen} token={self.b.hi - self.b.lo} "
+        print(f"{k}: t={time.time() - T0:.0f}s n={self.n} phasen={self.phasen} zyklen={self.zyklen} token={self.b.hi - self.b.lo} "
               f"K(C)={self.kc} halt={self.halt} lokal_ganz={self.lokal_ganz} abweichungen={self.vergleich_fehler} "
+              f"stichproben={self.stich} K(C)-Auftreten bei n={self.kc_auftreten} "
               f"{dict(sorted(self.zaehl.items()))}", flush=True)
 
 
 # ---------------------------------------------------------------- lokale Rueckfall-Rechnung
+WBITS = {("100", False): (1, 0, 0), ("011", True): (1, 1, 0), ("100", True): (0, 0, 1), ("011", False): (0, 1, 1)}
+
+
+def oben(st, links, k):
+    """Die k Zellen am Kopf (naechste zuerst), wie sweepmodell.peek, nur schneller."""
+    out = []
+    i = len(st) - 1
+    while i >= 0 and len(out) < k:
+        t = st[i]
+        if t[0] == "b":
+            out.append(t[1])
+        else:
+            w = WBITS[(t[1], links)]
+            reps = t[2]
+            while reps and len(out) < k:
+                out.extend(w)
+                reps -= 1
+        i -= 1
+    while len(out) < k:
+        out.append(0)
+    return out[:k]
+
+
 def rechne(X, tail, r, lauf):
     """Durchlaufmodell auf X (wie beschleuniger.rueckfall), zaehlt nur K(C): Zustand C tritt von links auf
     eine Zelle mit 0 1 1. Rueckgabe (Y, tail, r', dn, Zahl K(C))."""
@@ -331,18 +549,20 @@ def rechne(X, tail, r, lauf):
     while True:
         if not erster and q == C_:
             rr = None
-            if seite == "R" and sm.peek(R, False, 2) == [0, 0]:
+            if seite == "R" and oben(R, False, 2) == [0, 0]:
                 rr = bs.rechts_muster(R, "z1")
-            elif seite == "L" and sm.peek(L, True, 1) == [0]:
+            elif seite == "L" and oben(L, True, 1) == [0]:
                 rr = bs.rechts_muster(R, "z2")
             if rr is not None:
                 tk, tl = bs.canon(bs.bits_aus_l(L) if seite == "R" else bs.bits_aus_l(L)[:-1])
+                if FEHLER == "kc" and lauf is not None and lauf.n > 10**9 and not lauf.kc_auftreten:
+                    kc += 1      # Negativkontrolle: einmal ein K(C) vortaeuschen
                 return tk, tl, rr, n, kc
         erster = False
         if seite == "R" and q == C_ and R and R[-1][0] == "w" and R[-1][1] == "100":
             m = R.pop()[2]
             # letzter Eintritt des Durchlaufs: C auf die Zelle hinter dem Block (im Inneren immer 1 0 0)
-            if sm.peek(R, False, 3) == [0, 1, 1]:
+            if oben(R, False, 3) == [0, 1, 1]:
                 kc += 1
             sm.push_wort(L, "011", m)
             n += 3 * m
@@ -364,7 +584,7 @@ def rechne(X, tail, r, lauf):
         if d == 1:
             sm.push_zelle(L, w, True)
             seite = "R"
-            if nq == C_ and sm.peek(R, False, 3) == [0, 1, 1]:
+            if nq == C_ and oben(R, False, 3) == [0, 1, 1]:
                 kc += 1
         else:
             sm.push_zelle(R, w, False)
@@ -372,93 +592,93 @@ def rechne(X, tail, r, lauf):
         q = nq
 
 
-def lokal(X, tail, r, lauf):
-    L = len(X)
-    # Laeufe regulaerer Token, die verkuerzt werden: Laenge > 2K + 2, nicht das rechteste Token
-    # Nur im Inneren: die ersten RL und die letzten RR Token bleiben immer stehen (dort aendern
-    # VS/Randschritte und Fressen/J die Liste auch ueber mehrere regulaere Token hinweg).
-    laeufe = []
-    i = RL
-    while i < L - RR:
-        if regulaer_tok(X[i]):
-            a = i
-            while i < L - RR and regulaer_tok(X[i]):
-                i += 1
-            if i - a > 2 * K + 2:
-                laeufe.append((a, i))
-        else:
-            i += 1
-    if not laeufe:
-        t2, tl2, r2, dn, kc = rechne(X, tail, r, lauf)
-        lauf.kc += kc
-        return t2, tl2, r2, dn
-    # kurze Liste bauen
-    kurz = []
-    schnitt = []      # (Position des Schnitts in kurz, weggelassene Token)
-    pos = 0
-    for a, e in laeufe:
-        kurz.extend(X[pos:a + K])
-        schnitt.append((len(kurz), X[a + K:e - K]))
-        pos = e - K
-    kurz.extend(X[pos:])
+def lage(kurz, Y, schnitte):
+    """Gemeinsame Verschiebung d aller Schnitte in Y: der Block aus je K Token links und rechts jedes
+    Schnitts muss in Y an Position (Schnitt - K + d) stehen, fuer genau ein d. Sonst None."""
+    kand = None
+    for sp, _, _ in schnitte:
+        block = kurz[sp - K:sp + K]
+        lagen = set()
+        for d in range(-40, 41):
+            a = sp - K + d
+            if 0 <= a and a + 2 * K <= len(Y) and Y[a:a + 2 * K] == block:
+                lagen.add(d)
+        kand = lagen if kand is None else (kand & lagen)
+    if kand is None or len(kand) != 1:
+        return None
+    return kand.pop()
+
+
+def lokal(kurz, schnitte, tail, r, band, lauf, extra_fest=None):
+    """Rechnet die kurze Liste; Rueckgabe (Y, d, tail', r', dn) mit geeichten Schritten fuer die
+    weggelassenen Laeufe, oder None."""
     Y, tl2, r2, dn, kc = rechne(kurz, tail, r, lauf)
     lauf.kc += kc
-    ergebnis = einsetzen(kurz, Y, schnitt)
-    if ergebnis is None:
-        lauf.lokal_ganz += 1
-        t2, tl2b, r2b, dnb, kcb = rechne(X, tail, r, lauf)
-        lauf.kc += kcb - kc
-        return t2, tl2b, r2b, dnb
-    # Eichung je Schnitt: ein Token (1,1) bzw. (1,3) zusaetzlich einsetzen
+    if not schnitte:
+        return Y, 0, tl2, r2, dn
+    d = lage(kurz, Y, schnitte)
+    if d is None:
+        return None
+    if extra_fest is not None:
+        return Y, d, tl2, r2, dn + extra_fest
     extra = 0
-    for si, (sp, weg) in enumerate(schnitt):
-        d = []
+    for si, (sp, a, e) in enumerate(schnitte):
+        dd = []
         for wert in (1, 3):
             kurz2 = kurz[:sp] + [("1", wert)] + kurz[sp:]
-            Y2, _, r22, dn2, _ = rechne(kurz2, tail, r, lauf)
-            schnitt2 = [(p + (1 if j > si else 0), w) for j, (p, w) in enumerate(schnitt)]
-            schnitt2[si] = (sp + 1, weg)
-            # das eingefuegte Token muss unveraendert durchgereicht werden
-            if r22 != r2 or einsetzen(kurz2, Y2, schnitt2, pruef_extra=(si, wert)) is None:
-                lauf.lokal_ganz += 1
-                t2, tl2b, r2b, dnb, kcb = rechne(X, tail, r, lauf)
-                lauf.kc += kcb - kc
-                return t2, tl2b, r2b, dnb
-            d.append(dn2 - dn)
-        alpha = (d[1] - d[0]) // 2
-        beta = d[0] - alpha
-        if alpha * 2 != d[1] - d[0]:
-            raise RuntimeError("Eichung nicht ganzzahlig")
+            sch2 = [(p + (1 if j > si else 0), x, y) for j, (p, x, y) in enumerate(schnitte)]
+            sch2[si] = (sp + 1, a, e)   # Block um den Schnitt enthaelt jetzt das eingefuegte Token
+            Y2, tl22, r22, dn2, _ = rechne(kurz2, tail, r, lauf)
+            if r22 != r2 or tl22 != tl2 or lage(kurz2, Y2, sch2) != d:
+                return None
+            dd.append(dn2 - dn)
+        alpha = (dd[1] - dd[0]) // 2
+        beta = dd[0] - alpha
+        if alpha * 2 != dd[1] - dd[0]:
+            return None
         if FEHLER == "lokal":
             beta += 1
-        extra += alpha * sum(v for _, v in weg) + beta * len(weg)
-    return ergebnis, tl2, r2, dn + extra
+        extra += alpha * band.summe(a, e) + beta * (e - a)
+    return Y, d, tl2, r2, dn + extra
 
 
 BMIN = 16
 
 
-def uebergang(X, tail, lauf):
+def uebergang(kurz, schnitte, tail, band, lauf):
     """Zyklusuebergang (r = 0): die Fressphase dauert b Runden (b = n des vorletzten Tokens). Statt sie
     ganz zu rechnen: lokal fuer b' = b0, b0+2, b0+4, b0+6 (b0 = 4 oder 5, gleiche Paritaet wie b).
-    Verlangt: gleiche Token-Liste fuer alle b', r' linear und dn quadratisch in b' (vierter Wert als
-    Probe). Dann r' und dn fuer das echte b durch Fortsetzen. Sonst None (normale Rechnung)."""
-    if tail != "" or len(X) < 6:
+    Verlangt: gleiches Ergebnis (Liste, Verschiebung) fuer alle b', r' linear und dn quadratisch in b'
+    (vierter Wert als Probe). Dann r' und dn fuer das echte b durch Fortsetzen. Sonst None."""
+    if tail != "" or len(kurz) < RR:
         return None
-    sb, b = X[-2]
+    sb, b = kurz[-2]
     if b < BMIN:
         return None
     b0 = 4 + (b % 2)
     werte = []
+    extra = None
     for i in range(4):
-        X2 = X[:-2] + [(sb, b0 + 2 * i), X[-1]]
-        werte.append(lokal(X2, tail, 0, lauf))
-    Y = werte[0][0]
-    if any(w[0] != Y or w[1] != werte[0][1] for w in werte):
+        k2 = kurz[:-2] + [(sb, b0 + 2 * i), kurz[-1]]
+        # Eichung der weggelassenen Laeufe nur bei i = 0 und i = 3 (muss gleich sein), sonst uebernommen
+        w = lokal(k2, schnitte, tail, 0, band, lauf, None if i in (0, 3) else extra)
+        if w is None:
+            return None
+        if i == 0:
+            w0 = lokal(k2, schnitte, tail, 0, band, lauf, 0)
+            extra = w[4] - w0[4]
+        if i == 3:
+            w3 = lokal(k2, schnitte, tail, 0, band, lauf, 0)
+            if w[4] - w3[4] != extra:
+                lauf.z("ueb:eichung_lauf")
+                return None
+        werte.append(w)
+    Y, d, tl = werte[0][0], werte[0][1], werte[0][2]
+    if any(w[0] != Y or w[1] != d or w[2] != tl for w in werte):
         lauf.z("ueb:eichung_liste")
         return None
-    rr = [w[2] for w in werte]
-    dd = [w[3] for w in werte]
+    rr = [w[3] for w in werte]
+    dd = [w[4] for w in werte]
     if rr[2] - 2 * rr[1] + rr[0] != 0 or rr[3] - 2 * rr[2] + rr[1] != 0:
         lauf.z("ueb:eichung_r")
         return None
@@ -473,41 +693,13 @@ def uebergang(X, tail, lauf):
     if FEHLER == "ueb":
         dn_echt += 1
     lauf.z("ueb:geeicht")
-    return Y, werte[0][1], r_echt, dn_echt
-
-
-def einsetzen(kurz, Y, schnitt, pruef_extra=None):
-    """Weggelassene Token wieder einsetzen. Jeder Schnitt ist von K Token je Seite eingerahmt; dieser Block
-    (2K Token) muss in Y genau an einer Stelle stehen, mit derselben Verschiebung fuer alle Schnitte."""
-    kandidaten = None
-    for sp, _ in schnitt:
-        block = kurz[sp - K:sp + K]
-        lagen = set()
-        for d in range(-40, 41):
-            a = sp - K + d
-            if 0 <= a and a + 2 * K <= len(Y) and Y[a:a + 2 * K] == block:
-                lagen.add(d)
-        kandidaten = lagen if kandidaten is None else (kandidaten & lagen)
-    if kandidaten is None or len(kandidaten) != 1:
-        return None
-    d = kandidaten.pop()
-    out = []
-    pos = 0
-    for sp, weg in schnitt:
-        out.extend(Y[pos:sp + d])
-        out.extend(weg)
-        pos = sp + d
-    out.extend(Y[pos:])
-    return out
+    return Y, d, tl, r_echt, dn_echt
 
 
 if __name__ == "__main__":
     st = ord(sys.argv[1]) - 65
     N = int(float(sys.argv[2]))
     modus = sys.argv[3]
-    lauf = Lauf(st, modus, sys.argv[4] if len(sys.argv) > 4 else None)
-    try:
-        lauf.lauf(N)
-    except bs.Halt:
-        print(f"HALT im Durchlaufmodell bei Schritt {lauf.halt}")
-        lauf.bericht("halt")
+    lauf = Lauf(st, modus, sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] != "-" else None,
+                int(float(sys.argv[5])) if len(sys.argv) > 5 else None)
+    lauf.lauf(N)

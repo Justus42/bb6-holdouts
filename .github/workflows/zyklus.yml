@@ -1,0 +1,61 @@
+name: zyklus
+
+# Gruppe 1, Thread "Halt als verbotenes Muster": Zyklus-Beschleuniger (zyklus_beschl.py).
+# Startet bei einem Push, der analyse/gruppe1/verboten/zyklus_auftrag.txt aendert.
+# zyklus_auftrag.txt: "pruef <N>" (Abgleich mit linkes_ende/beschleuniger.py an allen Zyklusanfaengen bis N,
+#                     dazu jeder Rueckfall ganz nachgerechnet) und "lauf <N>" (so weit wie moeglich, hoechstens N).
+# Ergebnisse stehen im Job-Log.
+on:
+  push:
+    paths:
+      - analyse/gruppe1/verboten/zyklus_auftrag.txt
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruef:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Abgleich mit dem Phasen-Beschleuniger
+        working-directory: analyse/gruppe1/verboten
+        run: |
+          sudo python3 -m pip install --break-system-packages -q numpy==2.1.3 || sudo python3 -m pip install -q numpy==2.1.3
+          python3 -I -c "import numpy; print(\"numpy\", numpy.__version__)"
+          N=$(awk '$1=="pruef"{print $2}' zyklus_auftrag.txt)
+          s=${{ matrix.start }}
+          start=$(date +%s)
+          python3 -I zyklus_beschl.py $s "$N" pruef z_$s.txt | tee z_log_$s.txt
+          echo "Laufzeit Zyklus-Beschleuniger $(( $(date +%s) - start )) s"
+          python3 -I ../linkes_ende/beschleuniger.py $s "$N" pruef b_$s.txt 0 | tail -n 1 | cut -c1-200
+          awk '$2==0' b_$s.txt > b0_$s.txt
+          if cmp z_$s.txt b0_$s.txt && grep -q "abweichungen=0" <(tail -n 1 z_log_$s.txt); then
+            echo "$s: alle $(wc -l < z_$s.txt) Zyklusanfaenge bis $N gleich, Rueckfaelle lokal = ganz"
+          else echo "$s: VERSCHIEDEN"; exit 1; fi
+
+  lauf:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Lauf (bricht nach 340 Minuten ab, die Zeilen je Zehnerpotenz stehen dann schon im Log)
+        working-directory: analyse/gruppe1/verboten
+        run: |
+          sudo python3 -m pip install --break-system-packages -q numpy==2.1.3 || sudo python3 -m pip install -q numpy==2.1.3
+          python3 -I -c "import numpy; print(\"numpy\", numpy.__version__)"
+          N=$(awk '$1=="lauf"{print $2}' zyklus_auftrag.txt)
+          s=${{ matrix.start }}
+          start=$(date +%s)
+          timeout 340m python3 -I zyklus_beschl.py $s "$N" lauf || echo "Abbruch oder Fehler, Code $?"
+          echo "Laufzeit $(( $(date +%s) - start )) s"
