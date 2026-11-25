@@ -7,6 +7,7 @@ name: zyklus
 # Ergebnisse stehen im Job-Log.
 on:
   push:
+    branches-ignore: [main]   # Justus 25.11.: kein Start durch Push auf main
     paths:
       - analyse/gruppe1/verboten/zyklus_auftrag.txt
   workflow_dispatch:

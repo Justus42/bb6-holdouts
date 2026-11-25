@@ -8,6 +8,7 @@ name: verboten
 # Ergebnisse stehen im Job-Log (die Artefakt-Ablage ist aus der Cloud-Sitzung nicht erreichbar).
 on:
   push:
+    branches-ignore: [main]   # Justus 25.11.: kein Start durch Push auf main
     paths:
       - analyse/gruppe1/verboten/auftrag.txt
   workflow_dispatch:
