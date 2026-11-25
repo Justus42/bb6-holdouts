@@ -8,6 +8,8 @@ Aufrufe (alle ohne Netz, nur Standardbibliothek):
                                     im selben Format wie zweitpruefung.c ausgeben
   gruppe1.py pruefe <listendatei>   Fressregel, Zyklusregel x=a+4b+7 und +2-Regel gegen eine Listendatei pruefen
   gruppe1.py pin <busycoq/verify>   Maschinen aus PR_Loop4Mono.v und Loop4Mono*.v gegen Gruppe 1 pruefen
+  gruppe1.py abstaende <listendatei> Nullabstaende pruefen: I1 (alle in 1..5), I2 (nie zwei < 3 nebeneinander),
+                                    Muster "Trenner direkt vor Abstand 1" (von links gelesen) zaehlen
   gruppe1.py negativ <listendatei>  Negativkontrollen: jede Pruefung muss bei absichtlich falschen Daten anschlagen
 
 Bandkonvention wie bbchallenge: Start auf Leerband, "---" ist der Halteuebergang.
@@ -266,6 +268,32 @@ def pin(verify):
         print(f"{os.path.basename(fn)}: {len(tms)} Maschinen, davon in Gruppe 1: {len(treffer)}")
 
 
+def abstaende(fn):
+    """Liest Listenzeilen (Format liste/zweitpruefung.c) und baut die Nullabstaende von rechts zurueck."""
+    from collections import Counter
+    n = i1 = i2 = gef = 0
+    menge = Counter()
+    for l in open(fn):
+        if "|" not in l:
+            continue
+        n += 1
+        g = []
+        for t in body(l).split():
+            if t == "|":
+                g.append(4)
+            elif t.startswith("<"):
+                g.append(int(t[1:-1]))
+            else:
+                g += [3] * int(t)
+        menge.update(g)
+        i1 += sum(1 for x in g if not 1 <= x <= 5)
+        i2 += sum(1 for a, b in zip(g, g[1:]) if a < 3 and b < 3)
+        # g ist von rechts nach links; "von links gelesen Trenner (>=4), direkt danach Abstand 1"
+        gef += sum(1 for a, b in zip(g, g[1:]) if a == 1 and b >= 4)
+    print(f"Zeilen {n}; Abstaende {dict(sorted(menge.items()))}; I1 verletzt {i1}; I2 verletzt {i2}; "
+          f"'Trenner direkt vor Abstand 1' (von links) {gef}")
+
+
 def negativ(fn):
     import io
     import os
@@ -311,7 +339,21 @@ def negativ(fn):
         pruefe(tf.name)
     os.unlink(tf.name)
     print("    veraendert:  ", buf.getvalue().splitlines()[0])
-    print("3) Gruppensuche mit einer Datei, die 378 enthaelt:")
+    print("3) Abstaende mit eingefuegtem Abstand 7 und Doppelloch <1> 0 <1>:")
+    L = open(fn).read().split("\n")
+    L[50] = L[50] + " <7> 0 <1> 0 <1> 2"
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as tf:
+        tf.write("\n".join(L))
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        abstaende(fn)
+    print("    unveraendert:", buf.getvalue().strip().split("; ", 2)[2])
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        abstaende(tf.name)
+    os.unlink(tf.name)
+    print("    veraendert:  ", buf.getvalue().strip().split("; ", 2)[2])
+    print("4) Gruppensuche mit einer Datei, die 378 enthaelt:")
     with tempfile.TemporaryDirectory() as d:
         open(os.path.join(d, "Loop4Mono_test.v"), "w").write('Definition tm := TM_from_str "%s".' % M378)
         open(os.path.join(d, "PR_Loop4Mono.v"), "w").write("")
@@ -333,6 +375,8 @@ if __name__ == "__main__":
         pruefe(sys.argv[2])
     elif cmd == "pin":
         pin(sys.argv[2])
+    elif cmd == "abstaende":
+        abstaende(sys.argv[2])
     elif cmd == "negativ":
         negativ(sys.argv[2])
     else:
