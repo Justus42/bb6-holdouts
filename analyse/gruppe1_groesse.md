@@ -81,7 +81,31 @@ ihm 1 weg); deshalb "var". y ändert sich nur, wenn die Grenze das zweite Token 
 
 ## 3. Kernmuster am linken Ende
 
-FOLGT (Lauf 2)
+Phasen, die der Automat nicht erklärt, nach Kernmuster (Definition wie im Thread "Linkes Ende"),
+bis 10^15. Bis dahin kommen 12 der 13 Kernmuster vor; `0 0 e` erscheint erst bei 8,2·10^16 und liegt
+außerhalb dieser Daten. Aus seiner Form `I 0 0 p → .p+2` folgt (nicht gemessen): S +2, m −2.
+
+| Kernmuster | Fälle | S | m | r | L | S+r |
+|---|---|---|---|---|---|---|
+| `0 e` (VS-Familie) | 543 | var +2/+3 | var −4..+8 | −1 | var 0..14 | var +1/+2 |
+| `.0 .o` | 141 | +2 | var +2..+8 | −1 | var 5..11 | **+1** |
+| `0 .0 e` | 88 | var +2/+3 | var −3/−1 | −1 | var 0..3 | var +1/+2 |
+| `e` (ganz links) | 78 | +2 | var 0..16 | −1 | var 3..19 | **+1** |
+| `0 .o .0 e` | 33 | var +2/+3 | var −3..9 | −1 | var 0..15 | var +1/+2 |
+| `0 .0 .o` | 14 | var +2/+3 | var −3..14 | −1 | var 0..20 | var +1/+2 |
+| `0 0` | 14 | var +2..+4 | var −3..3 | −1 | var 0..12 | var +1..+3 |
+| `keine Grenze` (Anlauf) | 7 | +1 | var 0/1 | −1 | var 0/1 | **0** |
+| `.o` (Anlauf) | 3 | +3 | +4 | −1 | +10 | **+2** |
+| `0 .e e .0 e` | 1 | +2 | −3 | −1 | 0 | +1 |
+| `e .0 e` | 1 | +3 | +7 | −1 | +13 | +2 |
+
+Zyklusübergänge, die die Zyklusfunktion nicht erklärt (32 Fälle, Kernmuster `0 e`, `.o .o`, `e`,
+`0 .o .0 e`, `.o`): dort ändert sich jede Größe regellos, wie beim Übergang im Ganzen.
+
+**Zusammengefasst:** In jeder Phase am linken Ende sinkt r um 1, S steigt um 1 bis 4, S + r steigt um
+0 bis 3 (nie fällt es), m und L ändern sich je nach Zone links vom Kern. Eine Größe, die über alle
+Kernmuster gleich bleibt oder um einen festen Betrag springt, gibt es nicht; feste Beträge für S + r
+haben nur `.0 .o` und `e` (+1) sowie die Einzelfälle.
 
 ## 4. Gewichtete Kombinationen
 
@@ -154,7 +178,8 @@ Stichprobe gibt es **kein** zweites Programm; auf ihr ruht keine Entscheidung.
   Protokoll übernimmt es nur das Ergebnis und die Schrittzahl der Rückfälle, die kein Automat erklärt;
   davor vergleicht es die ganze eigene Liste mit der Liste im Protokoll.
 - Vergleich: sortierte Tabellen müssen zeilengleich sein. Bis 10^12 lokal und bis 10^15 in Actions
-  (Run 45676439532 und Lauf 2, FOLGT) für A, C, D zeilengleich; Automatenphasen je Start 20.389.187 /
+  (Run 45676439532; Run 45679952727 mit nach Phase und Übergang getrennten Kernmustern) für A, C, D
+  zeilengleich, ebenso die beiden daraus berechneten Auswertungen; Automatenphasen je Start 20.389.187 /
   20.389.709 / 20.389.659 (gleich den Zahlen aus dem Thread "Linkes Ende").
 - Negativkontrollen (`ergebnisse/negativkontrollen.txt`, Start A bis 10^10), alle schlagen an:
   Programm 1 mit zu kleinem Fenster bei N2 (4 Zeilen verschieden), LG ohne das neue Token in u (2);
@@ -173,4 +198,31 @@ python3 haltemuster.py A 1e8 1            # Stichprobe Haltemuster
 
 ## 8. Abschluss
 
-FOLGT
+**Ergebnis.** Es gibt keine erhaltene Größe für Gruppe 1, auch keine gewichtete Kombination und
+keine modulo 2. Im Inneren bleiben nur m, S + r und x (und damit die Bandlänge) gleich; am linken Ende
+und im Übergang ändern sie sich. Für einen Beweis gegen Halt tragen diese Größen nichts bei, weil das
+Haltemuster örtlich ist.
+
+**Belege.** Commits c37b27e (Programme, Workflow), 12c3697 (Stichprobe), 6c13988 (Kernmuster getrennt,
+Workflows nicht auf main), 294c043 (Bericht); Actions: Run 45676439532 und Run 45679952727 (groesse,
+bis 10^15, beide grün, Ergebnis-Commits 91a0daf und 4c43ac1), Run 45677822205 (haltemuster, Abschnitt 6).
+Lokal: `ergebnisse/lokal_1e12/`, `ergebnisse/negativkontrollen.txt`, `ergebnisse/haltemuster_lokal/`.
+
+**Abweichungen und eigene Fehler.**
+- Programm 2 kannte zuerst VS nicht als Randschritt im Übergang (1e12: 7 Übergänge als "nicht erklärt"
+  gemeldet, Programm 1 erklärte sie). Ergänzt, danach zeilengleich.
+- Der erste Lauf bis 10^15 warf Kernmuster aus Phasen und aus Übergängen zusammen; dadurch sahen
+  einige Kernmuster regellos aus. Lauf 2 trennt sie (zusätzliche Actions-Zeit rund 20 Minuten).
+- Eine Negativkontrolle (Bandlänge ohne den Rest hinter der letzten Token-Gruppe) schlug nicht an,
+  weil dieser Rest nach dem Anlauf immer leer ist; ersetzt durch "Bandlänge ohne 3r", die anschlägt.
+- Die Stichprobe zum Haltemuster war nicht verlangt; ich habe sie für den Absatz in Abschnitt 5
+  gemacht. Sie hat kein zweites Programm.
+- `0 0 e` liegt jenseits 10^15; dafür nur die Ableitung aus der Form, keine Messung.
+
+**Offene Punkte.** Was bei den Beinahe-Treffern C von D trennt, ist nicht untersucht (Vermutung:
+örtliche Parität). Die Größen bis 10^17 habe ich nicht gemessen.
+
+**Empfehlung.** Diese Linie abbrechen: Eine globale Erhaltungsgröße führt hier nicht zum Ziel. Wenn
+weiter, dann nur örtlich: die Token-Fenster an der Grenze in den Phasen mit Beinahe-Treffern
+beschreiben und prüfen, ob eine örtliche Regel `C> 0 1 1` ausschließt (1 Block, kein Rocq).
+Das ist eine neue Frage und bräuchte dein OK.
