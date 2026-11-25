@@ -1,0 +1,18 @@
+301 LG | .1 -> 2 | next 
+3811 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+4900 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+12334 VS-zuwenig | 0 2 5 -> 1 0 .9 | next 5
+201517 VS-zuwenig | 1 1 1 0 2 9 -> 4 .13 | next 7
+24043937 VS-zuwenig | 1 0 6 -> .2 .7 | next 7
+24111398 Sonder | .0 .11 7 -> 1 1 1 1 1 1 1 1 1 0 .11 | next 7
+27219410 VS-zuwenig | 1 1 1 0 2 5 -> 4 .9 | next 5
+65140516 VS-zuwenig | 1 1 1 0 2 3 -> 4 .7 | next 5
+79136010 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+79258203 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+86525937 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+86653704 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+205342624 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+205540267 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+220025481 VS-zuwenig | 1 0 2 -> .2 .3 | next 5
+220229706 Sonder | .0 .7 5 -> 1 1 1 1 1 0 .9 | next 5
+351657178 Sonder | 1 1 1 1 1 1 0 .1 .0 14 7 -> 1 5 3 3 3 3 3 .10 | next 7

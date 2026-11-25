@@ -1,0 +1,2 @@
+start=A schritte=1000000000 phasenpaare=19787 LG=433 N1=9618 N2=9581 N2s=47 UA=45 LE=33 VS=17 nicht_erklaert=13
+zyklusanfaenge=81 a_gerade=81 alles_regulaer=37 zyklen_ok=71 zyklen_falsch=0 nicht_anwendbar: rand_fressen=0 fressen=0 J=0 phase=9 rand_rueck=0
