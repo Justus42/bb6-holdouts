@@ -1,0 +1,3 @@
+direkt 1e12
+durchlauf 1e10
+beschleuniger 1e14

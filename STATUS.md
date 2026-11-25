@@ -1,0 +1,189 @@
+# Stand des Projekts (25.11.2026, abends)
+
+Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
+(mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
+stammt (Kürzel siehe unten). Wo Berichte sich widersprechen oder später korrigiert wurden, gilt der spätere;
+die Korrekturen stehen am Ende. Englische Fassung: `STATUS.en.md`.
+
+**Insgesamt:** Keine Maschine ist entschieden. Bewiesen in Rocq ist nur eine Umformulierung für Gruppe 1
+(Durchlauf-Beschleunigung) und eine Regel darauf (Regel F). Alles andere ist Beobachtung bis zu einer
+Prüfgrenze.
+
+Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
+[G1] `gruppe1.md` (PR 2) · [G1-2] `gruppe1_teil2.md` (PR 3) · [G1-3] `gruppe1_teil3.md` (PR 6) ·
+[S1] `gruppe1_stufe1.md` (PR 7) · [S2a] `gruppe1_stufe2a.md` (PR 8) · [ZY] `gruppe1_zyklus.md` (PR 9) ·
+[LE] `gruppe1_linkes_ende.md` (PR 10) · [VL] `gruppe1_vorlagen.md` (PR 11) · [P26] `gruppe1_pr26.md` (PR 11) ·
+[GR] `gruppe1_groesse.md` (PR 16) · [VB] `gruppe1_verboten.md` (PR 17) · [INV] `invarianten.md` (PR 15) ·
+[M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
+[VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (dieser PR).
+
+## Datenstand (Abgleich 25.11.2026) [DA]
+
+- `holdouts.json` von denniskoshta.com neu geholt (`data/holdouts_2026-11-25.json`): **byte-gleich** mit dem
+  Stand vom 10.11. Die Seite hat die Datei seitdem nicht neu erzeugt.
+- busycoq direkt gelesen: Zweig BB6 unverändert auf `33209bc7` (03.11.), also **nichts neu gemergt**. 58 neue
+  PR-Refs (62 bis 119, 09.11. bis 25.11.) mit Strings von 63 Holdouts. **Keiner betrifft 396, 88, 312, 449,
+  Gruppe 1 oder die M5-Gruppe** (zwei Programme zeilengleich, dazu Normalform-Abgleich, Negativkontrollen
+  schlagen an). Ob die PRs offen oder geschlossen sind, ist nicht geprüft.
+- cryptids (Commit `f01ee56`, 25.11.): nichts zu 396, 88, 449, Gruppe 1, M5. 312 hat dort eine formale
+  Rückführung (keine Entscheidung). Holdout 587 hat eine bewiesene Beschleunigung mit derselben Lage wie 396
+  (`1011` hält nicht, nur `111`); nur gelesen.
+
+## Gruppe 1: 114, 367, 378 (eine Tabelle, drei Starts)
+
+### Bewiesen (Rocq)
+
+Datei `rocq/gruppe1_durchlauf.v` (515 Zeilen, sha256 beginnt `79fdf709fca14c75`, seit Commit `44d8ed5`
+unverändert).
+
+| Aussage | Inhalt | Lauf **pruefen** (beide Images grün, Print Assumptions `Closed under the global context`) |
+|---|---|---|
+| `gruppe1_114`, `gruppe1_367`, `gruppe1_378` | Maschine hält vom leeren Band genau dann, wenn das Durchlaufmodell (Regeln S1, S2, E) ab Start A / D / C „Halt“ erreicht. Umformulierung, **keine Entscheidung** [S1] | Run 45599575217 (Commit `8722d86`) [S1]; erneut in Run 45602646558 [S2a] |
+| `regel_F`, `regel_F_oft` | Fressrunde `x \| y → x+4 \| y−1` für ungerades x, y ≥ 1, in 25 Schritten des Modells; m Runden am Stück [S2a] | Run 45602646558 (Commit `44d8ed5`) [S2a] |
+| `erreicht_halt_erreicht` | ein solcher Sprung ändert am Halten nichts [S2a] | Run 45602646558 [S2a] |
+
+Von Hand gezeigt, **nicht** maschinell geprüft: **Satz K(C)**. Startet der Lauf auf einem Band, das rechts vom
+Kopf leer ist, geht jedem Halt ein Moment voraus, in dem C von links auf `0 1 1` tritt. Notwendig, nicht
+hinreichend [VB, Abschnitt 1.2]. Von Justus extern bestätigt.
+
+### Beobachtet
+
+| Beobachtung | Prüfgrenze | Programme | Quelle |
+|---|---|---|---|
+| Kein Halt, jeder Schritt geprüft | 10^12 Schritte, alle drei Starts | 2 (`direkt.c` Run 45614962053; `zaehl_direkt.c` Run 45668615893) | [LE §2], [VB §4] |
+| Kein K(C) (`C> 0 1 1`) | 10^9 lokal, 10^10 in Actions (Run 45668615893); bis 10^12 nur `zaehl_direkt.c` | 2 bis 10^10, 1 bis 10^12 | [VB §2, §4] |
+| Kein Halt, **bedingt** (Regeln des Phasen-Automaten nur empirisch) | 10^22 Schritte, alle drei Starts, 900 Stichproben ohne Befund | 1 (Zyklus-Beschleuniger, lokal), bis 10^12 gegen `beschleuniger.py` validiert | [VB §5] |
+| Lauf jenseits 10^22 | **läuft**: Actions-Run 45684698614 (Abbruch nach 340 min je Start); Ergebnis noch nicht da | – | [VB §5] |
+| Durchlaufmodell = direkte Simulation, byteweise | 10^9 Schritte, 36.944 Listenzeilen | 2 (`sweepmodell.py`, `zweitpruefung.c`) | [G1-3 §2] |
+| Prüfpunkte (B/D liest 0, rechts `11`) 1,63 bis 1,64 Mio. je Start, keiner mit `111` | 10^9 | 2 (C, Rust) | [G1-2 §1] |
+| Regel Z: `x = a + 4b + 7` am Ende jeder Fressphase, 76/76, 77/77, 76/76 | 10^9 | Listen aus C, Prüfung in Python | [G1] |
+| a gerade an allen 232 Zyklusanfängen (also x ungerade, Voraussetzung von Regel F) | 10^9 | 2 (`zyklus.py`, `zyklus2.c`) | [ZY §5] |
+| Zyklusfunktion sagt 68/76 (A), 67/76 (C), 66/77 (D) Zyklen exakt voraus, **keine falsch**; Rest „nicht anwendbar“, immer am linken Ende | 10^9 | 2 | [ZY] |
+| Phasen-Automat (N1, N2, N2s, UA, LE, LG, VS) erklärt 99,995 % der Phasen | 10^17 (Run 45614962053) | Beschleuniger, bis 10^12 gegen `direkt.c` an rund 642.000 Schnappschüssen je Start gleich | [LE §1, §2] |
+| Linkes Ende: 2.877 nicht erklärte Fälle in 13 Kernmustern; 13. Muster erst bei 8,2·10^16; „alt“-Anteil steigend (0,7 % → 1,5 %) | 10^17 | 2 (`formen.py`, `formen2.awk`) | [LE §3, §4] |
+| VS-Familie als Regel mit 11 Fällen: 1.656 von 1.656 beobachteten Fällen richtig | 10^17 | Regel gegen Durchlaufmodell | [LE §4] |
+| Keine erhaltene Größe; im Inneren nur m, S + r, x erhalten | 10^15 | 2 (`groesse.py`, `groesse2.c`), Runs 45676439532, 45679952727 | [GR] |
+| Kein CTL-Zertifikat (Bandsprache mit zwei Automaten) | alle Größen bis 12×12 | SAT-Suche, kleine Größen durch Aufzählung bestätigt | [INV] |
+| Läufe der drei Starts verschmelzen nicht | 10^9 | 1 | [G1 §1] |
+
+### Offen
+
+- Ob Gruppe 1 hält: **offen** [VB §8].
+- Eine Invariante, die K(C) bzw. Halt ausschließt: keine gefunden [ZY §5], [GR §5], [INV], [VB §8].
+- Regeln des Phasen-Automaten sind nicht bewiesen; Halt jenseits 10^12 nur bedingt ausgeschlossen [VB §4].
+- Linkes Ende: 7 der 8 Familien ohne Regel, „alt“-Fälle ohne Regel, Sättigung nicht belegt [LE §4].
+- Regel Z und erste/letzte Fressrunde nicht in Rocq [S2a]. Warum a immer gerade ist, ist nicht bewiesen [S2a], [ZY].
+- Es fehlt eine Gleichung, die die Zahlen bindet (wie `gval G + 6 + κ = Q` in `PR_SBC.v`) [P26 §3].
+- Laut Justus (25.11.): Gruppe 1 ruht mit diesem Stand; der Lauf jenseits 10^22 läuft zu Ende.
+
+## M5-Gruppe: 318, 518, 322, 274
+
+### Bewiesen (Rocq)
+
+Nichts.
+
+Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, nicht in Rocq) [M1 §1]:
+- Alle vier sind die 5-Zustands-Maschine M5 `1RB0LD_0RC1RA_1RD1RE_1LA0LE_0RA0LC` mit aufgeteiltem Zustand.
+  Haltemuster: 318 und 322 `B> 1 1`, 518 und 274 `C> 1 1`.
+- Start in M5: 318/518 ab A, 322 ab C, 274 ab D (gespiegelt). Die Läufe ab C und D sind ab Schritt 11 bzw. 25 gleich.
+- In der 608er-Liste genau diese vier; in `decided` keine.
+
+### Beobachtet
+
+| Beobachtung | Prüfgrenze | Programme | Quelle |
+|---|---|---|---|
+| Kein Haltemuster (`B> 1 1`, `C> 1 1`) | 10^10 Schritte (Läufe ab A und ab C) | 2 (`m5sim.c`, `zweitpruefung.go`) | [M1 §3] |
+| 318, 518 und M5 im Gleichschritt | 10^9 | 1 (`m5sim gleich`) | [M1 §1] |
+| Zählerregeln 1 bis 3 (Binärzähler aus Ziffern Z/D1/D2/D3, Trenner W) | 3·10^8 | Zyklusdateien 2 Programme bytegleich, Regelprüfung nur Python | [M1 §2] |
+| Lauf ab A trifft Lauf ab C nicht | 3·10^8 (Zyklusbeginne) | 1 | [M1 §1] |
+| Beschleunigter Simulator stimmt an allen Zyklusbeginnen (40.324 ab A, 41.794 ab C) | 10^10 | 2 (`m5schnell.py`, `m5sim hash`) | [M2 §1] |
+| Nur drei große Umbauten: ab A bei 29.754.240, ab C bei 87.823 und 874.896.314 | 8·10^14 (lokal, jenseits 10^10 nur jeder 5.000. Zyklus nachgeprüft) | 1 (+ Stichproben) | [M2 §3] |
+| 83 bzw. 88 Wanddurchgänge (Paare) je Lauf, keine Umbauten | 8·10^14 | 1 | [M2 §2] |
+
+### Offen
+
+- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Jenseits 10^10 wurde das Haltemuster nicht geprüft [M2 §4].
+- Wie ein Umbau die neuen Ziffern setzt (Lage und Phase): keine Formel gefunden, daher **kein Beweisplan** [M2 §4].
+- Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
+- Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
+  die fehlende Umbau-Abbildung [M2 §5].
+- Justus hat die M5-Rückführung in #bb6 gepostet (laut Projektgedächtnis, 25.11.).
+
+## 396 mit 88, 312, 449 (Familie F12)
+
+### Bewiesen (Rocq)
+
+Von uns nichts. Extern: busycoq-PR #59 (Kopf `f23281d`, offen, **nicht gemergt**, von uns nicht gebaut)
+beweist laut Titel, dass 88, 312 und 449 halten [396 §1], [DA].
+
+Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
+- Nach dem Zusammenlegen des Haltezustands sind die Kerne von 88, 312, 396, 449 gleich **bis auf E1**;
+  nur 88 und 312 haben denselben Kern und laufen im Gleichschritt.
+- 396 hält nur über F1, F wird über B1 oder E1 (`0RF`) erreicht.
+
+### Beobachtet
+
+| Beobachtung | Prüfgrenze | Programme | Quelle |
+|---|---|---|---|
+| Besuchsgesetz aus PR #59 gilt für 396, nur die Halteregel nicht: `V(1011x) = 0001x` statt Halt; 396 hält nur bei `111` | alle Wörter bis Länge 12 hinter dem Block | 1 (`gesetz.py`, Ausführen der Tabelle) | [396 §3] |
+| 88 und 396 rundengleich, nicht schrittgleich | Runde 27 (rund 1,57 Mio. Schritte) direkt simuliert | 3 Wege zum Rundenmodell zeilengleich (`direkt.c` 27 Runden, `naiv.py` 34 Runden, `runde.c`) | [396 §4, §5] |
+| 88 hält in Runde 161.211, wie in der Rechnung von PR #59 | – | 1 eigenes (`runde.c`), Run 45676623019 | [396 §4] |
+| 396: kein Halt, nur zwei 1011-Ereignisse (Runden 161.211 und 194.647) | Runde 260.000 (Wort 1.615.087 Zellen) | 1 für den langen Lauf (`runde.c`), Run 45676623019 | [396 §4] |
+
+### Läuft
+
+- Thread „396, Teil 2“ (Branch `claude/project-thread-pzp4s2`, noch nicht gemergt): Rückwärts-Analyse und ein
+  zweites Programm `runde_b.cpp`; Actions-Run 45688978145 (`lauf_396b`) läuft. Endergebnis fehlt noch.
+
+### Offen
+
+- Ob 396 hält, also ob `111` je entsteht: **offen** [396 §6].
+- 396 hat weiterhin keinen PR in busycoq, keine Datei in cryptids [DA].
+- Der Halte-Beweis von PR #59 ist **nicht** auf 396 übertragbar [396].
+
+## Verwandtschaftskarte (alle 608 Holdouts)
+
+### Bewiesen (Rocq)
+
+Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte_b.c`, gleiche 1.619 Zeilen) [VK §3, §4]:
+- 376 von 608 Holdouts in **141 Familien**, fast alle „gleiche Tabelle, anderer Start“ (298 Holdout-Paare).
+- **403 verschiedene Tabellen** bis auf Umbenennung und Spiegelung (498 ohne Spiegelung) [VK, Ergebnis].
+- 69 Holdouts mit 5-Zustands-Kern; Gleichschritt belegt für 17 Paare, davon 2 Holdout-Paare (318/518, 88/312).
+- busycoq `Eqv*.v` und cryptids `Equivalences.lean`: keine Holdout-Holdout-Paare [VK §1].
+
+### Beobachtet
+
+| Beobachtung | Prüfgrenze | Programme | Quelle |
+|---|---|---|---|
+| 6 weitere Paare im Gleichschritt (z. B. 69/543, 166/391, 190/394, 489/598), **unbelegt** | 10^9 | 1 (`divergenz.c`), Sieb in `karte_b.c` bis 10^6 | [VK §3] |
+| Keine der 510 Tabellen-Paarungen verschmilzt | 10^6 (B), 10^5 (A) | 2 | [VK §3] |
+| 14 Familien stehen jetzt ganz in neuen busycoq-PRs, z. B. F1 {244, 279, 339, 473, 489, 598}, F26 {38, 59, 124}; F12, F20 (M5) und Gruppe 1 nicht | PR-Refs bis 119, Stand 25.11. | 2 | [DA] |
+
+### Offen
+
+- F1: warum d833 hält und was die Starts unterscheidet; FAR-Starts (d581, d1250, d653, d934) [VK §3, §6].
+- Übertragbarkeit der cryptids-Beschleunigungen auf andere Starts derselben Tabelle [VK §6].
+
+## Korrekturen (später gilt)
+
+| früher | später | Quelle |
+|---|---|---|
+| F12 = „dieselbe 5-Zustands-Maschine“, „zweite M5-artige Familie“ | Kerne gleich nur bis auf E1; nur 88 und 312 haben denselben Kern | [VK] korrigiert in PR 13 |
+| Gleichschritt 88/312 mit Äquivalenten von 396 / 449: Richtung vertauscht | 88/312 mit 396.2/.3/.5/.7; 396 mit 449.1/.2 | [VK], [396 §6] |
+| „naheliegend“, dass das Gesetz aus PR #59 auch 396 entscheidet | nicht übertragbar, 396 hält bei `1011` nicht | [396] |
+| Zahl der verschiedenen Tabellen nicht angegeben | 403 (498 ohne Spiegelung) | [VK], Nachtrag PR 13 |
+| Linkes Ende: „Urteil (a) mit Einschränkung“, „alt-Anteil steigt nicht“ (Entwurf bis 10^15) | Urteil offen; alt-Anteil steigt bis 1,5 % | [LE §7] |
+| „Für Invariante regulär + Zählerbedingung gibt es im Pin keine Vorlage“ | `verify/PR_SBC.v` (busycoq PR #26) ist so eine Vorlage | [VL §4], [P26] |
+| Satz K(C) ohne Voraussetzung | gilt nur für Läufe mit leerem Band rechts vom Start (Gegenbeispiel von Justus) | [VB §7] |
+| Haltebedingung Teil 2 (B/D liest 0 vor `111`) vs. Teil 3 (C vor `111`) | gleichwertig, nachgerechnet | [G1-3 §3, Nachtrag] |
+| 11 Prüfpunkte am linken Ende ungeklärt (27/39 Schritte nach Links-Rekord) | erklärt: C trifft auf Trenner `<1>`, 14 oder 26 Zellen vom Ende | [G1-2] → [G1-3 §2] |
+| „x/2 ≥ Listenlänge“ in 24 von 76 Zyklen (Start A) | 19 von 77 mit anderer Abgrenzung; maßgeblich ist die Streuung −64 bis +27 | [G1] → [VL §3] |
+| M5: Links-Rekord ab C bei 29.550.874 als Umbau gelesen | kein großer Umbau; echte Umbauten nur 87.823 und 874.896.314 (ab C) | [M1] → [M2 §2, §3] |
+| M5: „bis 10^11 kein weiterer Umbau“ | bis 8·10^14 keiner | [M1] → [M2] |
+| Zyklus-Läufe ohne int64-Schutz (Runs 45675033053, 45682765314) | jenseits 10^24 nicht verwenden; Schutz seit Commit `509fb21` | [VB §5, §6] |
+
+## Was dieser Stand nicht enthält
+
+- Endergebnisse von „396, Teil 2“ und vom Lauf jenseits 10^22 (beide laufen).
+- Den Thread „Invariante gegen K(C)“ (Nebenstrang, noch kein Bericht).
+- Status aus Discord (#bb6); nur Justus prüft dort, wer woran arbeitet.

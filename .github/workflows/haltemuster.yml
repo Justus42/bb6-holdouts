@@ -1,0 +1,66 @@
+name: haltemuster
+
+# Gruppe 1, Thread "Erhaltene Groesse": Stichprobe, ob in den Phasen "C> 0 1 1" auftritt (haltemuster.py).
+# Startet bei einem Push, der analyse/gruppe1/groesse/auftrag_halt.txt aendert. Zeile "bis <Schritte> k <k>".
+# Ergebnis wird als Commit auf denselben Branch gelegt (Artefakte sind aus der Cloud-Sitzung nicht lesbar).
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - analyse/gruppe1/groesse/auftrag_halt.txt
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lauf:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [A, C, D]
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Stichprobe
+        working-directory: analyse/gruppe1/groesse
+        run: |
+          N=$(awk '$1=="bis"{print $2}' auftrag_halt.txt)
+          K=$(awk '$1=="bis"{print $4}' auftrag_halt.txt)
+          mkdir -p aus
+          t0=$(date +%s)
+          python3 haltemuster.py ${{ matrix.start }} "$N" "$K" | tee aus/halt_${{ matrix.start }}.txt
+          echo "Laufzeit $(( $(date +%s) - t0 )) s" | tee -a aus/halt_${{ matrix.start }}.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: halt-${{ matrix.start }}
+          path: analyse/gruppe1/groesse/aus/
+
+  sammeln:
+    needs: [lauf]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: art
+      - name: Ergebnisse auf den Branch legen
+        run: |
+          N=$(awk '$1=="bis"{print $2}' analyse/gruppe1/groesse/auftrag_halt.txt)
+          z=analyse/gruppe1/groesse/ergebnisse/haltemuster_$N
+          mkdir -p $z
+          cp art/halt-*/halt_*.txt $z/
+          echo "Run ${{ github.run_id }}" > $z/RUN.txt
+          cat $z/halt_*.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $z
+          git commit -m "haltemuster: Stichprobe bis $N aus Run ${{ github.run_id }}"
+          for i in 1 2 3; do
+            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break
+            sleep 5
+          done

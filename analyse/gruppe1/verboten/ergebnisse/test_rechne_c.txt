@@ -1,0 +1,4 @@
+# python3 -I test_rechne_c.py 3000 1  (C gegen Python)
+Proben 8594 {'bits': 3000, 'token': 3000, 'echt': 2594}  davon Halt 1, Grenze erreicht 78  verschieden 0
+# RC_FEHLER=1 python3 -I test_rechne_c.py 300 2  (Negativkontrolle, muss verschieden > 0 zeigen)
+Proben 3194 {'bits': 300, 'token': 300, 'echt': 2594}  davon Halt 0, Grenze erreicht 5  verschieden 457

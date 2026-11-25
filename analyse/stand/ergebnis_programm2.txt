@@ -1,0 +1,71 @@
+PR 62: 38 59 124 
+PR 63: 38 131 
+PR 64: 293 
+PR 65: -
+PR 66: 568 
+PR 67: 56 445 
+PR 68: 221 
+PR 69: 42 140 
+PR 70: 42 140 
+PR 71: 236 
+PR 72: 123 223 
+PR 73: 123 223 
+PR 74: 125 
+PR 75: 87 
+PR 76: 581 
+PR 77: 117 405 
+PR 78: 104 
+PR 79: 58 
+PR 80: 176 600 
+PR 81: 566 
+PR 82: 244 279 
+PR 83: 220 
+PR 84: 339 473 
+PR 85: 390 
+PR 86: 428 
+PR 87: 44 
+PR 88: 286 
+PR 89: 228 
+PR 90: 302 
+PR 91: 5 
+PR 92: 121 
+PR 93: 489 598 
+PR 94: 235 
+PR 95: 300 
+PR 96: 122 
+PR 97: 585 
+PR 98: 539 608 
+PR 99: 608 
+PR 100: 448 608 
+PR 101: 448 608 
+PR 102: 247 608 
+PR 103: 211 
+PR 104: 238 
+PR 105: 500 
+PR 106: 446 
+PR 107: 137 
+PR 108: 539 608 
+PR 109: 608 
+PR 110: 259 578 
+PR 111: 273 
+PR 112: 119 
+PR 113: 74 
+PR 114: 304 
+PR 115: 437 
+PR 116: 380 
+PR 117: 521 
+PR 118: 501 
+PR 119: 364 
+verschiedene Holdouts in neuen PRs: 63
+--- Zielmaschinen, ganzer Baum je PR-Kopf (Treffer ausserhalb BB6) ---
+n=88: BB6-Dateien=1 zusaetzlich: PR59[verify/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.v]
+n=312: BB6-Dateien=3 zusaetzlich: PR59[verify/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.v]
+n=396: BB6-Dateien=2 zusaetzlich: keine
+n=449: BB6-Dateien=1 zusaetzlich: PR59[verify/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.v]
+n=114: BB6-Dateien=1 zusaetzlich: keine
+n=367: BB6-Dateien=0 zusaetzlich: keine
+n=378: BB6-Dateien=0 zusaetzlich: keine
+n=318: BB6-Dateien=1 zusaetzlich: keine
+n=518: BB6-Dateien=0 zusaetzlich: keine
+n=322: BB6-Dateien=1 zusaetzlich: keine
+n=274: BB6-Dateien=1 zusaetzlich: keine

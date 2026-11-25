@@ -1,0 +1,13 @@
+Negativkontrollen (Start A bis 1e10), Anzahl abweichender Zeilen im Vergleich Programm 1 / Programm 2
+GROESSE_FEHLER=n2 (Programm 1): 4 Zeilen
+GROESSE_FEHLER=lg (Programm 1): 2 Zeilen
+GROESSE2_FEHLER=ua (Programm 2): 405 Zeilen; start=A schritte=5547 automatenphasen=24 ereignisse=7 vs_selbst=0 uebergaenge_selbst=3 fehler=1
+GROESSE2_FEHLER=kern (Programm 2): 12 Zeilen; start=A schritte=10000118666 automatenphasen=63226 ereignisse=198 vs_selbst=33 uebergaenge_selbst=142 fehler=0
+GROESSE2_FEHLER=l (Programm 2): 622 Zeilen; start=A schritte=10000118666 automatenphasen=63226 ereignisse=198 vs_selbst=33 uebergaenge_selbst=142 fehler=0
+ohne Fehler: 0 Zeilen
+Klasse                        Faelle  S               m               z               u               q               r               x               y               L               K               S+
+LE0                               46  +2              -1              0               0               -1              -1              var 0..2 (2)    0               +2              +1              +1
+N1                             31160  +1              0               -1              +1              -1              -1              0               var 0..1 (2)    0               0               0 
+LE0                                            Q: S +2m; z; u; S +2q; S +2r; y; S -2K
+N1                                             Q: m; S +z; S -u; S +q; S +r; x; K
+GRUPPE alles (mit Uebergaengen gesamt)         Q: S +r -K

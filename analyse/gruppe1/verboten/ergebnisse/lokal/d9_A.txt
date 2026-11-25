@@ -1,0 +1,209 @@
+gesamt A 000 7220
+gesamt A 001 1631436
+gesamt B 000 1
+gesamt B 001 7220
+gesamt B 010 1631436
+gesamt C 000 12386
+gesamt C 001 19977
+gesamt C 010 1638680
+gesamt C 100 163900956
+gesamt C 101 20087
+gesamt C 110 1638656
+gesamt D 000 32362
+gesamt D 001 1630880
+gesamt D 010 160620868
+gesamt D 011 1630856
+gesamt D 100 20060
+gesamt D 101 3
+gesamt D 110 24
+gesamt E 000 1663242
+gesamt E 001 162251724
+gesamt E 010 20063
+gesamt E 011 24
+gesamt E 100 1638656
+phasen anlauf 1
+phase anlauf B 000 1
+phase anlauf C 000 3
+phase anlauf C 001 1
+phase anlauf C 100 5
+phase anlauf C 101 1
+phase anlauf D 000 3
+phase anlauf D 010 2
+phase anlauf D 100 1
+phase anlauf E 000 3
+phase anlauf E 001 2
+phase anlauf E 010 1
+phasen ueb 81
+phase ueb A 000 1018
+phase ueb A 001 19321
+phase ueb B 001 1018
+phase ueb B 010 19321
+phase ueb C 000 12381
+phase ueb C 001 81
+phase ueb C 010 20339
+phase ueb C 100 3725155
+phase ueb C 101 162
+phase ueb C 110 20339
+phase ueb D 000 12462
+phase ueb D 001 19248
+phase ueb D 010 3678422
+phase ueb D 011 19248
+phase ueb D 100 162
+phase ueb E 000 31710
+phase ueb E 001 3697670
+phase ueb E 010 162
+phase ueb E 100 20339
+phasen vs 17
+phase vs A 001 2046
+phase vs B 010 2046
+phase vs C 001 72
+phase vs C 010 2063
+phase vs C 100 130668
+phase vs C 101 89
+phase vs C 110 2046
+phase vs D 000 72
+phase vs D 001 2063
+phase vs D 010 126574
+phase vs D 011 2046
+phase vs D 100 72
+phase vs D 110 17
+phase vs E 000 2135
+phase vs E 001 128620
+phase vs E 010 72
+phase vs E 011 17
+phase vs E 100 2046
+phasen na 15
+phase na A 000 80
+phase na A 001 1578
+phase na B 001 80
+phase na B 010 1578
+phase na C 000 2
+phase na C 001 68
+phase na C 010 1665
+phase na C 100 123048
+phase na C 101 80
+phase na C 110 1658
+phase na D 000 70
+phase na D 001 1554
+phase na D 010 119902
+phase na D 011 1547
+phase na D 100 70
+phase na D 101 3
+phase na D 110 7
+phase na E 000 1624
+phase na E 001 121449
+phase na E 010 73
+phase na E 011 7
+phase na E 100 1658
+phasen LG 431
+phase LG A 000 5743
+phase LG A 001 51430
+phase LG B 001 5743
+phase LG B 010 51430
+phase LG C 001 431
+phase LG C 010 57173
+phase LG C 100 3492469
+phase LG C 101 431
+phase LG C 110 57173
+phase LG D 000 431
+phase LG D 001 50999
+phase LG D 010 3390040
+phase LG D 011 50999
+phase LG D 100 431
+phase LG E 000 51430
+phase LG E 001 3441039
+phase LG E 010 431
+phase LG E 100 57173
+phasen N1 9619
+phase N1 A 000 171
+phase N1 A 001 773414
+phase N1 B 001 171
+phase N1 B 010 773414
+phase N1 C 001 9619
+phase N1 C 010 773585
+phase N1 C 100 77870025
+phase N1 C 101 9619
+phase N1 C 110 773585
+phase N1 D 000 9619
+phase N1 D 001 773369
+phase N1 D 010 76313668
+phase N1 D 011 773369
+phase N1 D 100 9619
+phase N1 E 000 782988
+phase N1 E 001 77087037
+phase N1 E 010 9619
+phase N1 E 100 773585
+phasen N2 9581
+phase N2 A 000 173
+phase N2 A 001 768842
+phase N2 B 001 173
+phase N2 B 010 768842
+phase N2 C 001 9581
+phase N2 C 010 769015
+phase N2 C 100 77527588
+phase N2 C 101 9581
+phase N2 C 110 769015
+phase N2 D 000 9581
+phase N2 D 001 768842
+phase N2 D 010 75989904
+phase N2 D 011 768842
+phase N2 D 100 9581
+phase N2 E 000 778423
+phase N2 E 001 76758746
+phase N2 E 010 9581
+phase N2 E 100 769015
+phasen N2s 47
+phase N2s A 001 5698
+phase N2s B 010 5698
+phase N2s C 001 47
+phase N2s C 010 5698
+phase N2s C 100 415735
+phase N2s C 101 47
+phase N2s C 110 5698
+phase N2s D 000 47
+phase N2s D 001 5698
+phase N2s D 010 404339
+phase N2s D 011 5698
+phase N2s D 100 47
+phase N2s E 000 5745
+phase N2s E 001 410037
+phase N2s E 010 47
+phase N2s E 100 5698
+phasen UA 45
+phase UA A 000 16
+phase UA A 001 5327
+phase UA B 001 16
+phase UA B 010 5327
+phase UA C 001 45
+phase UA C 010 5343
+phase UA C 100 361993
+phase UA C 101 45
+phase UA C 110 5343
+phase UA D 000 45
+phase UA D 001 5327
+phase UA D 010 351339
+phase UA D 011 5327
+phase UA D 100 45
+phase UA E 000 5372
+phase UA E 001 356666
+phase UA E 010 45
+phase UA E 100 5343
+phasen LE 33
+phase LE A 000 19
+phase LE A 001 3827
+phase LE B 001 19
+phase LE B 010 3827
+phase LE C 001 33
+phase LE C 010 3846
+phase LE C 100 262765
+phase LE C 101 33
+phase LE C 110 3846
+phase LE D 000 33
+phase LE D 001 3827
+phase LE D 010 255078
+phase LE D 011 3827
+phase LE D 100 33
+phase LE E 000 3860
+phase LE E 001 258905
+phase LE E 010 33
+phase LE E 100 3846

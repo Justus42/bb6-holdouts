@@ -1,0 +1,8 @@
+N1   Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 2 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+N2   Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 0 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+N2s  Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 0 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+UA   Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 0 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+LE0  Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 0 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+LE1  Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 0 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+LG   Proben   3000  Regel falsch 0 (davon nur andere Zerlegung: 0 nicht mitgezaehlt)  mit K(C) 0  Halt/Endlos 0  Typen: A>000 A>001 B>001 B>010 C>001 C>010 C>100 C>101 C>110 D>000 D>001 D>010 D>011 D>100 E>000 E>001 E>010 E>100
+K(C) gesamt: 0

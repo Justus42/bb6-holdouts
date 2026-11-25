@@ -1,0 +1,14 @@
+# Actions Run 45668615893 (Workflow verboten), Jobs direkt (A, C, D): zaehl_direkt.c bis 10^12, jeder Schritt.
+# Abgeschrieben aus den Job-Logs (Artefakt-Download aus der Sitzung gesperrt). Rechtsschritte nach Zustand und
+# den drei Zellen vor dem Kopf; "phase <Regel>" = nur in Phasen dieser Automatenregel.
+# Ergebnis: in keinem Start und keiner Regel ein Rechtsschritt "C 011" (K(C)) oder "C 111" (Halt).
+# Rechtsschritte nach C kommen in jeder Regel nur als C 001, C 010, C 100, C 101, C 110 vor.
+# Rueckfall-Phasen (ueb, vs, na): Programm 1 = Beschleuniger (cmp gleich), Job-Ende "success".
+
+Start  Laufzeit  K(C)  C111  K(D)=D 011    C 110 (Pruefpunkt)  Phasen N1/N2/N2s/UA/LE/LG          ueb/vs/na
+A      4595 s    0     0     297743045     297792881           319288/319084/227/251/160/2432     461/99/48
+C      5507 s    0     0     297394622     297438406           319379/319191/221/231/175/2373     462/87/57
+D      5280 s    0     0     297991701     298028315           319407/319242/180/202/192/2271     461/70/64
+
+# Jobs durchlauf (A, C, D): Programm 2 (Durchlaufmodell) = Programm 1 bis 10^10, alle Zeilen (Job "success").
+# Jobs beschleuniger (A, C, D): zaehl_beschl.py bis 10^14, success.
