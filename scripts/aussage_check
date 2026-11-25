@@ -2,7 +2,8 @@
 """Aussage-Pruefung einer busycoq-Beweisdatei VOR dem Bau (nur Text, kein Coq).
 
 Aufruf:
-  scripts/aussage_check <datei.v> <String> [<String> ...] [--modell <R>] [--coq <Modul> <kern.v>]
+  scripts/aussage_check <datei.v> <String> [<String> ...] [--modell <R>] [--wortsystem <ref.v>]
+                       [--coq <Modul> <kern.v>]
   scripts/aussage_check --formen <busycoq/verify>
   Mehrere erwartete Maschinen als weitere Argumente oder durch Komma getrennt
   (z. B. "S1,S2"; so uebergibt sie der Workflow pruefen).
@@ -26,6 +27,14 @@ Prueft:
      X muss der Zustand von R sein, der dem Start A der Maschine entspricht: Maschine =
      pi(R) oder pi(Spiegel(R)) mit pi(X) = A. Ein anderer Start oder nur eine Richtung
      (-> statt <->) ist kein Haupttheorem -> FAIL.
+     Nur mit --wortsystem <ref.v> zusaetzlich die Form einer Rueckfuehrung auf ein Wortsystem:
+       Theorem|Lemma <name> : halts <tm> c0 <-> <P> <S>.
+     <P> und <S> muessen genau die Namen sein, die ref.v in der Zeile "AUSSAGE: <P> <S>" nennt, und
+     die Datei muss das Modul aus ref.v (oberste Ebene, genau einmal) mit genau denselben Saetzen
+     enthalten (Kommentare und Leerraum zaehlen nicht). Jede Aenderung am Wortsystem (Regel, Runde,
+     Startwort), ein anderer Start im Satz oder nur eine Richtung -> FAIL. Vor dem Modul duerfen nur
+     Importe (Require/Import) und "Set Default Goal Selector" stehen (sonst koennten benutzte Namen
+     umdefiniert sein).
      Keine Binder, nicht in Section/Module Type/Funktor, Beweis endet mit Qed/Defined.
      Jede erwartete Maschine muss exakt vorkommen und ein Haupttheorem haben, jede andere
      Maschine (Zwilling) ebenfalls (gezaehlt je String: eine benannte Definition und ein
@@ -36,7 +45,8 @@ Prueft:
 Ausgabe: Bericht, dann "HAUPTTHEOREME: <A.b> ..." und "ERGEBNIS: OK|FAIL". Exit 0 = OK,
 1 = FAIL, 2 = Aufruffehler. Mit --coq wird zusaetzlich eine Coq-Datei geschrieben, die nach
 dem Bau die Aussagen im Kern abgleicht (Definition <..> : halts (TM_from_str "S") c0 := M.x,
-bei der Genau-dann-wenn-Form ... : halts (TM_from_str "S") c0 <-> M.P (M.start X) := M.x).
+bei der Genau-dann-wenn-Form ... : halts (TM_from_str "S") c0 <-> M.P (M.start X) := M.x,
+bei der Wortsystem-Form ... : halts (TM_from_str "S") c0 <-> M.P M.S := M.x).
 Die Textpruefung ersetzt diesen Abgleich nicht, sie faengt Fehler nur vor dem langen Bau ab.
 """
 import hashlib
@@ -63,6 +73,8 @@ MAIN_INLINE = re.compile(r'^(~\s*)?halts\s+\(\s*TM_from_str\s+"([^"]*)"\s*\)\s+c
 # Genau-dann-wenn-Form einer Beschleunigung (nur mit --modell): halts <tm> c0 <-> P (start X)
 MAIN_IFF = re.compile(rf'^halts\s+(?:\(\s*TM_from_str\s+"([^"]*)"\s*\)|({QID}))\s+c0\s*<->\s*'
                       rf'\(?\s*({ID})\s*\(\s*({ID})\s+([A-F])\s*\)\s*\)?$')
+# Rueckfuehrung auf ein Wortsystem (nur mit --wortsystem): halts <tm> c0 <-> P S (P, S qualifizierte Namen)
+MAIN_WORT = re.compile(rf'^halts\s+(?:\(\s*TM_from_str\s+"([^"]*)"\s*\)|({QID}))\s+c0\s*<->\s*({QID})\s+({QID})$')
 # Maschinen-Definitionen (aus dem Pin): Definition tm := [Eval compute in] (TM_from_str "S").
 MACHINE_DEF = re.compile(
     rf'^(?:Local\s+)?Definition\s+({ID})\s*(?::\s*TM\s*)?:=\s*'
@@ -325,8 +337,19 @@ def analyse(src):
                 stmt = norm(rest[1:])
                 mn, mi = MAIN_NAMED.match(stmt), MAIN_INLINE.match(stmt)
                 mf = MAIN_IFF.match(stmt)
-                target, how, iff = None, None, None
-                if mf:
+                mw = MAIN_WORT.match(stmt) if not mf else None
+                target, how, iff, wort = None, None, None, None
+                if mw:
+                    if mw.group(1) is not None:
+                        target = add_machine(mw.group(1), f"{'.'.join(modpath() + (name,))} (inline)", line, "inline")
+                        mi_used.add(mw.group(1))
+                    else:
+                        target = resolve(mw.group(2))
+                        if target is None:
+                            problems.append(f"Zeile {line}: {name}: Maschine {mw.group(2)} nicht als TM_from_str-Definition in der Datei gefunden")
+                    neg = None
+                    wort = {"pred": mw.group(3), "start": mw.group(4)}
+                elif mf:
                     if mf.group(1) is not None:
                         target = add_machine(mf.group(1), f"{'.'.join(modpath() + (name,))} (inline)", line, "inline")
                         mi_used.add(mf.group(1))
@@ -348,7 +371,8 @@ def analyse(src):
                 if target is not None:
                     ctx = [a for a, _ in stack if a in ("Section", "ModuleType", "Functor")]
                     th = {"name": ".".join(modpath() + (name,)), "kw": kw, "line": line, "machine": target,
-                          "verdict": "iff" if iff else ("nonhalt" if neg else "halt"), "iff": iff,
+                          "verdict": "iff" if (iff or wort) else ("nonhalt" if neg else "halt"), "iff": iff,
+                          "wort": wort,
                           "top": not stack, "stmt": stmt, "end": None, "ctx": ctx}
                     theorems.append(th)
                     pending = th
@@ -362,6 +386,43 @@ def analyse(src):
     if stack:
         problems.append(f"Struktur nicht geschlossen: {stack}")
     return machines, theorems, problems, topdefs
+
+
+def modul_saetze(src, name):
+    """Saetze (normalisiert) des obersten Moduls <name> einschliesslich Module/End; None, wenn es nicht
+    genau einmal auf oberster Ebene vorkommt."""
+    tiefe, treffer, cur = 0, [], None
+    for s, line in sentences(src):
+        t = norm(re.sub(r"^#\[[^\]]*\]\s*", "", s))
+        mo = re.match(rf"^(?:Module|Section)\s+(?:(?:Import|Export)\s+)?(?:Type\s+)?({ID})(.*)$", t)
+        if mo and ":=" not in mo.group(2):
+            if tiefe == 0 and t.startswith("Module") and mo.group(1) == name:
+                cur = []
+                treffer.append(cur)
+            tiefe += 1
+        if cur is not None:
+            cur.append(t)
+        if re.match(rf"^End\s+{ID}$", t):
+            tiefe -= 1
+            if tiefe == 0:
+                cur = None
+    return treffer[0] if len(treffer) == 1 else None
+
+
+def lade_wortsystem(ref):
+    """Liefert (Modulname, Saetze, Praedikat, Start) aus der Referenzdatei."""
+    src = Path(ref).read_text()
+    m = re.search(rf"AUSSAGE:\s*({QID})\s+({QID})", src)
+    if not m:
+        die(f"FEHLER: {ref} nennt keine Zeile 'AUSSAGE: <Praedikat> <Start>'")
+    pred, start = m.group(1), m.group(2)
+    mod = pred.split(".")[0]
+    if "." not in pred or start.split(".")[0] != mod:
+        die(f"FEHLER: {ref}: Praedikat und Start muessen im selben Modul liegen ({pred}, {start})")
+    saetze = modul_saetze(src, mod)
+    if not saetze:
+        die(f"FEHLER: {ref} enthaelt das Modul {mod} nicht genau einmal")
+    return mod, saetze, pred, start
 
 
 def modell_starts(ref, s):
@@ -381,7 +442,7 @@ def modell_starts(ref, s):
 
 
 # --- Hauptpruefung -------------------------------------------------------------------
-def check(path, expected, coq=None, modell=None):
+def check(path, expected, coq=None, modell=None, wortsystem=None):
     fails = []
     raw = Path(path).read_bytes()
     print(f"Datei: {path}")
@@ -409,6 +470,29 @@ def check(path, expected, coq=None, modell=None):
         return 1
     fails += problems
     twins = [mirror_twins(e) for e in expected]
+    ws = None
+    if wortsystem is not None:
+        ws = lade_wortsystem(wortsystem)
+        print(f"Wortsystem-Referenz (--wortsystem): {wortsystem}, Modul {ws[0]} ({len(ws[1])} Saetze), "
+              f"Aussage <-> {ws[2]} {ws[3]}")
+        eigen = modul_saetze(raw.decode("utf-8"), ws[0])
+        # vor dem Modul nur Importe und Einstellungen: sonst koennten Namen, die das Modul benutzt
+        # (tl, list, bool, ...), umdefiniert sein, ohne dass sich der Text des Moduls aendert
+        for t_, line_ in sentences(raw.decode("utf-8")):
+            t_ = norm(t_)
+            if re.match(rf"^Module\s+{ws[0]}$", t_):
+                break
+            if not re.match(r"^(?:From\s+\S+\s+)?Require\s+(?:Import\s+|Export\s+)?[\w. ]+$|^Import\s+[\w. ]+$"
+                            r"|^Set\s+Default\s+Goal\s+Selector\s+\"!\"$", t_):
+                fails.append(f"Zeile {line_}: vor Modul {ws[0]} steht mehr als Importe/Einstellungen: {t_[:80]!r}")
+        if eigen is None:
+            fails.append(f"Modul {ws[0]} steht nicht genau einmal auf oberster Ebene in der Datei")
+        elif eigen != ws[1]:
+            k = next((i for i in range(min(len(eigen), len(ws[1]))) if eigen[i] != ws[1][i]), min(len(eigen), len(ws[1])))
+            fails.append(f"Modul {ws[0]} weicht von der Referenz ab (Satz {k + 1}: "
+                         f"Datei {eigen[k][:90] if k < len(eigen) else '-'!r} / Referenz {ws[1][k][:90] if k < len(ws[1]) else '-'!r})")
+        else:
+            print(f"  Modul {ws[0]} der Datei = Referenz ({len(eigen)} Saetze)")
     if modell is not None:
         print(f"Modell-Referenz (--modell): {modell}")
         if not TM_RE.match(modell):
@@ -452,6 +536,15 @@ def check(path, expected, coq=None, modell=None):
             fails.append(f"{th['name']}: Beweis endet nicht mit Qed/Defined ({th['end']})")
         if th["ctx"]:
             fails.append(f"{th['name']}: steht in {'/'.join(th['ctx'])}; Aussage waere dort nicht die gepruefte")
+        if th["wort"]:
+            ff = th["wort"]
+            if ws is None:
+                fails.append(f"{th['name']}: Wortsystem-Form nur mit --wortsystem <Referenz> zulaessig")
+            elif (ff["pred"], ff["start"]) != (ws[2], ws[3]):
+                fails.append(f"{th['name']}: rechte Seite {ff['pred']} {ff['start']} ist nicht die Referenz-Aussage "
+                             f"{ws[2]} {ws[3]}")
+            if not th["top"]:
+                fails.append(f"{th['name']}: Wortsystem-Satz nicht auf oberster Ebene")
         if th["iff"]:
             ff = th["iff"]
             if modell is None:
@@ -524,6 +617,11 @@ def check(path, expected, coq=None, modell=None):
                  f"From BusyCoq Require {mod}.", ""]
         for k, th in enumerate(theorems):
             s = machines[th["machine"]]["tm"]
+            if th["wort"]:
+                ff = th["wort"]
+                lines.append(f'Definition aussage_{k + 1} : halts (TM_from_str "{s}") c0 <-> '
+                             f'{mod}.{ff["pred"]} {mod}.{ff["start"]} := {mod}.{th["name"]}.')
+                continue
             if th["iff"]:
                 ff = th["iff"]
                 lines.append(f'Definition aussage_{k + 1} : halts (TM_from_str "{s}") c0 <-> '
@@ -596,6 +694,13 @@ def main(argv):
             die("FEHLER: --coq <Modul> <kern.v> muss am Ende stehen")
         coq = (argv[k + 1], argv[k + 2])
         argv = argv[:k]
+    wortsystem = None
+    if "--wortsystem" in argv:
+        k = argv.index("--wortsystem")
+        if len(argv) < k + 2 or not Path(argv[k + 1]).is_file():
+            die("FEHLER: --wortsystem <Referenzdatei>")
+        wortsystem = argv[k + 1]
+        argv = argv[:k] + argv[k + 2:]
     modell = None
     if "--modell" in argv:
         k = argv.index("--modell")
@@ -612,7 +717,7 @@ def main(argv):
         for e in re.split(r"[,\s]+", a.strip()):
             if e and e not in expected:
                 expected.append(e)
-    return check(argv[0], expected, coq, modell)
+    return check(argv[0], expected, coq, modell, wortsystem)
 
 
 if __name__ == "__main__":

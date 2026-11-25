@@ -1,0 +1,80 @@
+name: lauf_396b
+
+# Thread "396, Teil 2" (reine Analyse, kein Rocq). Startet nur von Hand (workflow_dispatch);
+# liest analyse/396/auftrag_teil2.txt vom gewaehlten Ref.
+# auftrag_teil2.txt: "a_sekunden <s>" (Laufzeit Programm A), "b_sekunden <s>" (Laufzeit Programm B).
+# Jobs:
+#   kontrollen: kontrollen.sh (Teil 1) und kontrollen_teil2.sh (A gegen B, Zufallswoerter, Fehler-Schalter)
+#   a: runde.c (Zaehler 2^e - c) mit Protokoll und Wortenden um 1011-Ereignisse, bis Halt oder Zeitende
+#   b: runde_b.cpp (exakter Zaehler beliebiger Groesse), gleiches Protokoll, bis Halt oder Zeitende
+#   vergleich: Protokolle A und B bis zur kleineren erreichten Runde zeilengleich?
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kontrollen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Kontrollen Teil 1
+        run: bash analyse/396/kontrollen.sh
+      - name: Kontrollen Teil 2
+        run: bash analyse/396/kontrollen_teil2.sh
+
+  a:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm A
+        working-directory: analyse/396
+        run: |
+          S=$(awk '$1=="a_sekunden"{print $2}' auftrag_teil2.txt)
+          gcc -O2 -Wall -o runde runde.c
+          start=$(date +%s)
+          PROTO=1 FENSTER=1 ZEIT="$S" ./runde 396 5000000 > proto_a.txt 2> fortschritt_a.txt || echo "Exit-Code $?"
+          echo "Laufzeit $(( $(date +%s) - start )) s"
+          bash zusammenfassung.sh proto_a.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: proto-a
+          path: analyse/396/proto_a.txt
+
+  b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm B
+        working-directory: analyse/396
+        run: |
+          S=$(awk '$1=="b_sekunden"{print $2}' auftrag_teil2.txt)
+          g++ -O2 -Wall -o runde_b runde_b.cpp
+          start=$(date +%s)
+          ./runde_b 5000000 "$S" > proto_b.txt || echo "Exit-Code $?"
+          echo "Laufzeit $(( $(date +%s) - start )) s"
+          bash zusammenfassung.sh proto_b.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: proto-b
+          path: analyse/396/proto_b.txt
+
+  vergleich:
+    needs: [a, b]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: analyse/396/artefakte
+      - name: Vergleich A gegen B
+        working-directory: analyse/396
+        run: bash vergleich_ab.sh artefakte/proto-a/proto_a.txt artefakte/proto-b/proto_b.txt
