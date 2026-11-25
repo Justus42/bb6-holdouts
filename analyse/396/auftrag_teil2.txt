@@ -1,0 +1,2 @@
+a_sekunden 18000
+b_sekunden 7200

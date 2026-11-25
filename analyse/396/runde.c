@@ -2,11 +2,19 @@
    Gesetz: V(0x)=1x, V(100x)=000V(x), V(110x)=000V(x), V(1010x)=1010V(V(x)),
            V(1011x)= HALT (Modus 88) bzw. 0001x (Modus 396), V(111x)=HALT.
    Runde: s <- V(10 s), Start s = 1.
-   Aufruf: runde <modus 88|396> <max_runden> [ausgabe_bis_runde] [startwort]  (FEHLER=1: falsche 1011-Regel, FEHLER=2: falsche Rundung im 2^e-c-Zweig) */
+   Aufruf: runde <modus 88|396> <max_runden> [ausgabe_bis_runde] [startwort]  (FEHLER=1: falsche 1011-Regel, FEHLER=2: falsche Rundung im 2^e-c-Zweig)
+   Teil 2: PROTO=1 schreibt ein Protokoll, das runde_b.cpp genauso schreibt (Vergleich zeilenweise):
+     K <runde> <pos> <n>   Besuch trifft Block 1011 (pos = Zelle von links, 0 = erste Zelle des Wortes "10 s"; n = ankommende Besuche oder "gross")
+     Z <runde> <pos> <n>   Besuch trifft Block, der mit 011 beginnt (nach dem Halt-Schritt 0->1 stuende dort 111)
+     E <runde> <anzahl11> <anzahl111> <pos_erstes11>   Wort am Rundenende enthaelt 11 (nur wenn ja)
+     H <runde> <laenge> <fnv64>   alle 1000 Runden: Pruefsumme des Wortes
+     HALT 111 <runde> <pos> / ENDE <runde> <laenge>
+   ZEIT=<s>: nach so vielen Sekunden nach der laufenden Runde aufhoeren. FENSTER=1: Wortenden um Ereignisse (W-Zeilen). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <time.h>
 typedef __int128 i128;
 #ifndef SCHWELLE
 #define SCHWELLE 64   /* ab 2^SCHWELLE wird n als 2^e - c gefuehrt; zum Testen kleiner waehlen (-DSCHWELLE=3) */
@@ -28,8 +36,13 @@ static cnt norm(cnt n){
   return n; }
 
 static uint8_t *buf; static int64_t cap, st, en; /* Wort = buf[st..en) , rechts davon Nullen */
-static int modus;
-static int64_t ev1011 = 0, ev_round = 0, round_no = 0; static int64_t first1011 = -1;
+static int modus; static int proto = 0, fenster = 0;
+static void pn(cnt n){   /* ankommende Besuche: exakt, wenn < 2^62, sonst "gross" */
+  i128 v = -1;
+  if (n.e == 0) v = 1 - n.c; else if (n.e < 62) v = (((i128)1) << n.e) - n.c;
+  if (v >= 0 && v < ((i128)1 << 62)) printf("%lld", (long long)v); else printf("gross");
+}
+static int64_t haltpos = -1; static double zeit = 0; static clock_t t0; static int64_t ev1011 = 0, ev_round = 0, round_no = 0; static int64_t first1011 = -1;
 static uint8_t cell(int64_t i){ return i < en ? buf[i] : 0; }
 static void setc(int64_t i, uint8_t v){ if (i >= cap) { fprintf(stderr,"cap\n"); exit(4);} if (i >= en){ if(!v) return; memset(buf+en,0,i-en); en=i+1; } buf[i]=v; }
 /* ein Besuch-Paket: n Besuche ab Position p. Rueckgabe 1 = Halt */
@@ -39,13 +52,16 @@ static int besuche(int64_t p, cnt n){
     if (iszero(n)) return 0;
     if (p >= en){ /* nur noch Nullen: n Besuche auf 0^inf; trotzdem zellweise weiter */ }
     uint8_t a = cell(p);
-    if (a == 0){ setc(p,1); n = dec(n); n = norm(n); if (iszero(n)) return 0; }
+    if (a == 0){
+      if (proto && cell(p+1) == 1 && cell(p+2) == 1){ printf("Z %lld %lld ", (long long)round_no, (long long)(p - st)); pn(n); putchar('\n'); }
+      setc(p,1); n = dec(n); n = norm(n); if (iszero(n)) return 0; }
     uint8_t b = cell(p+1), c = cell(p+2), d = cell(p+3);
-    if (b == 1 && c == 1) return 1;                         /* 111: Halt */
+    if (b == 1 && c == 1){ haltpos = p - st; return 1; }    /* 111: Halt */
     if (b == 0 && c == 1 && d == 0){ n = dbl(n); /* 2n */ p += 4; continue; }
     if (b == 0 && c == 1 && d == 1){                        /* 1011 */
       ev1011++; ev_round++; if (first1011 < 0) first1011 = round_no;
-      if (ev1011 <= 200) { cnt m = n; printf("EREIGNIS 1011 Runde %lld Position %lld (von links) Besuche n = 2^%lld - %lld%s\n",
+      if (proto){ printf("K %lld %lld ", (long long)round_no, (long long)(p - st)); pn(n); putchar('\n'); }
+      if (ev1011 <= 200 && !proto) { cnt m = n; printf("EREIGNIS 1011 Runde %lld Position %lld (von links) Besuche n = 2^%lld - %lld%s\n",
         (long long)round_no, (long long)(p - st), (long long)m.e, (long long)m.c, (m.c > (i128)INT64_MAX || m.c < (i128)INT64_MIN) ? " (c gekuerzt)" : ""); }
       if (modus == 88) return 2;
       setc(p,0); setc(p+1,0); setc(p+2,fehler == 1 ? 1 : 0); /* 0001 (Fehler-Schalter 1: 0011) */
@@ -69,6 +85,10 @@ int main(int argc, char **argv){
   int64_t left = 2*maxr + 16; cap = left + 64*1024*1024; buf = calloc(cap,1);
   const char *w0 = (argc > 4) ? argv[4] : "1";   /* Startwort (Standard: s0 = 1, wie ab Leerband) */
   if (getenv("FEHLER")) fehler = atoi(getenv("FEHLER"));
+  if (getenv("PROTO")) proto = 1;
+  if (getenv("FENSTER")) fenster = 1;
+  if (getenv("ZEIT")) zeit = atof(getenv("ZEIT"));
+  t0 = clock();
   st = left; en = st; for (const char *q = w0; *q; q++) setc(st + (q - w0), (uint8_t)(*q - '0'));
   for (round_no = 1; round_no <= maxr; round_no++){
     st -= 2; buf[st] = 1; buf[st+1] = 0;  /* 10 s */
@@ -76,11 +96,30 @@ int main(int argc, char **argv){
     ev_round = 0;
     int r = besuche(st, one);
     while (en > st && buf[en-1] == 0) en--;
+    if (r == 1 && proto){ printf("HALT 111 %lld %lld\n",(long long)round_no,(long long)haltpos); }
     if (r == 1){ printf("HALT 111 in Runde %lld, Wortlaenge %lld\n",(long long)round_no,(long long)(en-st)); return 0; }
     if (r == 2){ printf("HALT 1011 in Runde %lld, Wortlaenge %lld\n",(long long)round_no,(long long)(en-st)); return 0; }
     if (round_no <= outr){ printf("R %lld ", (long long)round_no); for (int64_t i = st; i < en; i++) putchar('0'+buf[i]); putchar('\n'); }
-    if (first1011 >= 0 && (round_no < first1011 + 100 || ev_round)) printf("NACH Runde %lld Laenge %lld 1011-Ereignisse in der Runde %lld\n",(long long)round_no,(long long)(en-st),(long long)ev_round);
+    if (proto){
+      int64_t c11 = 0, c111 = 0, f11 = -1;
+      for (int64_t i = st; i + 1 < en; i++) if (buf[i] & buf[i+1]){ c11++; if (f11 < 0) f11 = i - st; if (i + 2 < en && buf[i+2]) c111++; }
+      if (c11) printf("E %lld %lld %lld %lld\n",(long long)round_no,(long long)c11,(long long)c111,(long long)f11);
+      if (round_no % 1000 == 0){ uint64_t h = 1469598103934665603ULL; for (int64_t i = st; i < en; i++){ h ^= buf[i]; h *= 1099511628211ULL; }
+        printf("H %lld %lld %016llx\n",(long long)round_no,(long long)(en-st),(unsigned long long)h); }
+      if (fenster){ /* Wortende (letzte 150 Zellen) in den 3 Runden vor und 30 Runden nach jedem 1011-Ereignis */
+        static char ring[4][160]; static int64_t zeigebis = -1, gedruckt = 0;
+        char *w = ring[round_no % 4]; int64_t a0 = en - 150 > st ? en - 150 : st; int k = 0;
+        for (int64_t i = a0; i < en; i++) w[k++] = (char)('0' + buf[i]);
+        w[k] = 0;
+        if (ev_round){ for (int64_t q = round_no - 3; q < round_no; q++) if (q > gedruckt && q > 0) printf("W %lld %s\n",(long long)q,ring[q % 4]); zeigebis = round_no + 30; }
+        if (round_no <= zeigebis){ printf("W %lld %s\n",(long long)round_no,w); gedruckt = round_no; }
+      }
+      fflush(stdout);
+      if (zeit > 0 && (double)(clock() - t0) / CLOCKS_PER_SEC > zeit){ printf("ENDE %lld %lld\n",(long long)round_no,(long long)(en-st)); return 0; }
+    }
+    if (!proto && first1011 >= 0 && (round_no < first1011 + 100 || ev_round)) printf("NACH Runde %lld Laenge %lld 1011-Ereignisse in der Runde %lld\n",(long long)round_no,(long long)(en-st),(long long)ev_round);
     if (round_no % 10000 == 0) { fprintf(stderr,"Runde %lld Laenge %lld 1011-Ereignisse %lld (erstes in Runde %lld)\n",(long long)round_no,(long long)(en-st),(long long)ev1011,(long long)first1011); }
   }
+  if (proto) printf("ENDE %lld %lld\n",(long long)maxr,(long long)(en-st));
   printf("KEIN HALT bis Runde %lld, Wortlaenge %lld, 1011-Ereignisse %lld, erstes in Runde %lld\n",(long long)maxr,(long long)(en-st),(long long)ev1011,(long long)first1011);
 }
