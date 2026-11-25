@@ -56,4 +56,11 @@ echo "== 6. 396 und 587 ab Leerband (direkt), Runden 1-27 gleich"
 ./direkt_start 1RB1LD_0RC0LF_1LD1RE_0LA0RB_0RD1RB_0LD--- 587 1 27 3000000000 | awk '$2>0' > d_587.txt
 ./direkt_start 1RB0LB_0RC0LF_1LD1RE_0LA0RB_0RD0RF_0LA--- 396 1 27 3000000000 | awk '$2>0' > d_396s.txt
 cmp d_587.txt d_396s.txt && echo "gleich ($(wc -l < d_587.txt) Runden)"
+echo "== 7. Zwoelf Annahmen aus PR #59 fuer 396 (Woerter bis Laenge 12), Gegenprobe 88 und veraenderte Tabelle"
+python3 annahmen.py 396 12 | tee aus_annahmen_396.txt
+[ "$(grep -c 'FALSCH' aus_annahmen_396.txt)" = 1 ] && grep -q 'hv_1011.*FALSCH' aus_annahmen_396.txt || { echo "FEHLER: 396 Annahmen"; exit 1; }
+python3 annahmen.py 88 12 > aus_annahmen_88.txt
+[ "$(grep -c 'Ersatz 396.*FALSCH' aus_annahmen_88.txt)" = 2 ] && grep -q 'hv_1011.*GILT' aus_annahmen_88.txt || { echo "FEHLER: Gegenprobe 88"; exit 1; }
+python3 -c "import sys, tm; tm.M['neg']='1RB1LB_0RC0LF_1LD1RE_0LA0RB_0RD0RF_0LA---'; sys.argv=['annahmen.py','neg','8']; exec(open('annahmen.py').read())" | grep -q 'round_step.*FALSCH' || { echo "FEHLER: veraenderte Tabelle (A1=1LB) nicht erkannt"; exit 1; }
+echo "Gegenprobe 88 und veraenderte Tabelle schlagen an"
 echo "ALLE KONTROLLEN TEIL 2 BESTANDEN"
