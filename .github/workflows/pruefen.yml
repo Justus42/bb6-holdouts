@@ -3,7 +3,8 @@ name: pruefen
 # Prueft eine Beweisdatei fuer eine Maschine, nur manuell:
 #   1. aussage_check (Text, vor dem Bau): Maschinen = erwarteter String oder Spiegel-Zwilling,
 #      String in der Liste oder in decided, Haupttheoreme in der Form der gemergten Beweise;
-#      mit Eingabe modell auch die Genau-dann-wenn-Form einer Beschleunigung (Start geprueft).
+#      mit Eingabe modell auch die Genau-dann-wenn-Form einer Beschleunigung (Start geprueft);
+#      mit Eingabe wortsystem die Rueckfuehrung auf ein Wortsystem (Modul = Referenzdatei, Start geprueft).
 #   2. Bau im nativen UND im VM-Image (Digests am 2026-11-24 per Registry-API verifiziert),
 #      jeweils Print Assumptions streng fuer alle Haupttheoreme und Kern-Abgleich der Aussagen.
 # Beide Bau-Jobs bekommen per Artefakt genau die Bytes, die aussage_check gesehen hat (SHA-256).
@@ -21,6 +22,10 @@ on:
         default: "1RB1LE_0RC0LC_1LD0RA_0LA0LF_0LC0LE_0LD---"
       modell:
         description: "nur fuer Beschleunigungs-Saetze (halts ... c0 <-> P (start X)): Referenz-Tabelle des Modells, sonst leer"
+        required: false
+        default: ""
+      wortsystem:
+        description: "nur fuer Rueckfuehrungen (halts ... c0 <-> P S): Referenzdatei des Wortsystems im Repo (z. B. scripts/referenz/wortsystem_396.v), sonst leer"
         required: false
         default: ""
       lemmata:
@@ -71,10 +76,16 @@ jobs:
         env:
           MASCHINE: ${{ inputs.maschine }}
           MODELL: ${{ inputs.modell }}
+          WORTSYSTEM: ${{ inputs.wortsystem }}
         run: |
           set -euo pipefail
           extra=()
           [ -z "$MODELL" ] || extra=(--modell "$MODELL")
+          if [ -n "$WORTSYSTEM" ]; then
+            case "$WORTSYSTEM" in *..*|/*) echo "FEHLER: Pfad mit .. oder absolut: $WORTSYSTEM"; exit 2 ;; esac
+            extra+=(--wortsystem "$WORTSYSTEM")
+            bash scripts/test_aussage_check_wort.sh
+          fi
           scripts/aussage_check "pruefling/$MOD.v" "$MASCHINE" "${extra[@]}" --coq "$MOD" "pruefling/Kern_$MOD.v" | tee pruefling/aussage.log
           thms=$(sed -n 's/^HAUPTTHEOREME: //p' pruefling/aussage.log)
           [ -n "$thms" ] || { echo "FEHLER: keine Haupttheoreme"; exit 1; }
