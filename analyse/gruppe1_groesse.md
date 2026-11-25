@@ -158,7 +158,18 @@ in den Blocksprüngen S1, S2 kann das Muster nicht auftreten, Begründung im Cod
 der Beschleuniger ohnehin simuliert (VS, linkes Ende, Übergänge), und jede k-te Automatenphase; dort
 wird zusätzlich das Ergebnis des Durchlaufmodells mit der Automatenregel verglichen.
 
-FOLGT (Actions bis 10^15)
+Actions bis 10^15 (Run 45677822205, `ergebnisse/haltemuster_1e15/`), jede 10.001. Automatenphase
+plus alle Rückfälle und Übergänge:
+
+| Start | geprüfte Phasen | davon Automat | `C> 0 1 1` | `D> 0 1 1` | `E> 0 1 1` | Automat = Durchlaufmodell |
+|---|---|---|---|---|---|---|
+| A | 5.430 | 2.038 | **0** | 38.486 | 664 | ja (0 Abweichungen) |
+| C | 5.355 | 2.038 | **0** | 37.341 | 636 | ja |
+| D | 5.406 | 2.038 | **0** | 37.460 | 662 | ja |
+
+Fast alle Beinahe-Treffer liegen in Übergängen und Rückfällen am linken Ende, nahe an der Grenze
+(−30 bis +381 Zellen). In den Automatenphasen der Stichprobe gab es nur 3 bis 57 je Start. Einmal kam
+der Kopf in Zustand B an (A, Rückfall).
 
 Lokal (Start A): bis 10^8 **jede** Phase geprüft (19.825), bis 10^12 jede 101. Automatenphase:
 `C> 0 1 1` 0-mal; Beinahe-Treffer `D> 0 1 1` in N1, N2, UA, LG, LE0, Rückfällen und Übergängen,
