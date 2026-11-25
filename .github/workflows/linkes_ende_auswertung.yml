@@ -6,6 +6,7 @@ name: linkes_ende_auswertung
 # Startet bei einem Push, der analyse/gruppe1/linkes_ende/auswertung.txt aendert (Zeile "lauf <Run-ID>").
 on:
   push:
+    branches-ignore: [main]   # kein Start durch Push auf main, auch nicht beim Merge (Justus, 25.11.2026)
     paths:
       - analyse/gruppe1/linkes_ende/auswertung.txt
 

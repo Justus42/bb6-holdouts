@@ -2,7 +2,7 @@ name: coq-check
 
 on:
   push:
-    branches: ["ccr-*", "main"]
+    branches: ["ccr-*"]   # kein Start durch Push auf main (Justus, 25.11.2026)
     paths: [".github/workflows/coq-check.yml", "scripts/check_m284.sh"]
   workflow_dispatch:
 
