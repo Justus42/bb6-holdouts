@@ -1,2 +1,2 @@
-pruef 1e15
+pruef 1e16
 lauf 1e30

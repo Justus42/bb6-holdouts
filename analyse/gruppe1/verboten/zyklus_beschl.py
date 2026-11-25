@@ -20,14 +20,21 @@ gleiche Kostenformel), mit drei Aenderungen:
    zaehl_direkt.c bis 10^12 je Regel, regel_test.py zufaellig; nicht bewiesen). Eine Automatenregel wird
    nur angewandt, wenn das rechteste Token (1, gerade >= 2) ist (Bedingung von regel_test.py), sonst
    Rueckfall.
+4. Zweite Sicherung (Justus, 25.11.): ab STICH_AB (10^12) an STICH_JE (30) Stellen je Zehnerpotenz eine
+   zufaellige Automatenphase ganz mit dem Durchlaufmodell rechnen (Halt, K(C)) und mit der Regel vergleichen.
+5. Haltekandidat: Halt in einer gerechneten Phase -> Schnappschuss davor als kandidat_<Start>_<n>.txt.gz und
+   als BASE64-Zeile im Log, Lauf stoppt (nachrechnen: kandidat_nachrechnen.py). K(C) (notwendig, nicht
+   hinreichend) -> Schnappschuss, Lauf geht weiter, die naechsten VERFOLGEN (5) Phasen ganz im Durchlaufmodell.
 
-Aufruf: python3 -I zyklus_beschl.py <A|C|D> <Schritte> lauf|pruef [<datei r=0-Schnappschuesse>]
+Aufruf: python3 -I zyklus_beschl.py <A|C|D> <Schritte> lauf|pruef [<datei r=0-Schnappschuesse>|-] [<STICH_AB>]
   lauf : so weit wie moeglich, Zusammenfassung je Zehnerpotenz.
   pruef: zusaetzlich jeden Rueckfall ganz rechnen und vergleichen; Schnappschuesse bei r = 0 als
          "n 0 crc" (wie beschleuniger.py pruef) in die Datei.
 Negativkontrolle: ZB_FEHLER=paar (Paarkosten +1 je Paar), ZB_FEHLER=lokal (Eichung um 1 falsch) bzw.
   ZB_FEHLER=ueb (Zyklusuebergang 1 Schritt zu viel):
-  der Abgleich mit beschleuniger.py muss dann scheitern.
+  der Abgleich mit beschleuniger.py muss dann scheitern. ZB_FEHLER=stich (Stichprobe: Regelkosten +1) muss
+  einen Kandidaten melden; ZB_FEHLER=kc (einmal K(C) vorgetaeuscht ab 10^9) muss Schnappschuss und 5 verfolgte
+  Phasen zeigen, ohne die Schrittzahl zu aendern.
 """
 import base64
 import bisect
@@ -531,7 +538,74 @@ def oben(st, links, k):
     return out[:k]
 
 
+# ---- C-Fassung von rechne (rechne.c, gleiche Rechnung; ZB_PY=1 erzwingt Python). Abgleich: test_rechne_c.py
+def _lade_c():
+    if os.environ.get("ZB_PY"):
+        return None
+    import ctypes
+    import subprocess
+    quelle = os.path.join(HIER, "rechne.c")
+    so = os.path.join(HIER, "rechne.so")
+    if not os.path.exists(so) or os.path.getmtime(so) < os.path.getmtime(quelle):
+        subprocess.run(["cc", "-O2", "-shared", "-fPIC", "-o", so, quelle], check=True)
+    lib = ctypes.CDLL(so)
+    P = ctypes.c_void_p
+    i64 = ctypes.c_int64
+    lib.rechne.restype = ctypes.c_int
+    lib.rechne.argtypes = [i64, P, P, i64, P, i64, P, P, i64, P, P, i64, P, P, P, P, i64]
+    return lib
+
+
+C_LIB = _lade_c()
+SEP_NR = {"0": 0, "1": 1, "": 2}
+
+
+class Endlos(Exception):
+    pass
+
+
+def rechne_c(X, tail, r, grenze=0):
+    """Wie rechne_py, in C. Rueckgabe (Y, tail, r', dn, kc); Halt -> bs.Halt(Schritte)."""
+    import ctypes
+    sep = np.array([SEP_NR[t] for t, _ in X], dtype=np.int8)
+    val = np.array([v for _, v in X], dtype=np.int64)
+    tl = np.array([int(c) for c in tail], dtype=np.int8)
+    cap = 2 * len(X) + 2 * len(tail) + 64
+    while True:
+        so = np.zeros(cap, dtype=np.int8)
+        vo = np.zeros(cap, dtype=np.int64)
+        to = np.zeros(cap, dtype=np.int8)
+        aus = np.zeros(5, dtype=np.int64)    # ntok, ntail, r, n, kc
+        z = lambda a: a.ctypes.data_as(ctypes.c_void_p)   # noqa: E731
+        a = aus.ctypes.data
+        ret = C_LIB.rechne(len(X), z(sep), z(val), len(tl), z(tl), int(r), z(so), z(vo), cap, a,
+                           z(to), cap, a + 8, a + 16, a + 24, a + 32, int(grenze))
+        if ret == 1:
+            raise bs.Halt(int(aus[3]))
+        if ret == 0:
+            break
+        if ret == 2:
+            raise Endlos(grenze)
+        cap *= 4
+        if cap > 10**9:
+            raise RuntimeError("rechne.c: kein Platz")
+    nt, ntl = int(aus[0]), int(aus[1])
+    Y = [(SEPS[x], v) for x, v in zip(so[:nt].tolist(), vo[:nt].tolist())]
+    return Y, "".join(map(str, to[:ntl].tolist())), int(aus[2]), int(aus[3]), int(aus[4])
+
+
 def rechne(X, tail, r, lauf):
+    """Durchlaufmodell einer Phase (C-Fassung, sonst Python); zaehlt K(C)."""
+    if C_LIB is None:
+        tk, tl, rr, n, kc = rechne_py(X, tail, r)
+    else:
+        tk, tl, rr, n, kc = rechne_c(X, tail, r)
+    if FEHLER == "kc" and lauf is not None and lauf.n > 10**9 and not lauf.kc_auftreten:
+        kc += 1      # Negativkontrolle: einmal ein K(C) vortaeuschen
+    return tk, tl, rr, n, kc
+
+
+def rechne_py(X, tail, r, grenze=0):
     """Durchlaufmodell auf X (wie beschleuniger.rueckfall), zaehlt nur K(C): Zustand C tritt von links auf
     eine Zelle mit 0 1 1. Rueckgabe (Y, tail, r', dn, Zahl K(C))."""
     sm = bs.sm
@@ -546,7 +620,11 @@ def rechne(X, tail, r, lauf):
     kc = 0
     erster = True
     TAB = sm.TAB
+    makro = 0
     while True:
+        makro += 1
+        if grenze and makro > grenze:
+            raise Endlos(makro)
         if not erster and q == C_:
             rr = None
             if seite == "R" and oben(R, False, 2) == [0, 0]:
@@ -555,8 +633,6 @@ def rechne(X, tail, r, lauf):
                 rr = bs.rechts_muster(R, "z2")
             if rr is not None:
                 tk, tl = bs.canon(bs.bits_aus_l(L) if seite == "R" else bs.bits_aus_l(L)[:-1])
-                if FEHLER == "kc" and lauf is not None and lauf.n > 10**9 and not lauf.kc_auftreten:
-                    kc += 1      # Negativkontrolle: einmal ein K(C) vortaeuschen
                 return tk, tl, rr, n, kc
         erster = False
         if seite == "R" and q == C_ and R and R[-1][0] == "w" and R[-1][1] == "100":
