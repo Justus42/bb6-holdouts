@@ -1,7 +1,7 @@
 name: lauf_396b
 
-# Thread "396, Teil 2" (reine Analyse, kein Rocq). Startet nur bei Push auf einem Thread-Branch, der
-# analyse/396/auftrag_teil2.txt aendert (nie auf main), oder von Hand.
+# Thread "396, Teil 2" (reine Analyse, kein Rocq). Startet nur von Hand (workflow_dispatch);
+# liest analyse/396/auftrag_teil2.txt vom gewaehlten Ref.
 # auftrag_teil2.txt: "a_sekunden <s>" (Laufzeit Programm A), "b_sekunden <s>" (Laufzeit Programm B).
 # Jobs:
 #   kontrollen: kontrollen.sh (Teil 1) und kontrollen_teil2.sh (A gegen B, Zufallswoerter, Fehler-Schalter)
@@ -9,10 +9,6 @@ name: lauf_396b
 #   b: runde_b.cpp (exakter Zaehler beliebiger Groesse), gleiches Protokoll, bis Halt oder Zeitende
 #   vergleich: Protokolle A und B bis zur kleineren erreichten Runde zeilengleich?
 on:
-  push:
-    branches-ignore: [main]
-    paths:
-      - analyse/396/auftrag_teil2.txt
   workflow_dispatch:
 
 permissions:
