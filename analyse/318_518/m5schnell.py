@@ -19,6 +19,8 @@ Aufruf:
     --hash        je Zyklusbeginn "Schritt Zustand Laenge CRC32" ausgeben (zum Abgleich mit "m5sim hash")
     --stichprobe N  jeden N-ten regelmaessigen Zyklus zusaetzlich direkt rechnen und vergleichen
     --umbau DATEI   jeden direkt gerechneten Zyklus (Band davor/danach in Bausteinen) in DATEI schreiben
+    --snap          bei Zyklus 1, 2, 4, 8, ... Kurzstand (Ziffern, W, linke Bausteine) auf stderr
+    --baender PFAD  bei grossen Umbauten (Dauer > 10 x Breite) Band davor/danach in PFAD_<Schritt>_vor/nach.txt
 """
 import subprocess
 import sys
@@ -138,6 +140,9 @@ def main():
     hsh = "--hash" in sys.argv
     stich = int(sys.argv[sys.argv.index("--stichprobe") + 1]) if "--stichprobe" in sys.argv else 0
     umf = open(sys.argv[sys.argv.index("--umbau") + 1], "w") if "--umbau" in sys.argv else None
+    snap = "--snap" in sys.argv
+    naechster = 1
+    bandpfad = sys.argv[sys.argv.index("--baender") + 1] if "--baender" in sys.argv else None
     schritt, zustand, band = 0, start, ""
     # erster Zyklusbeginn direkt (vom Leerband)
     m = None
@@ -158,6 +163,11 @@ def main():
                     nstich += 1
                 schritt += t
                 nreg += 1
+                if snap and nreg >= naechster:
+                    naechster *= 2
+                    zi = [a for a, _ in m.items if a != "W"]
+                    print(f"SNAP Zyklus {nreg} Schritt {schritt} Breite {len(m.rest) + sum(8 * u + len(TOK[a]) for a, u in m.items) + 8 * m.uende + m.ende} "
+                          f"Ziffern {len(zi)} W {len(m.items) - len(zi)} links: {' '.join(a for a, _ in m.items[:12])}", file=sys.stderr)
                 # Zyklusbeginn im Sinne von m5sim: Rechts-Rekord nach >= K Schritten ohne Rekord.
                 # Ein regelmaessiger Zyklus beginnt mit 3 Rekorden in Folge (Schritt +1..+3).
                 if hsh and t - 3 >= K:
@@ -171,8 +181,14 @@ def main():
         d = direkt(prog, band, zustand, maxs - schritt)
         if d is None:
             break
+        bvor = band
         dt, zustand, band = d
         schritt += dt
+        if bandpfad and dt > 10 * len(band):   # grosser Umbau: Baender sichern
+            with open(f"{bandpfad}_{schritt - dt}_vor.txt", "w") as f:
+                f.write(bvor + "\n")
+            with open(f"{bandpfad}_{schritt - dt}_nach.txt", "w") as f:
+                f.write(f"{dt} {zustand} {band}\n")
         ndir += 1
         m = zerlege(band)
         if umf:
