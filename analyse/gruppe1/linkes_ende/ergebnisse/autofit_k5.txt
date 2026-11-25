@@ -1,0 +1,16 @@
+VS: Proben 40000, Gestalten 480, davon gepruefte: exakt linear 441, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 441  Gestalten je Gruppe -> Anzahl Gruppen: {1: 441}  max: 1
+.0 .o: Proben 40000, Gestalten 583, davon gepruefte: exakt linear 478, nicht linear 0; ohne Ergebnis 577
+  Gruppen (k, Kernzahlen): 432  Gestalten je Gruppe -> Anzahl Gruppen: {1: 389, 2: 40, 3: 3}  max: 3
+0 .0 e: Proben 40000, Gestalten 491, davon gepruefte: exakt linear 444, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 438  Gestalten je Gruppe -> Anzahl Gruppen: {1: 432, 2: 6}  max: 2
+0 .o .0 e: Proben 40000, Gestalten 1938, davon gepruefte: exakt linear 1151, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 1147  Gestalten je Gruppe -> Anzahl Gruppen: {1: 1143, 2: 4}  max: 2
+.o .o: Proben 40000, Gestalten 2430, davon gepruefte: exakt linear 1127, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 1099  Gestalten je Gruppe -> Anzahl Gruppen: {1: 1071, 2: 28}  max: 2
+0 .0 .o: Proben 40000, Gestalten 490, davon gepruefte: exakt linear 443, nicht linear 0; ohne Ergebnis 170
+  Gruppen (k, Kernzahlen): 437  Gestalten je Gruppe -> Anzahl Gruppen: {1: 431, 2: 6}  max: 2
+0 0: Proben 40000, Gestalten 39, davon gepruefte: exakt linear 39, nicht linear 0; ohne Ergebnis 8718
+  Gruppen (k, Kernzahlen): 36  Gestalten je Gruppe -> Anzahl Gruppen: {1: 33, 2: 3}  max: 2
+e: Proben 40000, Gestalten 12, davon gepruefte: exakt linear 12, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 12  Gestalten je Gruppe -> Anzahl Gruppen: {1: 12}  max: 1

@@ -1,0 +1,2 @@
+direkt 1e12
+beschleuniger 1e17

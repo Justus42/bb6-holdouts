@@ -1,0 +1,16 @@
+Beschleuniger gegen direkt.c, Start A bis 1e8 (crc an jedem Schnappschuss):
+  BESCHL_FEHLER=kosten_n1: schlaegt an (dneg.txt neg_kosten_n1.txt differ: char 242, line 15)
+  BESCHL_FEHLER=n2: schlaegt an (dneg.txt neg_n2.txt differ: char 228, line 14)
+  BESCHL_FEHLER=lg: schlaegt an (dneg.txt neg_lg.txt differ: char 107, line 7)
+  ohne Fehler: gleich
+direkt.c Formen gegen Beschleuniger, Start A bis 1e9:
+  DIREKT_FEHLER=vs: schlaegt an (32 statt 15 Saetze)
+Formen-Zaehlung bis 1e15 (alle Starts):
+  FEHLER=: formen.py: Faelle 955, Formen 57, Kerne 18  formen2.awk: Faelle 955, Formen 57, Kerne 18
+  FEHLER=kern: formen.py: Faelle 955, Formen 57, Kerne 12  formen2.awk: Faelle 955, Formen 57, Kerne 12
+  FEHLER=fenster: formen.py: Faelle 955, Formen 104, Kerne 13  formen2.awk: Faelle 955, Formen 104, Kerne 13
+VS-Familie:
+  VSFAM_FEHLER=1 vstest 500: ok 434 falsch 66
+  VSFAM_FEHLER=1 abdeck:  417 R frei 0 e VS-Familie: ok 408 falsch 1; 133 I frei 0 e VS-Familie: ok 127 falsch 1;
+Linearitaetstest:
+  AUTOFIT_FEHLER=1: VS: Proben 6000, Gestalten 355, davon gepruefte: exakt linear 0, nicht linear 196; ohne Ergebnis 0
