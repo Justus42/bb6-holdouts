@@ -1,16 +1,14 @@
 name: lauf_396
 
-# Thread "396" (reine Analyse, kein Rocq). Startet bei einem Push, der analyse/396/auftrag.txt aendert
-# (Workflow liegt nur auf dem Feature-Branch, workflow_dispatch geht dort nicht).
+# Thread "396" (reine Analyse, kein Rocq). Startet nur von Hand (workflow_dispatch) auf dem Branch, dessen Auftragsdatei gelten soll.
 # auftrag.txt: "runden_88 <R>" und "runden_396 <R>".
 # Jobs:
 #   kontrollen: analyse/396/kontrollen.sh (Besuchsgesetz, direkte TM = naiv = runde.c, Zufallswoerter, Fehler-Schalter, Tabellen)
 #   lauf (88, 396): runde.c nach dem Besuchsgesetz aus busycoq PR #59 bis <R> Runden oder Halt
 on:
-  push:
-    branches-ignore: [main]   # kein erneuter Lauf beim Merge
-    paths:
-      - analyse/396/auftrag.txt
+  # Nur Handstart (Justus 25.11.2026): keine Push-Starts. Laeufe startet der Thread selbst,
+  # auf seinem Branch (Actions > Run workflow bzw. API workflow_dispatch mit ref = Thread-Branch).
+  workflow_dispatch:
 
 permissions:
   contents: read

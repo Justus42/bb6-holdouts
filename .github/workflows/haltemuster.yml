@@ -1,13 +1,12 @@
 name: haltemuster
 
 # Gruppe 1, Thread "Erhaltene Groesse": Stichprobe, ob in den Phasen "C> 0 1 1" auftritt (haltemuster.py).
-# Startet bei einem Push, der analyse/gruppe1/groesse/auftrag_halt.txt aendert. Zeile "bis <Schritte> k <k>".
+# Startet nur von Hand (workflow_dispatch) auf dem Branch, dessen Auftragsdatei gelten soll.
+# Zeile "bis <Schritte> k <k>".
 # Ergebnis wird als Commit auf denselben Branch gelegt (Artefakte sind aus der Cloud-Sitzung nicht lesbar).
 on:
-  push:
-    branches-ignore: [main]
-    paths:
-      - analyse/gruppe1/groesse/auftrag_halt.txt
+  # Nur Handstart (Justus 25.11.2026): keine Push-Starts. Laeufe startet der Thread selbst,
+  # auf seinem Branch (Actions > Run workflow bzw. API workflow_dispatch mit ref = Thread-Branch).
   workflow_dispatch:
 
 permissions:
@@ -56,6 +55,7 @@ jobs:
           cp art/halt-*/halt_*.txt $z/
           echo "Run ${{ github.run_id }}" > $z/RUN.txt
           cat $z/halt_*.txt
+          if [ "${{ github.ref_name }}" = "main" ]; then echo "Lauf auf main: Ergebnisse werden nicht zurueckgeschrieben"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $z

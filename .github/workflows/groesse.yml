@@ -1,16 +1,14 @@
 name: groesse
 
 # Gruppe 1, Thread "Erhaltene Groesse" (reine Analyse, kein Rocq).
-# Startet bei einem Push, der analyse/gruppe1/groesse/auftrag.txt aendert (Workflow liegt nur auf dem
-# Feature-Branch; nie durch Push auf main), oder manuell (workflow_dispatch), sobald er auf main liegt. auftrag.txt: Zeile "bis <Schritte>".
+# Startet nur von Hand (workflow_dispatch) auf dem Branch, dessen Auftragsdatei gelten soll.
+# auftrag.txt: Zeile "bis <Schritte>".
 # Je Start: groesse.py (Programm 1) bis <Schritte>, groesse2.c (Programm 2) auf dessen Protokoll,
 # Vergleich der Aenderungsvektoren (muss zeilengleich sein), Auswertung. Der Sammel-Job legt die
 # Ergebnisse als Commit auf denselben Branch (Artefakte sind aus der Cloud-Sitzung nicht lesbar).
 on:
-  push:
-    branches-ignore: [main]
-    paths:
-      - analyse/gruppe1/groesse/auftrag.txt
+  # Nur Handstart (Justus 25.11.2026): keine Push-Starts. Laeufe startet der Thread selbst,
+  # auf seinem Branch (Actions > Run workflow bzw. API workflow_dispatch mit ref = Thread-Branch).
   workflow_dispatch:
 
 permissions:
@@ -79,6 +77,7 @@ jobs:
           cmp $z/auswertung_p1.txt $z/auswertung_p2.txt && echo "Auswertung gleich"
           echo "Run ${{ github.run_id }}" > $z/RUN.txt
           cat $z/log_*.txt $z/auswertung_p1.txt
+          if [ "${{ github.ref_name }}" = "main" ]; then echo "Lauf auf main: Ergebnisse werden nicht zurueckgeschrieben"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $z
