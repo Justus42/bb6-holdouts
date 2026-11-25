@@ -1,0 +1,9 @@
+N1   BEWIESEN: 210 abstrakte Zustaende, 3 Phasenenden, 1 Startformen
+N2   BEWIESEN: 850 abstrakte Zustaende, 16 Phasenenden, 2 Startformen
+N2s  BEWIESEN: 866 abstrakte Zustaende, 16 Phasenenden, 2 Startformen
+UA   BEWIESEN: 516 abstrakte Zustaende, 6 Phasenenden, 2 Startformen
+LE0  BEWIESEN: 171 abstrakte Zustaende, 5 Phasenenden, 1 Startformen
+LE1  BEWIESEN: 250 abstrakte Zustaende, 3 Phasenenden, 1 Startformen
+LG   BEWIESEN: 122 abstrakte Zustaende, 2 Phasenenden, 1 Startformen
+alle bewiesen
+Zertifikat geschrieben: ergebnisse/zertifikat.json

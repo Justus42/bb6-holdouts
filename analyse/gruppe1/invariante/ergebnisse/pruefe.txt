@@ -1,0 +1,8 @@
+N1   bestaetigt: 210 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+N2   bestaetigt: 850 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+N2s  bestaetigt: 866 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+UA   bestaetigt: 516 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+LE0  bestaetigt: 171 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+LE1  bestaetigt: 250 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+LG   bestaetigt: 122 Zustaende abgeschlossen, Starts gedeckt, keine Verbote
+Zertifikat BESTAETIGT

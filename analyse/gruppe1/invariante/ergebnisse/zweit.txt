@@ -1,0 +1,16 @@
+N1   Phasen 32760  Schritte 10081368  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+N2   Phasen 262080  Schritte 83271744  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+N2s  Phasen 262080  Schritte 84844224  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+UA   Phasen 262080  Schritte 84844224  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+LE0  Phasen 8190  Schritte 2340162  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+LE1  Phasen 32760  Schritte 10671048  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+LG   Phasen 8184  Schritte 2225160  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 0   C-Fenster: 001 010 100 101 110
+fehler: N1   Phasen 2040  Schritte 94698  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 0  Bereich 414   C-Fenster: 000 001 010 100 101 110
+fehler: N2   Phasen 16320  Schritte 859056  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 192  Bereich 2904   C-Fenster: 000 001 010 100 101 110
+fehler: N2s  Phasen 16320  Schritte 1138464  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 864  Bereich 2208   C-Fenster: 000 001 010 100 101 110
+fehler: UA   Phasen 16320  Schritte 1760272  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 1648  Bereich 1424   C-Fenster: 000 001 010 100 101 110
+fehler: LE0  Phasen 510  Schritte 105286  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 102  Bereich 0   C-Fenster: 000 001 010 100 101 110
+fehler: LE1  Phasen 2040  Schritte 402632  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 384  Bereich 0   C-Fenster: 000 001 010 100 101 110
+fehler: LG   Phasen 504  Schritte 103552  Verstoesse: K(C)/111 0  Halt 0  Ende-nicht-C 120  Bereich 0   C-Fenster: 000 001 010 100 101 110
+K(C)-Kontrolle: 1000000 Zufallsbaender, Detektor schlaegt an: 137, Halte ohne vorherigen Treffer: 0
+Negativkontrolle SCHLAEGT AN

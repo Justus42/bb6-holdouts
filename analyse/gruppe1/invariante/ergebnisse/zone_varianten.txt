@@ -1,0 +1,27 @@
+== SYMB_T0=frei
+N1   OFFEN: Kopf verlaesst den beschriebenen Bereich (P)
+N2   OFFEN: Kopf verlaesst den beschriebenen Bereich (P)
+N2s  BEWIESEN: 1926 abstrakte Zustaende, 54 Phasenenden, 8 Startformen
+UA   OFFEN: Kopf verlaesst den beschriebenen Bereich (P)
+LE0  OFFEN: Wand in Zustand D
+LE1  OFFEN: Wand in Zustand D
+LG   OFFEN: Wand in Zustand D
+nicht alle bewiesen
+== SYMB_FEHLER=tabelle
+N1   OFFEN: Wand in Zustand A
+N2   OFFEN: Wand in Zustand A
+N2s  OFFEN: Wand in Zustand A
+UA   OFFEN: Wand in Zustand A
+LE0  OFFEN: Wand in Zustand A
+LE1  OFFEN: Wand in Zustand A
+LG   OFFEN: Wand in Zustand A
+nicht alle bewiesen
+== SYMB_FEHLER=paritaet
+N1   OFFEN: Kopf verlaesst den beschriebenen Bereich (P)
+N2   OFFEN: Kopf verlaesst den beschriebenen Bereich (P)
+N2s  OFFEN: Kopf verlaesst den beschriebenen Bereich (P)
+UA   BEWIESEN: 798 abstrakte Zustaende, 12 Phasenenden, 2 Startformen
+LE0  BEWIESEN: 171 abstrakte Zustaende, 5 Phasenenden, 1 Startformen
+LE1  BEWIESEN: 355 abstrakte Zustaende, 6 Phasenenden, 1 Startformen
+LG   BEWIESEN: 122 abstrakte Zustaende, 2 Phasenenden, 1 Startformen
+nicht alle bewiesen
