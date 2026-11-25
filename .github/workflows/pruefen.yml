@@ -23,6 +23,10 @@ on:
         description: "nur fuer Beschleunigungs-Saetze (halts ... c0 <-> P (start X)): Referenz-Tabelle des Modells, sonst leer"
         required: false
         default: ""
+      lemmata:
+        description: "weitere Lemmata (Namen, durch Leerzeichen getrennt), die ebenfalls Print Assumptions streng bestehen muessen; sonst leer"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -126,7 +130,11 @@ jobs:
         working-directory: busycoq/verify
         env:
           THMS: ${{ needs.aussage.outputs.thms }}
-        run: bash "$GITHUB_WORKSPACE/scripts/build_check.sh" "file:$MOD.v" "$MOD" $THMS
+          LEMMATA: ${{ inputs.lemmata }}
+        shell: bash
+        run: |
+          for l in $LEMMATA; do [[ "$l" =~ ^[A-Za-z_][A-Za-z0-9_.]*$ ]] || { echo "FEHLER: Lemma-Name $l"; exit 2; }; done
+          bash "$GITHUB_WORKSPACE/scripts/build_check.sh" "file:$MOD.v" "$MOD" $THMS $LEMMATA
       - name: Kern-Abgleich der Aussagen
         working-directory: busycoq/verify
         run: |
