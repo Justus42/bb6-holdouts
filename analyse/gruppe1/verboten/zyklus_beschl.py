@@ -326,7 +326,11 @@ class Lauf:
         c = kk + 3
         sc = int(c.sum())
         idx = np.arange(P, dtype=np.int64)
-        s_lc = int((c * (P - 1 - idx)).sum())       # sum_i sum_{l<i} c_l
+        if int(c.max()) * P * P >= 2**62:          # int64 koennte ueberlaufen: mit Python-Zahlen rechnen
+            s_lc = sum(int(x) * (P - 1 - i) for i, x in enumerate(c.tolist()))
+            self.z("paar:gross")
+        else:
+            s_lc = int((c * (P - 1 - idx)).sum())   # sum_i sum_{l<i} c_l
         sum_S = P * self.S + s_lc
         kosten = 24 * sum_S - 4 * (P * j + P * (P - 1) // 2) + 24 * int(kk.sum()) + 56 * P
         if FEHLER == "paar":
@@ -586,6 +590,8 @@ def rechne_c(X, tail, r, grenze=0):
             break
         if ret == 2:
             raise Endlos(grenze)
+        if ret == -3:
+            raise RuntimeError("rechne.c: Schrittzahl einer Phase ueber 2^61")
         cap *= 4
         if cap > 10**9:
             raise RuntimeError("rechne.c: kein Platz")

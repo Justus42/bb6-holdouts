@@ -205,6 +205,7 @@ int rechne(int64_t ntok, const int8_t *sep, const int64_t *val, int64_t ntail, c
     int64_t makro = 0;
     for (;;) {
         if (grenze && ++makro > grenze) { ret = 2; goto ende; }   /* Makroschritt-Grenze (nur Tests) */
+        if (n > ((int64_t)1 << 61)) { ret = -3; goto ende; }      /* Schrittzahl zu gross fuer int64 */
         if (!erster && q == 2) {
             int64_t rr = -1; int ab = -1;
             if (rechts) { oben(&R, 0, 2, o); if (o[0] == 0 && o[1] == 0) { rr = rechts_muster(&R, 0); ab = 0; } }
