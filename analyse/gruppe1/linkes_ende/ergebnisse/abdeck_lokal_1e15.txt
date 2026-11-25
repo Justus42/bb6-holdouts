@@ -1,0 +1,18 @@
+  417 R frei 0 e                    VS-Familie: ok 409 falsch 0
+  141 R frei .0 .o                  VS-Familie: ok 0 falsch 0
+  133 I frei 0 e                    VS-Familie: ok 128 falsch 0
+   79 R frei e                      VS-Familie: ok 0 falsch 0
+   73 I frei 0 .0 e                 VS-Familie: ok 0 falsch 0
+   30 I frei 0 .o .0 e              VS-Familie: ok 0 falsch 0
+   16 R frei .o .o                  VS-Familie: ok 0 falsch 0
+   15 R frei 0 .0 e                 VS-Familie: ok 0 falsch 0
+   14 I frei 0 .0 .o                VS-Familie: ok 0 falsch 0
+   13 I frei 0 0                    VS-Familie: ok 0 falsch 0
+    7 keine Grenze                  VS-Familie: ok 0 falsch 0
+    5 I alt 0 e                     VS-Familie: ok 0 falsch 0
+    4 R frei 0 .o .0 e              VS-Familie: ok 0 falsch 0
+    4 R frei .o                     VS-Familie: ok 0 falsch 0
+    1 I alt e .0 e                  VS-Familie: ok 0 falsch 0
+    1 R frei 0 0                    VS-Familie: ok 0 falsch 0
+    1 R alt 0 e                     VS-Familie: ok 0 falsch 0
+    1 I frei 0 .e e .0 e            VS-Familie: ok 0 falsch 0

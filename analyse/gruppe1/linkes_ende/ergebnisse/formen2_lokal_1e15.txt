@@ -1,0 +1,15 @@
+Faelle 955, Formen 57, Kerne 18, Kernmuster 12
+  10^1..10^2  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^2..10^3  Faelle     5  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^6..10^7  Faelle     3  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^7..10^8  Faelle    11  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle    18  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle    24  neue Formen   8  neue Kerne  3  neue Kernmuster  3
+  10^10..10^11  Faelle    44  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    59  neue Formen   9  neue Kerne  3  neue Kernmuster  1
+  10^12..10^13  Faelle   110  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle   251  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^14..10^15  Faelle   417  neue Formen  10  neue Kerne  1  neue Kernmuster  0

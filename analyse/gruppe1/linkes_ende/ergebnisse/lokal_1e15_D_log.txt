@@ -1,0 +1,15 @@
+10^1: n=180 phasen=1 token=1 {'na:rest': 1}
+10^2: n=180 phasen=1 token=1 {'na:rest': 1}
+10^3: n=2741 phasen=16 token=4 {'na:rest': 2, 'LG': 4, 'Ueb-ok': 2, 'N2': 4, 'N1': 4}
+10^4: n=20427 phasen=60 token=14 {'na:rest': 2, 'LG': 16, 'Ueb-ok': 4, 'N2': 18, 'N1': 18, 'LE0': 2}
+10^5: n=158071 phasen=196 token=26 {'na:rest': 2, 'LG': 33, 'Ueb-ok': 8, 'N2': 74, 'N1': 74, 'LE0': 5}
+10^6: n=1046567 phasen=582 token=31 {'na:rest': 2, 'LG': 46, 'Ueb-ok': 13, 'N2': 253, 'N1': 254, 'LE0': 8, 'na:VS-zuwenig': 2, 'N2s': 2, 'na:Sonder': 1, 'UA': 1}
+10^7: n=10538314 phasen=1899 token=83 {'na:rest': 2, 'LG': 113, 'Ueb-ok': 25, 'N2': 864, 'N1': 866, 'LE0': 16, 'na:VS-zuwenig': 3, 'N2s': 6, 'na:Sonder': 1, 'UA': 2, 'LE1': 1}
+10^8: n=106921469 phasen=6356 token=142 {'na:rest': 2, 'LG': 220, 'Ueb-ok': 46, 'N2': 3006, 'N1': 3017, 'LE0': 25, 'na:VS-zuwenig': 5, 'N2s': 14, 'na:Sonder': 2, 'UA': 14, 'LE1': 1, 'VS': 4}
+10^9: n=1041284403 phasen=20256 token=252 {'na:rest': 2, 'LG': 398, 'Ueb-ok': 82, 'N2': 9809, 'N1': 9833, 'LE0': 43, 'na:VS-zuwenig': 10, 'N2s': 34, 'na:Sonder': 3, 'UA': 30, 'LE1': 3, 'VS': 9}
+10^10: n=10008369156 phasen=63413 token=447 {'na:rest': 2, 'LG': 709, 'Ueb-ok': 145, 'N2': 31132, 'N1': 31183, 'LE0': 63, 'na:VS-zuwenig': 15, 'N2s': 67, 'na:Sonder': 9, 'UA': 63, 'LE1': 3, 'VS': 21, 'na:links?': 1}
+10^11: n=101219586213 phasen=203384 token=801 {'na:rest': 2, 'LG': 1275, 'Ueb-ok': 260, 'N2': 100680, 'N1': 100766, 'LE0': 106, 'na:VS-zuwenig': 24, 'N2s': 105, 'na:Sonder': 14, 'UA': 107, 'LE1': 6, 'VS': 36, 'na:links?': 3}
+10^12: n=1000438299995 phasen=642178 token=1393 {'na:rest': 2, 'LG': 2282, 'Ueb-ok': 461, 'N2': 319280, 'N1': 319445, 'LE0': 185, 'na:VS-zuwenig': 36, 'N2s': 180, 'na:Sonder': 20, 'UA': 202, 'LE1': 8, 'VS': 70, 'na:links?': 6, 'Ueb-na:rand_rueck:VS-zuwenig': 1}
+10^13: n=10004559435328 phasen=2035011 token=2492 {'na:rest': 2, 'LG': 4095, 'Ueb-ok': 822, 'N2': 1014251, 'N1': 1014553, 'LE0': 342, 'na:VS-zuwenig': 61, 'N2s': 323, 'na:Sonder': 35, 'UA': 375, 'LE1': 12, 'VS': 130, 'na:links?': 9, 'Ueb-na:rand_rueck:VS-zuwenig': 1}
+10^14: n=100031975207894 phasen=6445053 token=4391 {'na:rest': 2, 'LG': 7445, 'Ueb-ok': 1462, 'N2': 3216619, 'N1': 3217186, 'LE0': 562, 'na:VS-zuwenig': 111, 'N2s': 616, 'na:Sonder': 54, 'UA': 695, 'LE1': 32, 'VS': 248, 'na:links?': 19, 'Ueb-na:rand_rueck:VS-zuwenig': 1, 'Ueb-na:rand_fressen:Sonder': 1}
+start=D schritte=1000000000371074 phasen=20393027 token=7828 [('LE0', 1012), ('LE1', 54), ('LG', 13246), ('N1', 10187007), ('N2', 10185993), ('N2s', 1103), ('UA', 1244), ('Ueb-na:rand_fressen:Sonder', 2), ('Ueb-na:rand_rueck:VS-zuwenig', 5), ('Ueb-ok', 2599), ('VS', 445), ('na:Sonder', 100), ('na:VS-zuwenig', 185), ('na:links?', 30), ('na:rest', 2)]

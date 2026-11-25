@@ -1,0 +1,73 @@
+== l15_A_rueckfall.txt: Faelle 350, Formen 37, Kerne 16, Kernmuster 11
+  10^1..10^2  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^2..10^3  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^5..10^6  Faelle     3  neue Formen   3  neue Kerne  1  neue Kernmuster  1
+  10^6..10^7  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^8..10^9  Faelle     7  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle     8  neue Formen   5  neue Kerne  4  neue Kernmuster  3
+  10^10..10^11  Faelle     9  neue Formen   3  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    20  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^12..10^13  Faelle    49  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle    91  neue Formen   8  neue Kerne  2  neue Kernmuster  0
+  10^14..10^15  Faelle   158  neue Formen   7  neue Kerne  1  neue Kernmuster  0
+== l15_C_rueckfall.txt: Faelle 281, Formen 28, Kerne 13, Kernmuster 9
+  10^1..10^2  Faelle     1  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^2..10^3  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^3..10^4  Faelle     2  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     1  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^7..10^8  Faelle     8  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^8..10^9  Faelle     5  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^9..10^10  Faelle     4  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^10..10^11  Faelle    19  neue Formen   1  neue Kerne  1  neue Kernmuster  0
+  10^11..10^12  Faelle    17  neue Formen   3  neue Kerne  3  neue Kernmuster  2
+  10^12..10^13  Faelle    18  neue Formen   4  neue Kerne  1  neue Kernmuster  0
+  10^13..10^14  Faelle    81  neue Formen   3  neue Kerne  0  neue Kernmuster  0
+  10^14..10^15  Faelle   122  neue Formen   6  neue Kerne  1  neue Kernmuster  0
+== l15_D_rueckfall.txt: Faelle 324, Formen 38, Kerne 15, Kernmuster 11
+  10^2..10^3  Faelle     2  neue Formen   2  neue Kerne  1  neue Kernmuster  1
+  10^5..10^6  Faelle     2  neue Formen   2  neue Kerne  2  neue Kernmuster  2
+  10^6..10^7  Faelle     2  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^7..10^8  Faelle     3  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^9..10^10  Faelle    12  neue Formen   5  neue Kerne  4  neue Kernmuster  4
+  10^10..10^11  Faelle    16  neue Formen   3  neue Kerne  0  neue Kernmuster  0
+  10^11..10^12  Faelle    22  neue Formen   7  neue Kerne  4  neue Kernmuster  1
+  10^12..10^13  Faelle    43  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle    79  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^14..10^15  Faelle   137  neue Formen   8  neue Kerne  1  neue Kernmuster  1
+== alle Starts zusammen: Faelle 955, Formen 57, Kerne 18, Kernmuster 12
+  10^1..10^2  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^2..10^3  Faelle     5  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^3..10^4  Faelle     3  neue Formen   3  neue Kerne  2  neue Kernmuster  2
+  10^4..10^5  Faelle     1  neue Formen   0  neue Kerne  0  neue Kernmuster  0
+  10^5..10^6  Faelle     6  neue Formen   2  neue Kerne  0  neue Kernmuster  0
+  10^6..10^7  Faelle     3  neue Formen   1  neue Kerne  1  neue Kernmuster  1
+  10^7..10^8  Faelle    11  neue Formen   2  neue Kerne  2  neue Kernmuster  1
+  10^8..10^9  Faelle    18  neue Formen   3  neue Kerne  2  neue Kernmuster  1
+  10^9..10^10  Faelle    24  neue Formen   8  neue Kerne  3  neue Kernmuster  3
+  10^10..10^11  Faelle    44  neue Formen   5  neue Kerne  1  neue Kernmuster  1
+  10^11..10^12  Faelle    59  neue Formen   9  neue Kerne  3  neue Kernmuster  1
+  10^12..10^13  Faelle   110  neue Formen   1  neue Kerne  0  neue Kernmuster  0
+  10^13..10^14  Faelle   251  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+  10^14..10^15  Faelle   417  neue Formen  10  neue Kerne  1  neue Kernmuster  0
+Kerne (erstes Auftreten):
+  2.10e+01  R frei .o
+  4.60e+01  keine Grenze
+  3.58e+03  R frei 0 e
+  4.26e+03  R frei .0 .o
+  2.10e+06  R frei 0 .o .0 e
+  5.00e+07  I frei 0 .0 e
+  7.42e+07  I frei 0 e
+  3.04e+08  R frei e
+  3.52e+08  I frei 0 .o .0 e
+  3.09e+09  I frei 0 0
+  3.09e+09  I frei 0 .0 .o
+  5.93e+09  R frei .o .o
+  1.63e+10  I alt e .0 e
+  2.96e+11  I alt 0 e
+  4.13e+11  I frei 0 .e e .0 e
+  4.99e+11  R frei 0 .0 e
+  6.87e+13  R frei 0 0
+  5.70e+14  R alt 0 e

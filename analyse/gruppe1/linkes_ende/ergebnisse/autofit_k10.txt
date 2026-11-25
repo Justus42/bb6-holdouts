@@ -1,0 +1,4 @@
+VS: Proben 60000, Gestalten 1103, davon gepruefte: exakt linear 875, nicht linear 0; ohne Ergebnis 0
+  Gruppen (k, Kernzahlen): 858  Gestalten je Gruppe -> Anzahl Gruppen: {1: 841, 2: 17}  max: 2
+.0 .o: Proben 60000, Gestalten 1599, davon gepruefte: exakt linear 927, nicht linear 0; ohne Ergebnis 452
+  Gruppen (k, Kernzahlen): 822  Gestalten je Gruppe -> Anzahl Gruppen: {1: 719, 2: 101, 3: 2}  max: 3

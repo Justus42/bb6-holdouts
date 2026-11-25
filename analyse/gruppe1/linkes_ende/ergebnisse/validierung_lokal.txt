@@ -1,0 +1,18 @@
+Start A bis 1e9:
+start=A schritte=1000000000 breite=37620 schnappschuesse=19869 A_liest_1=0 rekorde_phase=15 rekorde_uebergang=0
+start=A schritte=1000049301 phasen=19869 token=261 [('LE0', 31), ('LE1', 2), ('LG', 431), ('N1', 9619), ('N2', 9581), ('N2s', 47), ('UA', 45), ('Ueb-ok', 81), ('VS', 17), ('na:Sonder', 4), ('na:VS-zuwenig', 7), ('na:links?', 1), ('na:rest', 3)]
+  Schnappschuesse (n r crc) zeilengleich: 19869 Zeilen
+  Rueckfall-Saetze zeilengleich: 15
+Start C bis 1e9:
+start=C schritte=1000000000 breite=37168 schnappschuesse=19841 A_liest_1=0 rekorde_phase=19 rekorde_uebergang=1
+start=C schritte=1000113400 phasen=19841 token=292 [('LE0', 23), ('LE1', 6), ('LG', 459), ('N1', 9584), ('N2', 9548), ('N2s', 59), ('UA', 45), ('Ueb-na:kurz', 1), ('Ueb-ok', 80), ('VS', 17), ('na:Sonder', 7), ('na:VS-zuwenig', 10), ('na:rest', 2)]
+  Schnappschuesse (n r crc) zeilengleich: 19841 Zeilen
+  Rueckfall-Saetze zeilengleich: 20
+Start D bis 1e9:
+start=D schritte=1000000000 breite=37503 schnappschuesse=19937 A_liest_1=0 rekorde_phase=15 rekorde_uebergang=0
+start=D schritte=1000014436 phasen=19937 token=240 [('LE0', 42), ('LE1', 3), ('LG', 385), ('N1', 9681), ('N2', 9657), ('N2s', 34), ('UA', 30), ('Ueb-ok', 81), ('VS', 9), ('na:Sonder', 3), ('na:VS-zuwenig', 10), ('na:rest', 2)]
+  Schnappschuesse (n r crc) zeilengleich: 19937 Zeilen
+  Rueckfall-Saetze zeilengleich: 15
+Start A bis 1e10 (crc bei r=0):
+  Schnappschuesse zeilengleich: 63424
+  Rueckfall-Saetze zeilengleich: 23
