@@ -1,0 +1,25 @@
+# divergenz.c, 1e9 Schritte, fuer alle Paare der Simulations-Vorsiebung (B, Zeilen S, 1e6 Schritte)
+h69 h543 produkt=0 gleich bis 1000000000 Schritte, Breite 50611 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CE/1 DD/0 DD/1 EF/0 EF/1 FC/1 
+h88 h312 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 BF/0 CC/0 CC/1 DD/0 DD/1 EE/0 EE/1 FF/0 
+h88 a312.3 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BE/0 BE/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FB/0 
+h88 a396.2 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 DF/0 EE/0 EE/1 FB/0 
+h88 a396.3 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DF/0 DF/1 EE/0 EE/1 FB/0 
+h88 a396.5 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BE/0 BE/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FE/0 
+h88 a396.7 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 BF/0 CC/0 CC/1 DD/0 DD/1 EE/0 EE/1 FB/0 
+h166 h391 produkt=0 gleich bis 1000000000 Schritte, Breite 57981 vorgekommene Paare: AA/0 AA/1 BB/0 BE/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FB/1 
+h190 h394 produkt=0 gleich bis 1000000000 Schritte, Breite 163 vorgekommene Paare: AA/0 AA/1 BB/0 BE/1 CC/0 CC/1 DD/0 DD/1 EB/1 FF/0 FF/1 
+h244 a279.2 produkt=0 gleich bis 1000000000 Schritte, Breite 38771 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EC/0 EC/1 EE/1 FE/0 FF/0 
+h274 a322.1 produkt=1 gleich bis 1000000000 Schritte, Breite 47247 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 BD/0 CC/0 CC/1 DE/0 DE/1 EF/0 EF/1 FF/0 
+h312 a88.1 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BE/0 BE/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FB/0 FE/0 
+h312 a396.2 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 DF/0 EE/0 EE/1 FB/0 
+h312 a396.3 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DF/0 DF/1 EE/0 EE/1 FB/0 
+h312 a396.5 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BE/0 BE/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FB/0 FE/0 
+h312 a396.7 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EE/0 EE/1 FB/0 FF/0 
+h318 h518 produkt=1 gleich bis 1000000000 Schritte, Breite 52296 vorgekommene Paare: AA/0 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EA/0 EA/1 FE/0 FE/1 FF/0 
+h322 a274.1 produkt=1 gleich bis 1000000000 Schritte, Breite 47247 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EC/0 FE/0 FE/1 FF/0 
+h339 a473.2 produkt=0 gleich bis 1000000000 Schritte, Breite 36990 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EA/0 EA/1 EE/1 FE/0 FF/0 
+h391 a166.1 produkt=0 gleich bis 1000000000 Schritte, Breite 57981 vorgekommene Paare: AA/0 AD/0 AD/1 BB/0 BF/1 CC/0 CC/1 DA/0 DA/1 EB/1 FE/0 FE/1 
+h396 a449.1 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BE/0 BE/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FD/0 
+h396 a449.2 produkt=1 gleich bis 1000000000 Schritte, Breite 252 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 BF/0 CC/0 CC/1 DD/0 DD/1 EE/0 EE/1 FD/0 
+h489 h598 produkt=0 gleich bis 1000000000 Schritte, Breite 37151 vorgekommene Paare: AA/0 AA/1 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EB/0 EB/1 EE/1 FE/0 FF/0 
+h518 a318.1 produkt=1 gleich bis 1000000000 Schritte, Breite 52296 vorgekommene Paare: AA/0 AA/1 AE/0 BB/0 BB/1 CC/0 CC/1 DD/0 DD/1 EF/0 EF/1 FF/0 
