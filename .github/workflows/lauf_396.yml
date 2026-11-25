@@ -1,0 +1,54 @@
+name: lauf_396
+
+# Thread "396" (reine Analyse, kein Rocq). Startet bei einem Push, der analyse/396/auftrag.txt aendert
+# (Workflow liegt nur auf dem Feature-Branch, workflow_dispatch geht dort nicht).
+# auftrag.txt: "runden_88 <R>" und "runden_396 <R>".
+# Jobs:
+#   kontrollen: analyse/396/kontrollen.sh (Besuchsgesetz, direkte TM = naiv = runde.c, Zufallswoerter, Fehler-Schalter, Tabellen)
+#   lauf (88, 396): runde.c nach dem Besuchsgesetz aus busycoq PR #59 bis <R> Runden oder Halt
+on:
+  push:
+    branches-ignore: [main]   # kein erneuter Lauf beim Merge
+    paths:
+      - analyse/396/auftrag.txt
+
+permissions:
+  contents: read
+
+jobs:
+  kontrollen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Kontrollen
+        run: bash analyse/396/kontrollen.sh
+
+  lauf:
+    strategy:
+      fail-fast: false
+      matrix:
+        modus: ["88", "396"]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Runden
+        working-directory: analyse/396
+        run: |
+          R=$(awk -v k="runden_${{ matrix.modus }}" '$1==k{print $2}' auftrag.txt)
+          gcc -O2 -Wall -o runde runde.c
+          start=$(date +%s)
+          ./runde ${{ matrix.modus }} "$R" > aus_lauf.txt 2> aus_fortschritt.txt || echo "Exit-Code $?"
+          echo "Laufzeit $(( $(date +%s) - start )) s"
+          echo "--- Fortschritt (Ende)"; tail -n 5 aus_fortschritt.txt
+          echo "--- Ereignisse 1011 (erste 60)"; grep '^EREIGNIS' aus_lauf.txt | head -n 60 || true
+          echo "--- Ereignisse gesamt: $(grep -c '^EREIGNIS' aus_lauf.txt || true)"
+          echo "--- Runden nach dem ersten Ereignis (erste 120)"; grep '^NACH' aus_lauf.txt | head -n 120 || true
+          echo "--- Runden mit Ereignis: $(grep '^NACH' aus_lauf.txt | awk '$NF>0' | wc -l)"
+          echo "--- Ende der Ausgabe"; grep -v '^NACH\|^EREIGNIS' aus_lauf.txt | tail -n 5; tail -n 3 aus_lauf.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: lauf-${{ matrix.modus }}
+          path: analyse/396/aus_*.txt

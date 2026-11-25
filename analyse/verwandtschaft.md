@@ -9,10 +9,15 @@ Thread „Verwandtschaftskarte“, 25.11.2026. Nur Analyse, kein Rocq. Daten: Li
 376 der 608 Holdouts haben mindestens einen Verwandten in der Liste; sie bilden 141 Familien (72 mit 2,
 48 mit 3, 18 mit 4, 2 mit 5 Maschinen, eine mit 6), fast alle sind „gleiche Tabelle, anderer Start“. Echte
 Rückführungen auf eine kleinere Maschine oder Gleichschritt gibt es nur in wenigen Familien; neben M5
-(274/318/322/518) ist die wichtigste neue Familie {88, 312, 396, 449}: dieselbe 5-Zustands-Maschine,
-88/312 laufen beweisbar im Gleichschritt, 88/312/449 sind laut busycoq-PR #59 (offen) haltend, 396 ist
-der einzige ohne PR. Keine der 510 Paarungen „gleiche Tabelle“ führt zu Läufen, die verschmelzen
+(274/318/322/518) ist die wichtigste neue Familie {88, 312, 396, 449}: nach dem Zusammenlegen des
+Haltezustands stimmen ihre 5-Zustands-Tabellen bis auf den Übergang E1 überein (**nicht** dieselbe
+5-Zustands-Maschine; Korrektur 25.11., siehe F12), 88/312 laufen beweisbar im Gleichschritt, 88/312/449 sind
+laut busycoq-PR #59 (offen) haltend, 396 ist der einzige ohne PR. Keine der 510 Paarungen „gleiche Tabelle“ führt zu Läufen, die verschmelzen
 (geprüft bis 10^6 Schritte je Lauf); aus der Karte folgt also keine Entscheidung, nur Bündelung.
+
+Die 608 Holdouts haben **403 verschiedene Tabellen** bis auf Umbenennung der Zustände und Spiegelung
+(Start nicht berücksichtigt; ohne Spiegelung 498). Zwei Verfahren stimmen überein (Nachtrag 25.11.,
+siehe Abschnitt 4).
 
 Dateien: [`data/verwandtschaft.csv`](../data/verwandtschaft.csv) (647 Paare),
 [`analyse/verwandtschaft/familien.tsv`](verwandtschaft/familien.tsv) (141 Familien),
@@ -57,7 +62,7 @@ beteiligt ist und beide nicht schon in derselben mxdys-Gruppe liegen:
 | tabelle | 510 | 298 |
 | kern | 113 | 35 |
 | gleichschritt (belegt) | 17 | 2 (318/518, 88/312) |
-| gleichschritt_beobachtet (bis 1e9) | 7 | 4 |
+| gleichschritt_beobachtet (**unbelegt**, nur bis 1e9 simuliert) | 7 Zeilen = 6 Paare | 4 |
 | Läufe verschmelzen | 1 (274/322 im Kern M5, Schritt 25/11) | 0 bei „tabelle“ |
 
 - **Kerne**: 69 Holdouts lassen sich auf eine 5-Zustands-Maschine zusammenlegen, immer über den
@@ -73,26 +78,47 @@ beteiligt ist und beide nicht schon in derselben mxdys-Gruppe liegen:
 
 | Familie | Holdouts | Art | Klasse | Bemerkung |
 |---|---|---|---|---|
-| F1 | 244, 339, 489 · 279, 473, 598 | tabelle, kern, gleichschritt_beobachtet | Chaotic Bell 1 | zwei fast gleiche Tabellen mit je drei Starts; 244↔279, 339↔473, 489↔598 bis 1e9 gleich. **Dieselbe Tabelle wie 244/339/489 ab ihrem eigenen Start ist d833, und d833 hält** (busycoq `ChaoticBell1Halt.v`). |
+| F1 | 244, 339, 489 · 279, 473, 598 | tabelle, kern, gleichschritt_beobachtet (unbelegt) | Chaotic Bell 1 | zwei fast gleiche Tabellen mit je drei Starts; 244↔279, 339↔473, 489↔598 bis 1e9 gleich (unbelegt). **Dieselbe Tabelle wie 244/339/489 ab ihrem eigenen Start ist d833, und d833 hält** (busycoq `ChaoticBell1Halt.v`). |
 | F2 | 54, 200, 272, 545, 570 | tabelle | Chaotic Bell 3 | fünf Starts einer Tabelle |
 | F3 | 185, 422, 441, 490, 538 | tabelle | Chaotic 1dCA-like | Wiki bekannt; cryptids hat eine Beschleunigung nur für 185 |
 | F12 | 88, 312, 396, 449 | kern, gleichschritt | Shift-overflow counter | siehe unten |
 | F20 | 274, 318, 322, 518 | kern, gleichschritt, tabelle | SO structural counter | M5, bekannt |
-| F11 | 69, 166, 391, 543 | tabelle, gleichschritt_beobachtet | Skelet 1-like | 69↔543 und 166↔391 bis 1e9 gleich |
-| F16 | 147, 190, 277, 394 | tabelle, gleichschritt_beobachtet | Shift-overflow counter | 190↔394 bis 1e9 gleich (Bandbreite nur 163) |
+| F11 | 69, 166, 391, 543 | tabelle, gleichschritt_beobachtet (unbelegt) | Skelet 1-like | 69↔543 und 166↔391 bis 1e9 gleich (unbelegt) |
+| F16 | 147, 190, 277, 394 | tabelle, gleichschritt_beobachtet (unbelegt) | Shift-overflow counter | 190↔394 bis 1e9 gleich (unbelegt; Bandbreite nur 163) |
 
 Vollständige Liste: `analyse/verwandtschaft/familien.tsv`.
 
-### F12 = {88, 312, 396, 449}: die zweite M5-artige Familie
+### F12 = {88, 312, 396, 449}: Kerne gleich bis auf E1
+
+**Korrektur (25.11., Hinweis Justus, extern nachgerechnet, hier bestätigt):** Die erste Fassung nannte F12
+„dieselbe 5-Zustands-Maschine“ und „die zweite M5-artige Familie“. Das ist falsch. Nach dem Zusammenlegen
+des Haltezustands mit seinem Zwilling (bei 88/312/449: F mit B; bei 396: F mit D) sind A, B, C, D und E0 bei
+allen vier gleich (A `1RB0LB`, B `0RC0LD`, C `1LD1RE`, D `0LA0RB`, E0 `0RD`), aber E1 nicht:
+
+| Holdout | E1 im Original | E1 im Kern | Haltefeld im Original |
+|---|---|---|---|
+| 88 | `1RB` | `1RB` | F1, F über D1 erreicht (F = Kopie von B) |
+| 312 | `1RF` | `1RB` | F1, F über D1 oder E1 erreicht (F = Kopie von B) |
+| 449 | `0LC` | `0LC` | F1, F über D1 erreicht (F = Kopie von B) |
+| 396 | `0RF` | `0RD` | F1, F über B1 oder E1 erreicht (F = Kopie von D) |
+
+Nur 88 und 312 haben denselben Kern. Es gibt also drei verschiedene 5-Zustands-Kerne, und bei 396 liegt
+zusätzlich das Haltefeld an anderer Stelle. Was das für PR #59 bedeutet, steht in
+[`analyse/396.md`](396.md).
+
+Weitere Befunde (zwei Punkte am 25.11. berichtigt):
 
 - 88, 312, 449 sind dieselbe Tabelle bis auf E1 (`1RB`, `1RF`, `0LC`); busycoq-PR #59 „Prove three BB(6)
   machines halt: one doubling law, E1 = 1RF, 1RB or 0LC“ (offen, Stand 10.11.) beweist laut Titel, dass alle
   drei **halten**.
 - 88 und 312 haben denselben 5-Zustands-Kern und laufen per Tabellenvergleich im Gleichschritt.
-  396 läuft im Gleichschritt mit vier Äquivalenten von 88/312 (Tabellenvergleich), 449 mit zwei
-  Äquivalenten von 396.
-- **396 ist das einzige Mitglied ohne PR** (busycoq `open`, slugbird `rules`). Unbelegt, aber naheliegend:
-  das „doubling law“ aus PR #59 trifft auch 396. Ob 396 hält, folgt aus dem Gleichschritt nicht.
+  88 und 312 laufen im Gleichschritt mit vier Äquivalenten von 396 (396.2, .3, .5, .7), 396 mit zwei
+  Äquivalenten von 449 (449.1, .2), jeweils per Tabellenvergleich. (Erste Fassung hatte die Richtung
+  vertauscht.)
+- **396 ist das einzige Mitglied ohne PR** (busycoq `open`, slugbird `rules`). Die erste Fassung nannte es
+  „naheliegend“, dass das „doubling law“ aus PR #59 auch 396 trifft. Nachgeprüft in
+  [`analyse/396.md`](396.md): Das Besuchsgesetz gilt für 396 bis auf die Halteregel; der Halte-Beweis ist
+  **nicht übertragbar**.
 
 ### Holdouts mit gleicher Tabelle wie eine decided Maschine
 
