@@ -27,7 +27,7 @@ jobs:
         run: echo /home/coq/.opam/4.13.1+flambda/bin >> "$GITHUB_PATH"
       - name: coqc --version
         run: coqc --version
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: busycoq auf festen Commit klonen
         run: |
           git config --global --add safe.directory '*'
