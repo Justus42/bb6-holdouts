@@ -37,7 +37,7 @@ Invariante WF, die eine Fallunterscheidung braucht; in S0-Koordinaten:
 | Spacer (Z3 5.4.1, `chc_rgr.py`), 5 Min. | keine Antwort (abgebrochen) |
 | Spacer, drei Einstellungen (`spacer_opts.py`), je 3 Min. | `unknown` |
 | Eldarica 2.1 (`rgr.smt2`), 5 Min. | keine Antwort (abgebrochen) |
-| Spacer, 30 Min. | siehe unten (ERG_SPACER30) |
+| Spacer, 30 Min. (`ergebnisse/spacer_ok_30min.txt`) | keine Antwort (abgebrochen) |
 | Spacer mit menschlichem Hinweis: Zustandsraum von Hand in die zwei Fälle geteilt (`chc_rgr_geteilt.py`) | keine Antwort in 200 s (abgebrochen) |
 | Hand-Invariante WF prüfen (`rgr_wf_check.py`): Z3 und Aufzählung ohne Z3 bis 40 je Zähler | gültig (Start, Erhalt unter allen 3 Regeln, kein schlechter Zustand; 1.040.690 Zustände, 0 Fehler) |
 
@@ -102,7 +102,21 @@ nutzbar und in Rocq leicht nachzubauen.
 ab D und C, Umbenennung und Spiegelung ändern die Existenz eines Zertifikats nicht, die Spiegelung
 tauscht nur nL und nR):
 
-ERG_G1
+| Start | vollständig durchsucht (alle Größen) | Zusätzlich | Zertifikat |
+|---|---|---|---|
+| A (114) | alle nL, nR ≤ 12; außerdem alle mit nL, nR ≤ 14 und nL+nR ≤ 23 | nL ∈ {15,20,25,30} × nR ≤ 5 | keins |
+| D (367) | alle nL, nR ≤ 12 | nL ∈ {15,20,25,30} × nR ≤ 5 | keins |
+| C (378) | alle nL, nR ≤ 12 | nL ∈ {15,20,25,30} × nR ≤ 5 | keins |
+
+Rohdaten: `ergebnisse/g1_A.log`, `g1_D.log`, `g1_C.log`, `g1_asym.log`. Kein Lauf lief ins Zeitlimit;
+der langsamste (A, 12×12) brauchte 167 s. Die Suche für A habe ich nach Gesamtgröße 23 abgebrochen
+und 12×12 einzeln nachgerechnet.
+
+**Nebenbei, alle 608 Holdouts** (`ctl_holdouts.py`, Start A, jede Größe bis 7×7, jeder Fund würde sofort
+vom Prüfer nachgeprüft): **0 Funde** (`ergebnisse/holdouts_4x4.txt`, `ergebnisse/holdouts_7x7.txt`).
+Zur Kontrolle findet dasselbe Skript bei der cryptids-Maschine das 3×2-Zertifikat. Das passt dazu,
+dass die Liste aus Maschinen besteht, an denen solche Standardverfahren schon gescheitert sind
+(unbelegt, nicht nachgesehen, welche Verfahren bbchallenge genau angewendet hat).
 
 Auffällig: Große linke Automaten mit kleinem rechten werden in Bruchteilen einer Sekunde verworfen,
 die schweren Fälle sind die mit großem rechtem Automaten.
@@ -133,9 +147,8 @@ es bis zu den genannten Größen nichts gibt.
 - Weg 2 größer rechnen (in Actions) ist möglich, aber nach Abschnitt 4 wenig aussichtsreich.
 - Weg 1 würde erst sinnvoll, wenn Gruppe 1 auf endlich viele Zähler zurückgeführt ist; das ist genau
   die offene Frage aus `gruppe1_linkes_ende.md`.
-- Das SAT-Werkzeug (`ctl_sat.py` + `ctl_pruefer.py`) ist allgemein; man könnte es über alle 608
-  Holdouts laufen lassen. Erwartung: kaum Treffer, weil bbchallenge solche Verfahren (FAR, CTL) schon
-  angewendet hat (unbelegt, nicht nachgesehen).
+- Holdouts mit größeren Automaten (über 7×7) durchsuchen wäre in Actions möglich; nach den 0 Funden
+  bis 7×7 erwarte ich wenig.
 
 ## Aufrufe
 
