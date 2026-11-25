@@ -1,0 +1,1 @@
+Proben 200000: K(C)/Halt 0; Phasen, die p+3 nicht in C erreichen: 1195

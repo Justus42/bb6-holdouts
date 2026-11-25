@@ -1,0 +1,2 @@
+Proben 200000: Muster/Halt in Bit-Simulation 33, davon vom Detektor im selben Schritt erkannt 33; Fehlalarme 0
+Negativkontrolle SCHLAEGT AN

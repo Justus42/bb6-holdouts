@@ -1,0 +1,8 @@
+N1   OFFEN bis n=6: Kopf liest Zelle ausserhalb des beschriebenen Bereichs (P)
+N2   OFFEN bis n=6: C vor ?11 (K(C) oder Halt)
+N2s  OFFEN bis n=6: C vor ?11 (K(C) oder Halt)
+UA   OFFEN bis n=6: C vor ?11 (K(C) oder Halt)
+LE0  OFFEN bis n=6: C vor ?11 (K(C) oder Halt)
+LE1  OFFEN bis n=6: C vor ?11 (K(C) oder Halt)
+LG   OFFEN bis n=6: C vor ?11 (K(C) oder Halt)
+bewiesen 0 von 7

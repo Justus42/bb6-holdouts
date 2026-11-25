@@ -1,0 +1,8 @@
+N1   1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+N2   1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+N2s  1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+UA   1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+LE0  1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+LE1  1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+LG   1000/1000 gleich (Band, Schritte, Ende in C bei p+3); C-Fenster von links: 001 010 100 101 110
+Abweichungen: 0

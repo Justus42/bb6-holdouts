@@ -1,0 +1,27 @@
+== PRUEFE_FEHLER=loesche
+N1   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['w', '011', ['a', 0]], ['b', 1], ['S', 'Z'], ['w', '011', ['
+N2   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['w', '011', ['a', 0]], ['b', 1], ['S', 'Z'], ['w', '011', ['
+N2s  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'L', [['S', 'Z'], ['w', '011', ['a', 1]], ['b', 0], ['w', '011', ['
+UA   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'L', [['S', 'Z'], ['w', '011', ['a', 1]], ['b', 0], ['b', 1], ['w',
+LE0  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'L', [['S', 'Z'], ['b', 1], ['_']], [['b', 0], ['w', '100', ['a', 2
+LE1  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'L', [['S', 'Z'], ['w', '011', ['a', 1]], ['b', 0], ['b', 1], ['_']
+LG   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'L', [['S', 'Z'], ['_']], [['b', 0], ['w', '100', ['a', 2]], ['b', 
+Zertifikat NICHT BESTAETIGT
+== PRUEFE_FEHLER=tabelle
+N1   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['w', '011', ['a', 1]], ['b', 0], ['S', 'Z'], ['P']
+N2   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['b', 0], ['w', '011', ['a', 0]], ['P']], [['b', 1]
+N2s  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['b', 0], ['w', '011', ['a', 0]], ['P']], [['b', 1]
+UA   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['b', 1], ['b', 0], ['w', '011', ['a', 0]], ['P']],
+LE0  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['b', 0], ['_']], [['b', 1], ['S', 'Y'], ['b', 0], 
+LE1  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['w', '011', ['a', 1]], ['b', 0], ['S', 'Z'], ['_']
+LG   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (3, 'L', [['b', 0], ['w', '011', ['a', 1]], ['b', 0], ['S', 'Z'], ['_']
+Zertifikat NICHT BESTAETIGT
+== PRUEFE_FEHLER=stern
+N1   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'R', [['b', 1], ['b', 1], ['b', 0], ['w', '011', ['a', 2]], ['b', 1
+N2   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'R', [['b', 1], ['b', 1], ['b', 0], ['w', '011', ['a', 2]], ['b', 1
+N2s  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'R', [['b', 1], ['b', 1], ['b', 0], ['w', '011', ['a', 2]], ['b', 1
+UA   NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'R', [['b', 1], ['b', 1], ['b', 0], ['w', '011', ['a', 2]], ['b', 1
+LE0  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'R', [['b', 1], ['b', 1], ['b', 0], ['w', '011', ['a', 2]], ['b', 1
+LE1  NICHT BESTAETIGT: Nachfolger nicht gedeckt: (1, 'R', [['b', 1], ['b', 1], ['b', 0], ['w', '011', ['a', 2]], ['b', 1
+LG   NICHT BESTAETIGT: Start nicht gedeckt
+Zertifikat NICHT BESTAETIGT
