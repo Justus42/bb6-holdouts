@@ -1,0 +1,25 @@
+== Positivkontrollen: kleinste Groesse mit Zertifikat, danach unabhaengiger Pruefer ==
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=1 nR=1 klauseln=30 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=1 nR=2 klauseln=108 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=2 nR=1 klauseln=108 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=1 nR=3 klauseln=253 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=2 nR=2 klauseln=385 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=3 nR=1 klauseln=253 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=1 nR=4 klauseln=483 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=2 nR=3 klauseln=861 zeit=0.0s ergebnis=UNSAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=3 nR=2 klauseln=861 zeit=0.0s ergebnis=SAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=3 nR=2 |acc|=4
+Abschlusspruefung: OK
+Lauf 1000000 Schritte: OK
+1RB0RC_1LC0LD_1RA1RC_1RA1LE_0LB1RE_---1RA start=A nL=1 nR=1 klauseln=30 zeit=0.0s ergebnis=SAT
+1RB0RC_1LC0LD_1RA1RC_1RA1LE_0LB1RE_---1RA start=A nL=1 nR=1 |acc|=10
+Abschlusspruefung: OK
+Lauf 1000000 Schritte: OK
+== Negativkontrolle 1: haltende Maschinen, kein Zertifikat bis 6x6 erlaubt ==
+1RB1LB_1LA0LC_---1LD_1RD0RA: 36 Groessen, 0 mit Zertifikat (erwartet 0)
+1RB1LC_1RC1RB_1RD0LE_1LA1LD_---0LA: 36 Groessen, 0 mit Zertifikat (erwartet 0)
+== Negativkontrolle 2: Symmetriebrechung aendert kein Ergebnis (bis 4x4, mit/ohne) ==
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB---: 16 Groessen, 0 Abweichungen
+1RB0RC_1LC0LD_1RA1RC_1RA1LE_0LB1RE_---1RA: 16 Groessen, 0 Abweichungen
+1RB1LB_1LA0LC_---1LD_1RD0RA: 16 Groessen, 0 Abweichungen
+1RB---_0RC0LF_1LD0RE_1RC0LB_1RD1RA_1LB0LC: 16 Groessen, 0 Abweichungen
