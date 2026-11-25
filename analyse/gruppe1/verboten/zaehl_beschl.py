@@ -24,7 +24,11 @@ Z = {"ueb": Zaehler(), "vs": Zaehler(), "na": Zaehler()}
 PH = {"ueb": 0, "vs": 0, "na": 0}
 
 
-def rueckfall_gezaehlt(tok, tail, r):
+class Endlos(Exception):
+    pass
+
+
+def rueckfall_gezaehlt(tok, tail, r, grenze=None):
     """Wie beschleuniger.rueckfall (Zeile fuer Zeile), zusaetzlich mit Zaehlung der Rechtsschritte."""
     if r == 0:
         art = "ueb"
@@ -42,7 +46,11 @@ def rueckfall_gezaehlt(tok, tail, r):
     links_neu = 0
     n = 0
     erster = True
+    makro = 0
     while True:
+        makro += 1
+        if grenze is not None and makro > grenze:
+            raise Endlos(makro)
         if not erster and q == C:
             rr = None
             if seite == "R" and sm.peek(R, False, 2) == [0, 0]:
