@@ -43,7 +43,7 @@ jobs:
     env:
       OPAMROOT: /home/coq/.opam
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: busycoq auf festen Commit klonen (volle Historie fuer PR-Commits)
         run: |
           git config --global --add safe.directory '*'
