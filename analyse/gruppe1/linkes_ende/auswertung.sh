@@ -44,5 +44,5 @@ for x in kern fenster; do
 done
 echo "### abdeck.py (VS-Familie gegen alle Faelle)"
 python3 "$H/abdeck.py" "${F[@]}"
-echo "### Uebergangs-Faelle ab 1e15"
-for f in "${F[@]}"; do awk -v fn="${f##*/}" '$1 >= 1e15 && ($3 ~ /^Ueb/) {print fn": "$0}' "$f" | head -n 40; done
+echo "### neukern.py (erstes Auftreten je Kern, alt-Faelle, Faelle neuer Kerne ab 1e15)"
+python3 "$H/neukern.py" "${F[@]}" --ab 1e15
