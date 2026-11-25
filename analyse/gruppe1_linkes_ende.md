@@ -272,8 +272,8 @@ unerklärter "alt"-Fälle (bis 1,5 %) verhindern ein klares (a). Urteil: offen, 
 Fälle, kein Beweisprojekt jetzt.
 
 **Belege.** Commits 3617b26 (Beschleuniger, `direkt.c`, Workflow), d622b8d (Formen, VS-Familie,
-Linearitätstest), 590aadf (Entwurf), 82764ef und 0591034 (Auswertung in Actions, `neukern.py`) und der
-Schluss-Commit dieses Berichts. Actions: Run 45614962053 (direkt bis 10^12, Beschleuniger bis 10^17,
+Linearitätstest), 590aadf (Entwurf), 82764ef und 0591034 (Auswertung in Actions, `neukern.py`) und 5e18fd3
+(Bericht). Actions: Run 45614962053 (direkt bis 10^12, Beschleuniger bis 10^17,
 Vergleich grün), Runs 45657021990 und 45658664733 (Auswertung). Lokal: `ergebnisse/validierung_lokal.txt`,
 `negativkontrollen.txt`.
 
