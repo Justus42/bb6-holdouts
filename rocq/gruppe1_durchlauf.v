@@ -21,7 +21,7 @@
     nach dem Vorbild von IsValidAcceleration in google-deepmind/cryptids. *)
 
 From BusyCoq Require Import Individual62.
-Require Import String Lia List.
+Require Import String Lia List PeanoNat.
 Import ListNotations.
 Set Default Goal Selector "!".
 
@@ -445,3 +445,71 @@ Proof.
   - apply (perm_halts _ _ _ C tape0 perm378).
 Qed.
 
+
+(** * Stufe 2a: Regel F (Fressrunde)
+
+    Listenform (Teil 1): an einem Rechts-Rekord in C steht ganz rechts das Element x, daneben y,
+    getrennt durch [|]; eine Fressrunde macht daraus x+4 | y-1. Im Modell: oben auf dem linken
+    Stapel liegt [011]^x, dann eine 1, dann [011]^(y+1), dann eine 1, darunter der Rest; rechts ist
+    das Band leer. Bis 10^8 Schritte ist x bei allen Fressrunden ungerade (alle drei Starts);
+    hier x = 2k+1, also [Block (k+k)], und y = b+1, also [Block (S b)]. *)
+
+(** [erreicht z z']: wiederholtes Anwenden von [next] fuehrt von z nach z'. *)
+Inductive erreicht : zustand -> zustand -> Prop :=
+  | er_refl z : erreicht z z
+  | er_schritt z z' z'' : next z = Some z' -> erreicht z' z'' -> erreicht z z''.
+
+Lemma erreicht_trans : forall z1 z2 z3, erreicht z1 z2 -> erreicht z2 z3 -> erreicht z1 z3.
+Proof.
+  intros z1 z2 z3 H12 H23. induction H12 as [z | z z' z'' En _ IH]; [exact H23 |].
+  eapply er_schritt; [exact En | apply IH, H23].
+Qed.
+
+(** Wer z' erreicht, erreicht "Halt" genau dann, wenn z' es tut. *)
+Lemma erreicht_halt_erreicht : forall z z', erreicht z z' ->
+  (erreicht_halt z <-> erreicht_halt z').
+Proof.
+  intros z z' H. induction H as [z | z z' z'' En _ IH]; [tauto |].
+  rewrite <- IH. split.
+  - intros Hh. inversion Hh as [? Hn | ? z2 Hn Hh']; subst; congruence.
+  - intros Hh. eapply eh_weiter; eassumption.
+Qed.
+
+Lemma wechsel_wechsel : forall q, wechsel (wechsel q) = q.
+Proof. intros []; reflexivity. Qed.
+
+Lemma wechseln_SS : forall n q, wechseln (S (S n)) q = wechseln n q.
+Proof. intros n q. cbn [wechseln]. rewrite wechsel_wechsel. reflexivity. Qed.
+
+Lemma wechseln_gerade : forall k q, wechseln (k + k) q = q.
+Proof.
+  induction k as [| k IH]; intros q; [reflexivity |].
+  replace (S k + S k) with (S (S (k + k))) by lia. rewrite wechseln_SS. apply IH.
+Qed.
+
+(** Ein Schritt von [next], symbolisch ausgerechnet. *)
+Ltac schritt :=
+  eapply er_schritt;
+  [ cbn; repeat (rewrite ?Nat.add_0_r, ?Nat.add_succ_r, ?wechseln_SS, ?wechseln_gerade); reflexivity
+  | ].
+
+(** Regel F: eine Fressrunde, 25 Schritte von [next]. *)
+Lemma regel_F : forall k b rest,
+  erreicht (Z C Re (Block (k + k) :: Bit S1 :: Block (S b) :: Bit S1 :: rest) [])
+           (Z C Re (Block (S (S (S (S (k + k))))) :: Bit S1 :: Block b :: Bit S1 :: rest) []).
+Proof.
+  intros k b rest. do 25 schritt. apply er_refl.
+Qed.
+
+(** Regel F, m-mal hintereinander: x | y wird zu x+4m | y-m. *)
+Lemma regel_F_oft : forall m k b rest,
+  erreicht (Z C Re (Block (k + k) :: Bit S1 :: Block (m + b) :: Bit S1 :: rest) [])
+           (Z C Re (Block ((k + 2 * m) + (k + 2 * m)) :: Bit S1 :: Block b :: Bit S1 :: rest) []).
+Proof.
+  induction m as [| m IH]; intros k b rest.
+  - replace (k + 2 * 0) with k by lia. apply er_refl.
+  - eapply erreicht_trans; [apply regel_F |].
+    replace (S (S (S (S (k + k))))) with (S (S k) + S (S k)) by lia.
+    replace (k + 2 * S m) with (S (S k) + 2 * m) by lia.
+    apply IH.
+Qed.
