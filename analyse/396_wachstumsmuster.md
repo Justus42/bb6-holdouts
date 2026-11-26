@@ -29,6 +29,8 @@ Programme in `analyse/396/muster/`, Workflow `lauf_muster` (PR 28).
     Gefahrenbedingung: Junk ist nur gefährlich, wenn das Defizit vor dem letzten `000`-Block ungerade ist.
   - **Nach einer Gestalt wie bei 471 (Blöcke B^t, D^t, Periode P) wurde dort nicht gesucht.** Weder bei 396 noch
     bei 110 oder 471 steht etwas dazu. Der busycoq-Beweis zu 471 (PR #55) wird dort nicht erwähnt.
+  - Nachtrag 26.11. 10:45 UTC, Kopf `4a6db4e`: Der neue Übertragungs-Abgleich
+    (`holdouts/recent-proofs/followup/invariant-transfer.md`, nur gelesen) nennt 396, 110 und 471 nicht.
 
 ## 1. Der Beweis zu 471 und was davon für 396 gilt
 
@@ -153,6 +155,8 @@ Stichrunden aus dem Tokenbild (L = 1010, H = 100, Z = 000):
 
 ## Belege
 
+- **Zwei Rundenprogramme:** Programm X (`defizit.c`, neu) und Programm B (`runde_b_anf.cpp` = `runde_b.cpp` aus
+  Teil 2 mit zusätzlicher Fensterausgabe). **Zwei Periodensuchen:** `auswertung.py` und `zweit.c`.
 - **Run 45771362724** (Workflow `lauf_muster`, Branch `claude/project-thread-6ahuss`, Commit `05720ab`):
   - Job kontrollen grün (`kontrollen.sh`: X = runde.c, runde_b_anf = runde_b, A-Zeilen X = B bis 10.000,
     Periodensuche an künstlichen Folgen, drei Negativkontrollen schlagen an).
