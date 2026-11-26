@@ -1,0 +1,16 @@
+== Tabelle 133 gegen 581 und gegen den RWLAccHalt-Geschwister
+A..F -> CDABEF gespiegelt
+A..F -> DABCEF gespiegelt
+== Negativkontrolle Tabelle (ein Feld von 581 geaendert, 0LC -> 0LB): keine Zeile erwartet
+== Portierung gegen direkte Simulation (Besuche bis Wortlaenge 100.000)
+Portierung: 1204 in Reihenfolge gefunden: 1204 nach Sprung: 108 fehlend: 0
+rc=0 (erwartet 0)
+== Negativkontrolle 1: Besuche von 581 gegen den direkten Lauf von 133
+Portierung: 3492 in Reihenfolge gefunden: 0 nach Sprung: 0 fehlend: 3492
+rc=1 (erwartet 1)
+== Negativkontrolle 2: ein Hash nach Sprung verfaelscht
+Portierung: 1204 in Reihenfolge gefunden: 1203 nach Sprung: 107 fehlend: 1
+rc=1 (erwartet 1)
+== Negativkontrolle 3: zwei Besuche vertauscht
+Portierung: 1204 in Reihenfolge gefunden: 1203 nach Sprung: 108 fehlend: 1
+rc=1 (erwartet 1)

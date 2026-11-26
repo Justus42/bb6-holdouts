@@ -1,0 +1,9 @@
+$ time python3 pr76_port.py A 33554432 --log 4000000
+Runde 4000000 Items 915 Spruenge 22907 groesste Wiederholung 2^118
+Runde 8000000 Items 1132 Spruenge 42456 groesste Wiederholung 2^157
+Runde 12000000 Items 860 Spruenge 60069 groesste Wiederholung 2^184
+Runde 16000000 Items 947 Spruenge 75815 groesste Wiederholung 2^205
+HALT in Runde 19026768 | Spruenge 86734 | Sprung-Besuche 960444283605030179454456534694492774255946350586257176153504195031
+letzte Konfiguration: dir=False q=F front=[] back=[1 0 (100)^91561 1 0 1 1 0 (100)^6920 1 0 1]
+
+real	2m19.808s
