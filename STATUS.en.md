@@ -1,4 +1,4 @@
-# Project status (26 Nov 2026, early; check against busy-beaver-explorer; corrected 26 Nov midday after the external review)
+# Project status (26 Nov 2026, early; check against busy-beaver-explorer; corrected 26 Nov midday after the external review; M5 updated 26 Nov after PR 31; 396 updated 26 Nov after PR 34)
 
 Per group: what is **proved** (Rocq, with file and Actions run), what is only **observed** (with the bound
 checked and the number of programs), and what is **open**. Every number points to the report it comes from
@@ -26,7 +26,8 @@ Reports (all in `analyse/`, German, merged with the PR in brackets):
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
 [VK] `verwandtschaft.md` (PR 12, corrected in PR 13; English summary `verwandtschaft_en.md`) ·
 [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) · [RF] `396_rueckfuehrung.md` (PR 21) ·
-[T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (check against busy-beaver-explorer).
+[T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (check against busy-beaver-explorer) ·
+[M3] `318_518_teil3.md` (PR 31, halting patterns up to 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34).
 
 ## Data (check of 25 Nov 2026) [DA]
 
@@ -130,6 +131,7 @@ Shown by **table comparison** (holds for every step count, two programs, not in 
 | Observation | Bound | Programs | Source |
 |---|---|---|---|
 | No halting pattern (`B> 1 1`, `C> 1 1`) | 10^10 steps (runs from A and from C) | 2 (`m5sim.c`, `zweitpruefung.go`) | [M1 §3] |
+| No halting pattern (`B> 1 1`, `C> 1 1`), every transition counted | **8·10^14** (runs from A, C, D) | up to 10^10 three (`blocksim.c`, `zweitzaehlung.go`, `m5sim paare`); up to 10^11 also the external reviewer's direct simulation (code not in the repo); 10^11 to 8·10^14 two programs, **one principle** (jumps only on an exactly repeated situation, theorem in [M3 §2]); controls 9/9, including a planted halting pattern | [M3] |
 | 318, 518 and M5 in lockstep | 10^9 | 1 (`m5sim gleich`) | [M1 §1] |
 | Counter rules 1 to 3 (binary counter of digits Z/D1/D2/D3, separators W) | 3·10^8 | cycle files from 2 programs byte-identical, rule check Python only | [M1 §2] |
 | Run from A does not meet run from C | 3·10^8 (cycle starts) | 1 | [M1 §1] |
@@ -139,7 +141,10 @@ Shown by **table comparison** (holds for every step count, two programs, not in 
 
 ### Open
 
-- Whether M5 reaches `B> 1 1` / `C> 1 1`: **open**. Beyond 10^10 the halting pattern was not checked [M2 §4].
+- Whether M5 reaches `B> 1 1` / `C> 1 1`: **open**. It does not occur up to 8·10^14 [M3]; not checked by us beyond.
+  **Not a new bound:** per `data/holdouts.json` (as of 10 Nov) slugbird (Holdout Guide, 3 Nov) simulated 274, 322 and 518
+  to 1.0·10^17 and 318 to 1.0·10^20 steps (status "rules"), the RobinCodes sheet (9 Oct) all four to at least 10^15.
+  Not re-checked, their programs unknown. What [M3] adds is only the published count of every transition by two programs.
 - How a rebuild places the new digits (position and phase): no formula found, hence **no proof plan** [M2 §4].
 - Next rebuild, if any, beyond 8·10^14; `m5sim` reaches about 10^15 [M2 §6].
 - Templates in the pin would be `SBCv6a2.v` (compute the orbit) or `SOBLv3.v` (residue-class invariant); both
@@ -152,8 +157,11 @@ Shown by **table comparison** (holds for every step count, two programs, not in 
   Computed: no halt up to 2·10^10 (318), 10^11 (322, 518), 10^9 (274).
 - bbe knows the pairs 318~322, 274~518 (same table), 318~518 (same run), 322~274 (same tapes), but not the
   common 5-state machine M5. bbe does not follow the rebuilds to 8·10^14 as we do.
-- No contradiction. Not reconciled: our rebuild "from A at 29,754,240" vs bbe "step 29,787,121" (probably a
-  different definition of the moment).
+- No contradiction. Rebuild "from A at 29,754,240" vs bbe "step 29,787,121": the same rebuild; 29,754,240 is the
+  start of the cycle, at 29,787,121 the head reaches the left end in state C (recomputed directly) [M3 §1a].
+- `Twin.lean` (lockstep 318/518, pairs A-A, B-B, C-C, D-D, E-A, F-E, F-F) matches our M5 map [M3 §1a].
+- At 10^9 our tapes from C and D match bbe (47,247 cells, 30,462 / 30,463 ones) [M3 §1a].
+- bbe folders of the four machines unchanged since 13 Nov (274: 24 Nov), checked up to bbe head `47856cd8` (external reviewer).
 
 ## 396 with 110, 587 and 88, 312, 449 (visit-law family)
 
@@ -180,6 +188,7 @@ Shown by **table comparison** [VK, section F12]:
 | 396: no halt, only two 1011 events (rounds 161,211 and 194,647) | round 260,000 (word of 1,615,087 cells) | 1 for the long run (`runde.c`), run 45676623019 | [396 §4] |
 | Visit-law family among all 608 (mirrored, all state pairs): exactly 88, 110, 312, 396, 449, 587; 110 = 396 except `V(111x)`, round-identical until the first visit hits 111. Consequence "if 396 never halts, 110 never halts": **tested, not proved** (law for 110 checked only as far as this row says). **Not covered** (other position or rule): 123, 223 (shifted by one cell, 123 with a second visit form; they halt), 471 (`V(110x) = 001x`; does not halt) | all words up to length 12; 27 rounds direct | 2 (`suche_a.py`, `suche_b.c`), identical; addendum 123/223/471 by sampling, 1 program | [FB], [AB §2] |
 | 396: no halt, never `111`, never `011`; `11` at the end of a round only in 161,210 and 194,646, each followed by a 1011 event | round 748,162 (A), identical with B up to 573,850 | 2 (`runde.c`, `runde_b.cpp`), run 45688978145 | [T2] |
+| 396: no halt; junk rounds 161,210, 194,646, 757,565, 906,775, 1,042,306 (as bbe). No shape like 471's (L^(k+at) A B^t C D^t E T^(v+bt)): behind L^k sits a binary counter; the first m cells are periodic with power-of-2 periods growing with m (2^18 at m = 224, no period ≤ 300,000 from m = 232); a common P would have to be a multiple of 2^18 | round 1,200,000 (X), B to 1,238,663; external review with its own code to 300,000 (table to m = 208) | 2 round programs (`defizit.c`, `runde_b_anf.cpp`), start windows equal every round; 2 period searches; run 45771362724 | [WM] |
 
 ### External (bbe, as of 26 Nov, head `8515a2a4`) [AB §2, §3]
 
@@ -189,8 +198,8 @@ Shown by **table comparison** [VK, section F12]:
 - **Computed:** 10^11 steps direct; **no `111` up to round 4,000,000** (commit `195c1340`, 26 Nov; `piperun.c`,
   word-identical with `wordrun.c`/`deficit.c` checked only to 20,000 and 200,000 rounds, so one program with
   partial cross-checks; the word is then 24,856,760 cells). 18 junk events, all harmless (after a doubler,
-  even deficit 6). Same statement in the folder of 110. Read only, not recomputed by us; our own run ends at
-  round 748,162 [T2].
+  even deficit 6). Same statement in the folder of 110. Read only, not recomputed by us; our own runs end at
+  round 748,162 [T2] and 1,200,000 [WM].
 - **Danger condition:** a halt needs a junk event met at offset 2; that needs an odd deficit entering the last
   `000` block.
 - **No invariant of the word end alone:** with an arbitrary count the last 48 cells reach `111` in 2–3 rounds;
@@ -203,13 +212,16 @@ Shown by **table comparison** [VK, section F12]:
 ### Open
 
 - Whether 396 halts, i.e. whether `111` ever appears: **open** [T2], [AB].
+- Whether the periods of the start windows grow without bound (then 396 has no 471-like shape for any P): **open**,
+  only observed to round 1,200,000 [WM]. bbe already describes the counter at event level; new on our side is only
+  the per-round period table. **396 is on hold** (Justus, 26 Nov).
 - "396 never halts ⇒ 110 never halts" is **tested, not proved** on our side: the visit law for 110 is checked
   only for words up to length 12 and 27 rounds direct, not in Rocq [FB]. bbe has it in Lean on its own
   definitions; not checked by us.
 - 396, 110, 587 still have no busycoq PR (not among the 53 open ones either, 26 Nov); of the three only 587 has a cryptids file [DA], [AB].
 - The halting proof of PR #59 does **not** transfer to 396 [396].
-- Next candidate template: busycoq #55 (471, `1011 → 0001` as in 396, does not halt); whether its technique fits
-  396 is not checked [AB §2]. The proof idea "no visit ends on a 0 right before 11" is on hold (Justus, 26 Nov);
+- Template busycoq #55 (471, `1011 → 0001` as in 396, does not halt): its shape with a fixed block behind L^k
+  does not occur in 396 up to round 1,200,000; a counter sits there [WM]. The proof idea "no visit ends on a 0 right before 11" is on hold (Justus, 26 Nov);
   according to bbe a statement about the word end alone is not enough for it [AB §3].
 
 ## Relationship map (all 608 holdouts)
@@ -251,6 +263,9 @@ Nothing. Shown by **table comparison**, two programs (`karte_a.py`, `karte_b.c`,
 | "x/2 ≥ list length" in 24 of 76 cycles (start A) | 19 of 77 with a different cut; what matters is the spread −64 to +27 | [G1] → [VL §3] |
 | M5: left record from C at 29,550,874 read as a rebuild | not a large rebuild; real rebuilds from C only at 87,823 and 874,896,314 | [M1] → [M2 §2, §3] |
 | M5: "no further rebuild up to 10^11" | none up to 8·10^14 | [M1] → [M2] |
+| M5: halting pattern "not checked beyond 10^10" | checked up to 8·10^14, no occurrence | [M2 §4] → [M3] |
+| M5: 8·10^14 read as the furthest bound | not a new bound: slugbird 10^17 (274, 322, 518) / 10^20 (318), sheet ≥ 10^15 (`holdouts.json`) | [M3] → external review 26 Nov |
+| M5: 29,754,240 vs bbe 29,787,121 "not reconciled" | the same rebuild, two moments | [AB] → [M3 §1a] |
 | cycle runs without int64 guard (runs 45675033053, 45682765314) | do not use beyond 10^24; guard since commit `509fb21` | [VB §5, §6] |
 | busycoq BB6 "still at `33209bc7`", PR #59 "open, not merged" | since 26 Nov at `9c078ca`, #59 and #55 merged; 88, 312, 449, 471 decided upstream | [DA] → [AB §1] |
 | 110 "new" in the visit-law family | known to bbe since 13 Nov, with a Lean proof of the law | [FB] → [AB §2] |

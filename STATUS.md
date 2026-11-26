@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -25,7 +25,8 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [GR] `gruppe1_groesse.md` (PR 16) · [VB] `gruppe1_verboten.md` (PR 17) · [INV] `invarianten.md` (PR 15) ·
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
-[RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer).
+[RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
+[M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -130,6 +131,7 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 | Beobachtung | Prüfgrenze | Programme | Quelle |
 |---|---|---|---|
 | Kein Haltemuster (`B> 1 1`, `C> 1 1`) | 10^10 Schritte (Läufe ab A und ab C) | 2 (`m5sim.c`, `zweitpruefung.go`) | [M1 §3] |
+| Kein Haltemuster (`B> 1 1`, `C> 1 1`), jeder Übergang gezählt | **8·10^14** (Läufe ab A, C, D) | bis 10^10 drei (`blocksim.c`, `zweitzaehlung.go`, `m5sim paare`); bis 10^11 dazu die direkte Simulation der Prüfstelle (Code nicht im Repo); 10^11 bis 8·10^14 zwei Programme, **ein Prinzip** (Sprünge bei exakt wiederholter Lage, Satz in [M3 §2]); Kontrollen 9/9, darunter ein eingebautes Haltemuster | [M3] |
 | 318, 518 und M5 im Gleichschritt | 10^9 | 1 (`m5sim gleich`) | [M1 §1] |
 | Zählerregeln 1 bis 3 (Binärzähler aus Ziffern Z/D1/D2/D3, Trenner W) | 3·10^8 | Zyklusdateien 2 Programme bytegleich, Regelprüfung nur Python | [M1 §2] |
 | Lauf ab A trifft Lauf ab C nicht | 3·10^8 (Zyklusbeginne) | 1 | [M1 §1] |
@@ -139,7 +141,10 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 
 ### Offen
 
-- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Jenseits 10^10 wurde das Haltemuster nicht geprüft [M2 §4].
+- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Bis 8·10^14 kommt es nicht vor [M3]; darüber von uns nicht geprüft.
+  **Keine neue Grenze:** Laut `data/holdouts.json` (Stand 10.11.) simuliert slugbird (Holdout Guide, 3.11.) 274, 322 und 518
+  bis 1,0·10^17 und 318 bis 1,0·10^20 Schritte (Status „rules“), das RobinCodes-Sheet (9.10.) alle vier bis mindestens 10^15.
+  Nicht nachgeprüft, Programme dort unbekannt. Neu an [M3] ist nur die offen gelegte Zählung jedes Übergangs mit zwei Programmen.
 - Wie ein Umbau die neuen Ziffern setzt (Lage und Phase): keine Formel gefunden, daher **kein Beweisplan** [M2 §4].
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
@@ -152,8 +157,11 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
   Gerechnet: kein Halt bis 2·10^10 (318), 10^11 (322, 518), 10^9 (274).
 - bbe kennt die Paare 318~322, 274~518 (gleiche Tabelle), 318~518 (gleicher Lauf), 322~274 (gleiche Bänder),
   aber nicht die gemeinsame 5-Zustands-Maschine M5. Unsere Umbau-Verfolgung bis 8·10^14 hat bbe nicht.
-- Kein Widerspruch. Nicht abgeglichen: unser Umbau „ab A bei 29.754.240“ gegen bbe „Schritt 29.787.121“
-  (vermutlich anderer Zeitpunkt definiert).
+- Kein Widerspruch. Umbau „ab A bei 29.754.240“ gegen bbe „Schritt 29.787.121“: derselbe Umbau; 29.754.240 ist
+  der Beginn des Zyklus, bei 29.787.121 erreicht der Kopf in C das linke Ende (direkt nachgerechnet) [M3 §1a].
+- `Twin.lean` (Gleichschritt 318/518, Paare A-A, B-B, C-C, D-D, E-A, F-E, F-F) passt zu unserer M5-Zuordnung [M3 §1a].
+- Bei 10^9 stimmen unsere Bänder ab C und D mit bbe überein (47.247 Zellen, 30.462 bzw. 30.463 Einsen) [M3 §1a].
+- bbe-Ordner der vier Maschinen unverändert seit 13.11. (274: 24.11.), geprüft bis bbe-Kopf `47856cd8` (Prüfstelle).
 
 ## 396 mit 110, 587 und 88, 312, 449 (Familie Besuchsgesetz)
 
@@ -180,6 +188,7 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 | 396: kein Halt, nur zwei 1011-Ereignisse (Runden 161.211 und 194.647) | Runde 260.000 (Wort 1.615.087 Zellen) | 1 für den langen Lauf (`runde.c`), Run 45676623019 | [396 §4] |
 | Familie des Besuchsgesetzes unter allen 608 (gespiegelt, alle Zustandspaare): genau 88, 110, 312, 396, 449, 587; 110 = 396 bis auf `V(111x)`, rundengleich bis zum ersten 111-Besuch. Folgerung „hält 396 nie, dann hält 110 nie“: **getestet, nicht bewiesen** (Gesetz für 110 nur so weit geprüft wie in dieser Zeile). **Nicht erfasst** (andere Lage oder Regel): 123, 223 (um eine Zelle verschoben, 123 mit zweiter Besuchsform; halten), 471 (`V(110x) = 001x`; hält nicht) | alle Wörter bis Länge 12; 27 Runden direkt | 2 (`suche_a.py`, `suche_b.c`), zeilengleich; Nachtrag 123/223/471 Stichprobe, 1 Programm | [FB], [AB §2] |
 | 396: kein Halt, nie `111`, nie `011`; `11` am Rundenende nur in 161.210 und 194.646, danach je ein 1011-Ereignis | Runde 748.162 (A), bis 573.850 zeilengleich mit B | 2 (`runde.c`, `runde_b.cpp`), Run 45688978145 | [T2] |
+| 396: kein Halt; Junk-Runden 161.210, 194.646, 757.565, 906.775, 1.042.306 (wie bbe). Keine Gestalt nach Art von 471 (L^(k+at) A B^t C D^t E T^(v+bt)): hinter L^k ein Binärzähler, die ersten m Zellen sind periodisch mit Zweierpotenz-Perioden, die mit m wachsen (2^18 bei m = 224, keine Periode ≤ 300.000 ab m = 232); ein gemeinsames P müsste Vielfaches von 2^18 sein | Runde 1.200.000 (X), B bis 1.238.663; Prüfstelle mit eigenem Code bis 300.000 (Tabelle bis m = 208) | 2 Rundenprogramme (`defizit.c`, `runde_b_anf.cpp`), jede Runde Anfangsfenster gleich; 2 Periodensuchen; Run 45771362724 | [WM] |
 
 ### Extern (bbe, Stand 26.11., Kopf `8515a2a4`) [AB §2, §3]
 
@@ -190,7 +199,7 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
   `piperun.c`, wortgleich mit `wordrun.c`/`deficit.c` nur bis 20.000 bzw. 200.000 Runden geprüft, also ein
   Programm mit Teilabgleichen; Wort dann 24.856.760 Zellen). 18 junk-Ereignisse, alle harmlos (nach einem
   Verdoppler, gerades Defizit 6). Gleiche Angabe im Ordner von 110. Von uns nur gelesen, nicht nachgerechnet;
-  unser eigener Lauf endet bei Runde 748.162 [T2].
+  unsere eigenen Läufe enden bei Runde 748.162 [T2] und 1.200.000 [WM].
 - **Gefahrenbedingung:** Halt nur, wenn ein junk mit Versatz 2 getroffen wird; das braucht ein ungerades Defizit
   beim Eintritt in den letzten `000`-Block.
 - **Keine Invariante nur über das Wortende:** Mit beliebigem Zähler erreichen die letzten 48 Zellen `111` in 2–3
@@ -203,13 +212,16 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 ### Offen
 
 - Ob 396 hält, also ob `111` je entsteht: **offen** [T2], [AB].
+- Ob die Perioden der Anfangsfenster unbeschränkt wachsen (dann gäbe es für 396 keine Gestalt nach Art von 471,
+  für kein P): **offen**, nur beobachtet bis Runde 1.200.000 [WM]. Den Zähler selbst beschreibt bbe schon auf
+  Ereignisebene; neu ist bei uns nur die Periodentabelle je Runde. **396 ruht** (Justus 26.11.).
 - „396 hält nie ⇒ 110 hält nie“ ist bei uns **getestet, nicht bewiesen**: Das Besuchsgesetz für 110 ist nur bis
   Wortlänge 12 und 27 Runden direkt geprüft, nicht in Rocq [FB]. bbe hat es in Lean auf eigenen Definitionen;
   von uns nicht geprüft.
 - 396, 110, 587 haben weiterhin keinen PR in busycoq (auch unter den 53 offenen nicht, 26.11.); nur 587 hat eine Datei in cryptids [DA], [AB].
 - Der Halte-Beweis von PR #59 ist **nicht** auf 396 übertragbar [396].
-- Nächster Kandidat als Vorlage: busycoq #55 (471, `1011 → 0001` wie 396, hält nicht); ob die Technik auf 396
-  passt, ist nicht geprüft [AB §2]. Die Beweisidee „kein Besuch endet auf einer 0 direkt vor 11“ ruht (Justus
+- Vorlage busycoq #55 (471, `1011 → 0001` wie 396, hält nicht): Ihre Gestalt mit festem Block hinter L^k gibt es
+  bei 396 bis Runde 1.200.000 nicht, dort sitzt ein Zähler [WM]. Die Beweisidee „kein Besuch endet auf einer 0 direkt vor 11“ ruht (Justus
   26.11.); laut bbe reicht eine Aussage nur über das Wortende dafür nicht [AB §3].
 
 ## Verwandtschaftskarte (alle 608 Holdouts)
@@ -251,6 +263,9 @@ Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte
 | „x/2 ≥ Listenlänge“ in 24 von 76 Zyklen (Start A) | 19 von 77 mit anderer Abgrenzung; maßgeblich ist die Streuung −64 bis +27 | [G1] → [VL §3] |
 | M5: Links-Rekord ab C bei 29.550.874 als Umbau gelesen | kein großer Umbau; echte Umbauten nur 87.823 und 874.896.314 (ab C) | [M1] → [M2 §2, §3] |
 | M5: „bis 10^11 kein weiterer Umbau“ | bis 8·10^14 keiner | [M1] → [M2] |
+| M5: Haltemuster „jenseits 10^10 nicht geprüft“ | bis 8·10^14 geprüft, kein Vorkommen | [M2 §4] → [M3] |
+| M5: 8·10^14 als weiteste Prüfgrenze gelesen | keine neue Grenze: slugbird 10^17 (274, 322, 518) bzw. 10^20 (318), Sheet ≥ 10^15 (`holdouts.json`) | [M3] → Prüfstelle 26.11. |
+| M5: 29.754.240 gegen bbe 29.787.121 „nicht abgeglichen“ | derselbe Umbau, zwei Zeitpunkte | [AB] → [M3 §1a] |
 | Zyklus-Läufe ohne int64-Schutz (Runs 45675033053, 45682765314) | jenseits 10^24 nicht verwenden; Schutz seit Commit `509fb21` | [VB §5, §6] |
 | busycoq BB6 „unverändert auf `33209bc7`“, PR #59 „offen, nicht gemergt“ | seit 26.11. `9c078ca`, #59 und #55 gemergt; 88, 312, 449, 471 upstream entschieden | [DA] → [AB §1] |
 | 110 „neu“ in der Familie Besuchsgesetz | bei bbe seit 13.11. bekannt, mit Lean-Beweis des Gesetzes | [FB] → [AB §2] |
