@@ -36,6 +36,11 @@ Unbelegtes als unbelegt kennzeichnen.
      Ordner `holdouts/<Maschine>/` (`README.md`, `status.json`) und Familienangaben dort lesen.
   Die frühere Regel „erst in Discord fragen, ob jemand daran arbeitet“ entfällt. Vorbild: `analyse/abgleich_bbe.md`.
 - Höchstens 2 Threads gleichzeitig; nicht selbst angestoßene Threads nur vorschlagen.
+- Regel je Maschine (Justus 26.11.2026): Eine Maschine ruht, sobald bbe oder busycoq mit demselben Ansatz
+  gleich weit oder weiter ist. Ein neuer Ansatz ist immer erlaubt, wenn er vor dem Start in einem Satz benannt
+  und gegen bbes `holdouts/recent-proofs/technique-survey-nov26.md` geprüft ist. Höchstens 2 Threads je
+  Maschine ohne Beweisplan.
+- Kein Stichtag für das Projekt. Keine Portierung fremder Beweise (Justus 26.11.2026).
 - Daten in `data/` sind Schnappschüsse (Herkunft: `data/QUELLE.md`), nie als aktuell behandeln.
 
 ## Prüfregeln für Beweise
