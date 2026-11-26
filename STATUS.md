@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags; 133 nachgezogen 26.11. nach Run 45817990655; M5 Idee 1 abgeschlossen 26.11. abends; M5 „nie 11 rechts vom Kopf“ 26.11. abends)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags; 133 nachgezogen 26.11. nach Run 45817990655; M5 Idee 1 abgeschlossen 26.11. abends; M5 „nie 11 rechts vom Kopf“ 26.11. abends, mit Nachtrag der Prüfstelle)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -201,7 +201,12 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 - **Neuer Ansatz „nie 11 rechts vom Kopf“** (26.11. abends, Prüfstelle, Justus' OK) [K11]: Nicht-Halten aller vier folgt aus
   der einen Aussage „wenn M5-A eine 0 liest, steht rechts nie `0001`“. Gemessen nie verletzt, **nicht bewiesen**. SAT-Suche
   mit festem rechtem Automaten (Lückenlängen), linker Automat bis 14 Zustände: nichts (318, 518); der rechte Automat ist zu
-  grob, gebraucht wird die Wortstruktur rechts. Weiter nur mit OK.
+  grob, gebraucht wird die Wortstruktur rechts.
+  **Nachtrag (Prüfstelle, Code nicht im Repo, 26.11. abends)** [K11 Nachtrag]: Messungen und (a)/(b) bestätigt; Punkt 4 ist
+  für jeden linken Automaten UNSAT. Berichtigung: „M5-A liest 1, rechts `0001`“ kommt ab C/D 2-mal in 10^10 vor. Rechte
+  k-Fenster bis k = 24 retten das Spiel nicht, daher nicht gestartet. Schärfer: `00001` rechts vom Kopf gibt es nur am Anfang
+  und im bzw. kurz nach einem Umbau; die offene Aussage entscheidet sich also im Umbau (dieselbe Hürde wie Idee 1).
+  **M5 ruht wieder, bis ein Ansatz für den Umbau benannt ist.**
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
   die fehlende Umbau-Abbildung [M2 §5].
