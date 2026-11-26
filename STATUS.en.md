@@ -1,4 +1,4 @@
-# Project status (26 Nov 2026, early; check against busy-beaver-explorer)
+# Project status (26 Nov 2026, early; check against busy-beaver-explorer; corrected 26 Nov midday after the external review)
 
 Per group: what is **proved** (Rocq, with file and Actions run), what is only **observed** (with the bound
 checked and the number of programs), and what is **open**. Every number points to the report it comes from
@@ -13,6 +13,10 @@ Everything else is observation up to a bound.
 halt)** are decided upstream. 123 and 223 halt according to busy-beaver-explorer (Lean and Coq; busycoq PRs
 #72/#73 open). On 396, busy-beaver-explorer had everything we found, and more, by 24 Nov; **our 396 result is an
 independent confirmation, not a new finding** [AB].
+
+**External review (26 Nov, 11:45, own code):** confirms Group 1 (367 = start D, 378 = start C mirrored), the M5
+mapping of all four, the visit law for 396 (20,000 random words, 30 rounds direct), the 396 run to round 260,000
+(events 161,210/211 and 194,646/647), 403 tables, 509 holdouts without a BB6 entry and without an open PR.
 
 Reports (all in `analyse/`, German, merged with the PR in brackets):
 [G1] `gruppe1.md` (PR 2) · [G1-2] `gruppe1_teil2.md` (PR 3) · [G1-3] `gruppe1_teil3.md` (PR 6) ·
@@ -39,8 +43,19 @@ Reports (all in `analyse/`, German, merged with the PR in brackets):
 ## Check against busycoq and busy-beaver-explorer (26 Nov 2026) [AB]
 
 - **busycoq** (via git, read only): branch BB6 is now at `9c078ca` (26 Nov), 25 PRs merged, among them #59
-  (88, 312, 449 halt) and #55 (among others, 471 does not halt). Our pin stays `33209bc7` until Justus says
-  otherwise. No file in BB6 (new since the pin) or in PR refs 1–120 mentions 396, 110, 587, Group 1 or M5.
+  (88, 312, 449 halt) and #55 (among others, 471 does not halt). Our pin has been `9c078ca` since 26 Nov (PR 27,
+  Justus' OK; before: `33209bc7`). No file in BB6 (new since the old pin) or in PR refs 1–120 mentions 396, 110,
+  587, Group 1 or M5.
+- **Open busycoq PRs** (26 Nov, midday): `git ls-remote` shows `refs/pull/N/merge` only for open PRs without a
+  conflict, so this is a lower bound: **53 open** (3 to 120). Compared with BB6, none adds a line naming 114, 367,
+  378, 318, 518, 322, 274, 396, 110 or 587 (searched with `---` and `HHH`; control: 581 found in PR 76). One
+  program of ours; agrees with the external review's count.
+- **bbe invariant transfer** (26 Nov, `holdouts/recent-proofs/followup/invariant-transfer.md`, commit
+  `0e077e33`, read only, not rebuilt): three screens over 509 open holdouts against 236,071 proved tables,
+  **nothing decided, nothing transfers**. For our ten machines, according to bbe's data files (searched for our
+  strings): no proved sibling with the same table, no transitions that go quiet; every neighbour differing in
+  1–2 transitions parts without re-joining (396: 63 pairs, 587: 10, 378: 7, 367: 6, 114: 4, 110: 3,
+  318/518/322/274: 1 each).
 - **busy-beaver-explorer** (bbe, `github.com/fractal-geometry-explorer/busy-beaver-explorer`, head `662e215`):
   one folder per holdout with evidence levels. Lean theorems there use bbe's own definitions, not busycoq's;
   "native" means `native_decide`. Per group below under "External (bbe)".
@@ -163,16 +178,19 @@ Shown by **table comparison** [VK, section F12]:
 | 88 and 396 equal round by round, not step by step | round 27 (about 1.57 million steps) simulated directly | 3 routes to the round model agree (`direkt.c` 27 rounds, `naiv.py` 34 rounds, `runde.c`) | [396 §4, §5] |
 | 88 halts in round 161,211, as computed in PR #59 | – | 1 own (`runde.c`), run 45676623019 | [396 §4] |
 | 396: no halt, only two 1011 events (rounds 161,211 and 194,647) | round 260,000 (word of 1,615,087 cells) | 1 for the long run (`runde.c`), run 45676623019 | [396 §4] |
-| Visit-law family among all 608 (mirrored, all state pairs): exactly 88, 110, 312, 396, 449, 587; 110 = 396 except `V(111x)`, round-identical until the first visit hits 111. **Not covered** (other position or rule): 123, 223 (shifted by one cell, 123 with a second visit form; they halt), 471 (`V(110x) = 001x`; does not halt) | all words up to length 12; 27 rounds direct | 2 (`suche_a.py`, `suche_b.c`), identical; addendum 123/223/471 by sampling, 1 program | [FB], [AB §2] |
+| Visit-law family among all 608 (mirrored, all state pairs): exactly 88, 110, 312, 396, 449, 587; 110 = 396 except `V(111x)`, round-identical until the first visit hits 111. Consequence "if 396 never halts, 110 never halts": **tested, not proved** (law for 110 checked only as far as this row says). **Not covered** (other position or rule): 123, 223 (shifted by one cell, 123 with a second visit form; they halt), 471 (`V(110x) = 001x`; does not halt) | all words up to length 12; 27 rounds direct | 2 (`suche_a.py`, `suche_b.c`), identical; addendum 123/223/471 by sampling, 1 program | [FB], [AB §2] |
 | 396: no halt, never `111`, never `011`; `11` at the end of a round only in 161,210 and 194,646, each followed by a 1011 event | round 748,162 (A), identical with B up to 573,850 | 2 (`runde.c`, `runde_b.cpp`), run 45688978145 | [T2] |
 
-### External (bbe, as of 24 Nov) [AB §2, §3]
+### External (bbe, as of 26 Nov, head `8515a2a4`) [AB §2, §3]
 
 - **Lean kernel** (for 396 and 110): visit law and round form (since 13 Nov); word computation = machine, both
   directions (`halts_of_run`, `not_halts_of_run`); `junk_offset1` (harmless), `junk_offset2_halts` (halt);
   deficit form of the count (2^e − c). **native:** 10^7 steps, first 2,000 rounds.
-- **Computed:** 10^11 steps direct; **no `111` up to round 3,000,000** (one program, partial cross-checks);
-  14 junk events, all harmless, all after a doubler.
+- **Computed:** 10^11 steps direct; **no `111` up to round 4,000,000** (commit `195c1340`, 26 Nov; `piperun.c`,
+  word-identical with `wordrun.c`/`deficit.c` checked only to 20,000 and 200,000 rounds, so one program with
+  partial cross-checks; the word is then 24,856,760 cells). 18 junk events, all harmless (after a doubler,
+  even deficit 6). Same statement in the folder of 110. Read only, not recomputed by us; our own run ends at
+  round 748,162 [T2].
 - **Danger condition:** a halt needs a junk event met at offset 2; that needs an odd deficit entering the last
   `000` block.
 - **No invariant of the word end alone:** with an arbitrary count the last 48 cells reach `111` in 2–3 rounds;
@@ -185,7 +203,10 @@ Shown by **table comparison** [VK, section F12]:
 ### Open
 
 - Whether 396 halts, i.e. whether `111` ever appears: **open** [T2], [AB].
-- 396, 110, 587 still have no busycoq PR; of the three only 587 has a cryptids file [DA], [AB].
+- "396 never halts ⇒ 110 never halts" is **tested, not proved** on our side: the visit law for 110 is checked
+  only for words up to length 12 and 27 rounds direct, not in Rocq [FB]. bbe has it in Lean on its own
+  definitions; not checked by us.
+- 396, 110, 587 still have no busycoq PR (not among the 53 open ones either, 26 Nov); of the three only 587 has a cryptids file [DA], [AB].
 - The halting proof of PR #59 does **not** transfer to 396 [396].
 - Next candidate template: busycoq #55 (471, `1011 → 0001` as in 396, does not halt); whether its technique fits
   396 is not checked [AB §2]. The proof idea "no visit ends on a 0 right before 11" is on hold (Justus, 26 Nov);
@@ -235,9 +256,14 @@ Nothing. Shown by **table comparison**, two programs (`karte_a.py`, `karte_b.c`,
 | 110 "new" in the visit-law family | known to bbe since 13 Nov, with a Lean proof of the law | [FB] → [AB §2] |
 | family "exactly 6", "no further search needed" | holds only for the literal position; 123, 223 (shifted) and 471 (other `110` rule) are relatives, all three decided | [FB] → [AB §2] |
 | 396 result (part 2) as our own finding | independent confirmation of bbe (as of 24 Nov), not new | [T2] → [AB] |
+| "Our pin stays `33209bc7`" (check section) | pin is `9c078ca` since 26 Nov (PR 27) | external review 26 Nov |
+| bbe 396/110: no `111` up to round 3,000,000, 14 junk events | up to round 4,000,000, 18, all harmless (bbe `195c1340`) | [AB] → external review 26 Nov |
+| "If 396 never halts, 110 never halts" without a label | tested, not proved (law for 110 only tested) | [FB] → external review 26 Nov |
+| whether busycoq PRs are open "not visible via git" | visible via `refs/pull/N/merge` (open ones without conflict only, lower bound); 53 on 26 Nov | [DA] → external review 26 Nov |
 
 ## Not included here
 
 - The thread "Invariant against K(C)" (PR 19) only indirectly (phase automaton rules still empirical).
 - The state of cryptids after 25 Nov (`f01ee56`) and Lean proofs outside busycoq.
+- Results of the running thread "396 growth pattern" (not yet checked, so not included).
 - Content from Discord. Instead of "ask in Discord first", the rule now is: check busycoq and bbe via git (CLAUDE.md).
