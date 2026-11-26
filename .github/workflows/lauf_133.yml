@@ -1,0 +1,41 @@
+name: lauf_133
+
+# Thread "Klären, ob 133 wie 581 hält" (26.11.2026, nur Analyse, kein Rocq). Startet nur von Hand
+# (workflow_dispatch), auf dem Thread-Branch claude/project-thread-94av0a als ref. Programme und Skripte kommen
+# aus analyse/133_581/ des gewaehlten Refs; der Workflow ruft nur Skripte auf.
+# Jobs:
+#   kontrollen:  kontrollen.sh --voll (Abgleich mit direkter Simulation, Negativkontrollen, 581 als Positivkontrolle)
+#   lauf:        lauf_133.sh RUNDEN (PR-76-Portierung ab dem Start von 133, mit Schrittzaehler)
+on:
+  workflow_dispatch:
+    inputs:
+      runden:
+        description: 'Runden der PR-76-Portierung ab dem Start von 133'
+        default: '268435456'
+
+permissions:
+  contents: read
+
+jobs:
+  kontrollen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Kontrollen
+        run: bash analyse/133_581/kontrollen.sh --voll
+
+  lauf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Lauf 133
+        env:
+          RUNDEN: ${{ inputs.runden }}
+        run: bash analyse/133_581/lauf_133.sh "$RUNDEN"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: lauf133
+          path: analyse/133_581/aus/
