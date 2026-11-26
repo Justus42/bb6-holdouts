@@ -97,7 +97,8 @@ Lauf: Run 45771362724, Job x, Programm X bis Runde 1.200.000 in 5.274 s, kein Ha
 | 232 bis 320 | keine ≤ 300.000 | – |
 
 Geprüft ist jeweils die zweite Hälfte der Runden (600.001 bis 1.200.000), der Beginn der Periodizität rückwärts
-über alle Runden. Alle gefundenen Perioden sind Zweierpotenzen.
+über alle Runden. Alle gefundenen Perioden sind Zweierpotenzen. Programm B liefert bis Runde 1.200.000 dieselben
+Fenster in jeder Runde, und `zweit.c` auf den Daten von B dieselbe Tabelle (Job vergleich, siehe Belege).
 
 **Folgerungen für die Gestalt L^(k+at) A B^t C D^t E T^(v+bt):**
 
@@ -161,7 +162,11 @@ Stichrunden aus dem Tokenbild (L = 1010, H = 100, Z = 000):
   - Job kontrollen grün (`kontrollen.sh`: X = runde.c, runde_b_anf = runde_b, A-Zeilen X = B bis 10.000,
     Periodensuche an künstlichen Folgen, drei Negativkontrollen schlagen an).
   - Job x grün: Programm X bis Runde 1.200.000, Auswertung und zweite Auswertung im Log.
-  - Job b und vergleich: VERGLEICH_PLATZHALTER
+  - Job b grün: Programm B (exakter Zähler, unabhängig von X) bis Runde 1.238.663 (Zeitgrenze), kein 111.
+  - Job vergleich grün: Alle 1.201.200 A- und H-Zeilen (Anfangsfenster 320 Zellen jede Runde, Prüfsummen alle
+    1.000 Runden) von X und B bis Runde 1.200.000 **gleich**. Junk-Runden in X (J) und „11 im Wort“ in B (E)
+    gleich: 161.210, 194.646, 757.565, 906.775, 1.042.306. `zweit.c` auf den Daten von B ergibt dieselbe
+    Periodentabelle wie oben, Zeile für Zeile.
 - **PR 28** (Workflow, gemergt 26.11.), Commits `3ed932d` (Workflow) und `05720ab` (Programme).
 - Lokal bis Runde 200.000: dieselben Perioden bis m = 168 und m = 192 (32.768).
 
