@@ -1,4 +1,4 @@
-# Project status (26 Nov 2026, early; check against busy-beaver-explorer; corrected 26 Nov midday after the external review; M5 updated 26 Nov after PR 31; 396 updated 26 Nov after PR 34; slugbird's guide added 26 Nov afternoon)
+# Project status (26 Nov 2026, early; check against busy-beaver-explorer; corrected 26 Nov midday after the external review; M5 updated 26 Nov after PR 31; 396 updated 26 Nov after PR 34; slugbird's guide added 26 Nov afternoon; M5 idea 1 closed 26 Nov evening)
 
 Per group: what is **proved** (Rocq, with file and Actions run), what is only **observed** (with the bound
 checked and the number of programs), and what is **open**. Every number points to the report it comes from
@@ -28,7 +28,7 @@ Reports (all in `analyse/`, German, merged with the PR in brackets):
 [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) · [RF] `396_rueckfuehrung.md` (PR 21) ·
 [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (check against busy-beaver-explorer) ·
 [M3] `318_518_teil3.md` (PR 31, halting patterns up to 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34) ·
-[133] `133_581.md` (PR 32 and follow-up PR).
+[133] `133_581.md` (PR 32 and follow-up PR) · [KB] `318_518_kunst.md` (PR 39 and follow-up PR, artificial tapes).
 Outside source: [GU] slugbird's BB(6) Holdout Guide, as of 3 Nov 2026 (section below).
 
 ## Data (check of 25 Nov 2026) [DA]
@@ -182,6 +182,9 @@ Shown by **table comparison** (holds for every step count, two programs, not in 
 | Accelerated simulator agrees at all cycle starts (40,324 from A, 41,794 from C) | 10^10 | 2 (`m5schnell.py`, `m5sim hash`) | [M2 §1] |
 | Only three large rebuilds: from A at 29,754,240, from C at 87,823 and 874,896,314 | 8·10^14 (local; beyond 10^10 only every 5,000th cycle re-checked) | 1 (+ samples) | [M2 §3] |
 | 83 / 88 wall passages (pairs) per run, not rebuilds | 8·10^14 | 1 | [M2 §2] |
+| Artificial tapes (family F, 27,108 tapes): no halting pattern | up to 5 cycle starts each (median 3,289, at most 7.4·10^6 steps); external review 2·10^6 steps each | 2, agree run by run (`kunst.c`, `zweit.go`); plus external review (code not in repo) | [KB §3, §7.2] |
+| Rebuild from artificial tapes: never an initial rest again (10,092 new rests), 485 tapes no longer decompose into blocks; exactly 2 new digits per old digit (8,229/8,229) | 27,108 tapes | 2 | [KB §3, §4] |
+| The three natural rebuilds reproduced exactly from their pre-states, rest `RX` confirmed | rebuild up to 2.34·10^8 steps | 2 (+ CRC from `m5sim hash`) | [KB §7.1] |
 
 ### Open
 
@@ -190,6 +193,9 @@ Shown by **table comparison** (holds for every step count, two programs, not in 
   to 1.0·10^17 and 318 to 1.0·10^20 steps (status "rules"), the RobinCodes sheet (9 Oct) all four to at least 10^15.
   Not re-checked, their programs unknown. What [M3] adds is only the published count of every transition by two programs.
 - How a rebuild places the new digits (position and phase): no formula found, hence **no proof plan** [M2 §4].
+- **Idea 1 of the gap map closed** (26 Nov) [KB]: no rebuild formula, no fixed rest list (10,092 rests); the values
+  of the new digits are not locally determined (one program). Hence idea 2 (tape language with finitely many rest
+  forms) is not tenable in its simple form either. **No proof plan. M5 rests until a new approach is named.**
 - Next rebuild, if any, beyond 8·10^14; `m5sim` reaches about 10^15 [M2 §6].
 - Templates in the pin would be `SBCv6a2.v` (compute the orbit) or `SOBLv3.v` (residue-class invariant); both
   need the missing rebuild map [M2 §5].

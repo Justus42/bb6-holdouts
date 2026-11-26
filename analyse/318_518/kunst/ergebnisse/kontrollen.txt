@@ -1,0 +1,30 @@
+Kontrollen an den drei natuerlichen Umbauten (26.11.2026, Freigabe Justus: Laeufe ueber 10^7 nur fuer diese Kontrollen)
+Vorzustand und natuerlicher Nachzustand: kunst bis <Start> <Schritt>; CRC32 wie m5sim hash
+vorA.band Laenge 8776 CRC32 2321432911
+natA.band Laenge 8785 CRC32 384026591
+vorC.band Laenge 47236 CRC32 1989780867
+natC.band Laenge 47247 CRC32 132817104
+== Umbau ab A: kunst umbau A 400000000 100 5 < vorA.band
+Z 8018494 B -5 8785
+Z 8033917 A -5 8788
+Z 8049371 A -5 8792
+Z 8067395 A -5 8796
+Z 8085469 A -5 8800
+MUSTER BA 0 -1 0
+MUSTER CE 0 -1 0
+ENDE 8085469 ZYKLEN  0
+zweit zyklen (MAXS=4e8): alle 5 Zyklusbaender gleich | HALT318 0 HALT518 0 SCHRITTE 8085469
+Band am ersten Zyklusbeginn nach dem Umbau == natuerliches Band (bytegleich)
+zweit zerlege vorA.band: OK true REST 1111111110101111111111111010101111111111101010 TEILE 11 UENDE 540 ENDE 4
+== Umbau ab C: kunst umbau A 400000000 100 5 < vorC.band
+Z 234475966 B -7 47247
+Z 234678791 A -7 47250
+Z 234825205 A -7 47254
+Z 234908985 A -7 47258
+Z 234992771 A -7 47262
+MUSTER BA 0 -1 0
+MUSTER CE 0 -1 0
+ENDE 234992771 ZYKLEN  0
+zweit zyklen (MAXS=4e8): alle 5 Zyklusbaender gleich | HALT318 0 HALT518 0 SCHRITTE 234992771
+Band am ersten Zyklusbeginn nach dem Umbau == natuerliches Band (bytegleich)
+zweit zerlege vorC.band: OK true REST 11111111101011111111111010111111101010111111111110 TEILE 17 UENDE 2938 ENDE 0

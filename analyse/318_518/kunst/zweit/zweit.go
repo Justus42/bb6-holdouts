@@ -13,8 +13,10 @@
 //
 //	zweit lauf <eingaben.tsv> <ausgabe.tsv>         Familie (Spalten id teil rest items u e), je Lauf eine Zeile
 //	zweit einzeln <zustand A-E> <band>               ein Band, Zyklusbeginne und Muster auf stdout
-//	zweit zyklen <zustand A-E> <band>                Zyklusbeginne mit vollem Band (Abgleich mit kunst umbau)
+//	zweit zerlege <band|@datei>                     Rest und Zahl der Bausteine
+//	zweit zyklen <zustand A-E> <band|@datei>         Zyklusbeginne mit vollem Band (Abgleich mit kunst umbau)
 //
+// MAXS=<n> setzt die Schrittgrenze (Standard 10^7; groesser nur fuer die Kontrollen an natuerlichen Umbauten).
 // Negativkontrolle der Regelpruefung: Umgebungsvariablen REGEL_D2, REGEL_D3 setzen andere Versaetze.
 package main
 
@@ -407,20 +409,40 @@ func main() {
 	if v := os.Getenv("REGEL_D3"); v != "" {
 		versatz["D3"], _ = strconv.Atoi(v)
 	}
+	grenzeS := maxSchritte
+	if v := os.Getenv("MAXS"); v != "" { // nur fuer die Kontrollen an natuerlichen Umbauten (Freigabe Justus 26.11.)
+		grenzeS, _ = strconv.Atoi(v)
+	}
 	switch os.Args[1] {
 	case "einzeln":
-		r := simuliere(os.Args[3], os.Args[2][0], maxSchritte)
+		r := simuliere(os.Args[3], os.Args[2][0], grenzeS)
 		for _, z := range r.zyklen {
 			zz := zerlegen(z.band)
 			fmt.Println(z.schritt, string(z.zustand), z.loRel, len(z.band), len(zz.rest), zz.ok)
 		}
 		fmt.Println("HALT318", r.halt318, "HALT518", r.halt518, "SCHRITTE", r.schritte, "GRENZE", r.grenze)
 	case "zyklen": // Zyklusbeginne mit vollem Band (fuer den Abgleich mit kunst umbau)
-		r := simuliere(os.Args[3], os.Args[2][0], maxSchritte)
+		arg := os.Args[3]
+		if strings.HasPrefix(arg, "@") { // Band aus Datei
+			d, err := os.ReadFile(arg[1:])
+			if err != nil {
+				panic(err)
+			}
+			arg = strings.TrimSpace(string(d))
+		}
+		r := simuliere(arg, os.Args[2][0], grenzeS)
 		for _, z := range r.zyklen {
 			fmt.Println("Z", z.schritt, string(z.zustand), z.loRel, z.band)
 		}
 		fmt.Println("HALT318", r.halt318, "HALT518", r.halt518, "SCHRITTE", r.schritte)
+	case "zerlege": // Rest und Bausteine eines Bandes (Datei mit @)
+		arg := os.Args[2]
+		if strings.HasPrefix(arg, "@") {
+			d, _ := os.ReadFile(arg[1:])
+			arg = strings.TrimSpace(string(d))
+		}
+		z := zerlegen(arg)
+		fmt.Println("OK", z.ok, "REST", z.rest, "TEILE", len(z.teile), "UENDE", z.uEnde, "ENDE", z.ende)
 	case "lauf":
 		ein := leseEingaben(os.Args[2])
 		out := make([]string, len(ein))
