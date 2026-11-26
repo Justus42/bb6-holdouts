@@ -8,7 +8,7 @@ Thread „Familie Besuchsgesetz“, 25.11.2026. Nur Analyse, kein Rocq. busycoq 
 (`1RB0LB_0RC0LD_1LD1RE_0LA0RF_1RB0RD_0RB---`). 110 hat dieselbe 1011-Regel wie 396 (`0001x`, kein Halt)
 und weicht nur bei `111` ab. Bis zum ersten Besuch auf `111` laufen 110 und 396 deshalb Runde für Runde
 gleich; bei 396 kam bis Runde 260.000 kein solcher Besuch vor. Folgerung (unter dem für 110 nur getesteten
-Gesetz): **Hält 396 nie, dann hält auch 110 nie.** Die Umkehrung gilt nicht.
+Gesetz): **Hält 396 nie, dann hält auch 110 nie** (getestet, nicht bewiesen; Nachtrag 26.11.). Die Umkehrung gilt nicht.
 
 Gespiegelte Mitglieder oder solche mit anderem Zustandspaar gibt es nicht: alle 6 haben Eintritt C,
 Rückkehr A, ungespiegelt, und dieselbe Rundenform.
@@ -95,7 +95,7 @@ Alles mit `bash analyse/besuchsgesetz/kontrollen.sh` (lokal 33 s, alle OK):
 - **Ergebnis:** Unter den 608 Holdouts erfüllen genau 6 das Besuchsgesetz aus PR #59 mit der Rundenform von
   396: 88, 110, 312, 396, 449, 587. Neu ist 110. 110 läuft wie 396, bis ein Besuch auf `111` trifft (bei
   396 bis Runde 260.000 nie); wer zeigt, dass 396 nie hält, hat damit auch 110 (bis auf den Beweis des
-  Gesetzes für 110).
+  Gesetzes für 110; die Folgerung ist also nur getestet, nicht bewiesen, Nachtrag 26.11.).
 - **Belege:** Branch `claude/project-thread-493yq5`; Ausgaben `ergebnis_a.tsv`, `ergebnis_b.tsv`,
   `stand_a.txt`, `stand_b.txt`; `kontrollen.sh` grün (lokal). Kein Actions-Lauf nötig (alles unter 1 Minute,
   nur die Stand-Suche dauerte 5 min). Lange Läufe aus dem Thread 396: Run 45676623019.
