@@ -1,0 +1,34 @@
+Lauf jenseits 10^22, abgeschrieben aus den Job-Logs (ZIP-Download aus der Sitzung gesperrt, 403).
+Spalten: Start, Zehnerpotenz, Schrittzahl n beim Ueberschreiten, Phasen, Zyklen, Token, K(C), Halt, Stichproben (gerechnet/gleich).
+
+Run 45684698614 (mit int64-Schutz, Commit 509fb21), Jobs lauf, Ende je Start nach 340 min (Code 124 = Zeitgrenze):
+A 10^22 n=10000010132960638175963   phasen=64548591945   zyklen=146681 token=440042  K(C)=0 halt=None stich 300/300
+A 10^23 n=100000144071258083763607  phasen=204122255851  zyklen=260843 token=782538  K(C)=0 halt=None stich 330/330
+A 10^24 n=1000008608452483051520158 phasen=645496296798  zyklen=463856 token=1391583 K(C)=0 halt=None stich 360/360  (t=2919 s)
+C 10^22 n=10000141160941300620041   phasen=64548951998   zyklen=146682 token=440066  K(C)=0 halt=None stich 300/300
+C 10^23 n=100000188119943685679845  phasen=204122329034  zyklen=260844 token=782533  K(C)=0 halt=None stich 330/330
+C 10^24 n=1000002932268327842281953 phasen=645494673460  zyklen=463856 token=1391597 K(C)=0 halt=None stich 360/360  (t=2264 s)
+D 10^22 n=10000185153936890178861   phasen=64549216792   zyklen=146682 token=440079  K(C)=0 halt=None stich 300/300
+D 10^23 n=100000049021641305658330  phasen=204122080249  zyklen=260843 token=782562  K(C)=0 halt=None stich 330/330
+D 10^24 n=1000004929413563081558385 phasen=645495188480  zyklen=463856 token=1391570 K(C)=0 halt=None stich 360/360  (t=1631 s)
+D 10^25 n=10000018757689067635986615 phasen=2041237223956 zyklen=824868 token=2474645 K(C)=0 halt=None stich 390/390 (t=16289 s, paar:gross=71839)
+A und C erreichen 10^25 nicht in 340 min: ab etwa 10^24 rechnet der Schutz mit Python-Zahlen (langsamer).
+Kein Haltekandidat und kein K(C)-Schnappschuss im ganzen Lauf (beides wuerde gemeldet bzw. den Lauf stoppen).
+
+Run 45682765314 (ohne int64-Schutz, Commit 14b51e4), Jobs lauf:
+A 10^22..10^24: alle Zeilen (n, phasen, zyklen, token, Regelzaehler, Stichproben) gleich mit Run 45684698614
+C 10^22..10^24: gleich
+D 10^22..10^25: gleich (auch 10^25: n=10000018757689067635986615)
+A 10^25 n=10000031484554941357826070, C 10^25 n=10000048431374219452969562: nur aus diesem Lauf, nicht verwertbar
+  (ohne Schutz jenseits 10^24 moeglicher Ueberlauf, von keinem zweiten Lauf bestaetigt).
+
+Run 45675033053 (reine Python-Fassung), Jobs lauf: bis 10^19 gekommen, dann vom Runner beendet
+("The runner has received a shutdown signal", zu drei verschiedenen Zeiten; Ursache unbekannt).
+A, C, D 10^15..10^19: gleich mit Run 45684698614 (n an 10^19: A 10000283517477211369,
+  C 10001099976506400423, D 10001276630164526363).
+
+Run 45682765314, Jobs pruef (C-Fassung gegen linkes_ende/beschleuniger.py):
+A: alle 4636 Zyklusanfaenge bis 1e16 gleich, Rueckfaelle lokal = ganz
+C: alle 4636 Zyklusanfaenge bis 1e16 gleich, Rueckfaelle lokal = ganz
+D: alle 4636 Zyklusanfaenge bis 1e16 gleich, Rueckfaelle lokal = ganz
+Run 45684698614, Jobs pruef (bis 1e12): alle drei gruen.

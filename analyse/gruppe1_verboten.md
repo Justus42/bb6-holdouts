@@ -1,6 +1,6 @@
 # Gruppe 1 (114, 367, 378): Halt als verbotenes Muster
 
-Stand 25.11.2026. Reine Analyse, **kein Rocq**. Werkzeuge und Rohergebnisse in `analyse/gruppe1/verboten/`.
+Stand 25.11.2026, Nachtrag Actions-Lauf 26.11.2026. Reine Analyse, **kein Rocq**. Werkzeuge und Rohergebnisse in `analyse/gruppe1/verboten/`.
 Auftrag: Justus' Nachrichten vom 25.11. (17:33, 17:48, 18:14, 18:22).
 
 ## Ergebnis in Kürze
@@ -14,11 +14,12 @@ Auftrag: Justus' Nachrichten vom 25.11. (17:33, 17:48, 18:14, 18:22).
   statt C), rund 1,63 Mio. Mal bis 10^9 je Start. Darauf folgt jedes Mal der Prüfpunkt `C> 1 1 0`, also
   kein Halt, weil die vierte Zelle 0 ist.
 - **Halt lückenlos ausgeschlossen bis 10^12** (direkte Simulation, jeder Schritt, alle drei Starts).
-  Darüber nur **bedingt**: bis 10^22 für alle drei Starts (lokal; der Actions-Lauf rechnet weiter, Ergebnis folgt) (Zyklus-Beschleuniger). Die Bedingung lautet, dass die Regeln des
+  Darüber nur **bedingt** (Zyklus-Beschleuniger): bis 10^24 für alle drei Starts, für D (367) bis 10^25,
+  jeweils von zwei Actions-Läufen gleich bestätigt (Abschnitt 5). Die Bedingung lautet, dass die Regeln des
   Phasen-Automaten für alle vorkommenden Listen stimmen und in den übersprungenen Phasen kein K(C)
   entsteht. Belegt ist das nur empirisch, nicht bewiesen (Abschnitt 4).
 - **Kein Haltekandidat, kein K(C)** bis dahin, weder in den gerechneten Rückfall-Phasen noch in den
-  900 Stichproben jenseits 10^12 (300 je Start).
+  1.110 Stichproben jenseits 10^12 (A und C je 360 bis 10^24, D 390 bis 10^25).
 
 ## 1. Das Muster
 
@@ -106,7 +107,8 @@ Werkzeug: `zyklus_beschl.py` (Zyklusebene), das Durchlaufmodell der Rückfälle 
   `linkes_ende/beschleuniger.py`, das bis 10^12 gegen `direkt.c` geprüft ist. Jeder Rückfall wurde
   zusätzlich ganz gerechnet: 0 Abweichungen.
 - In Actions bis 10^15 gleich (Run 45675033053, Jobs pruef), Python-Fassung.
-- In Actions bis 10^16 mit der C-Fassung (Run 45682765314, Jobs pruef): läuft noch.
+- In Actions bis 10^16 mit der C-Fassung (Run 45682765314, Jobs pruef): für A, C und D alle 4.636
+  Zyklusanfänge gleich, Rückfälle lokal = ganz.
 - `rechne.c` gegen die Python-Fassung: 8.594 Eingaben (zufällige Bit-Bänder, zufällige Token-Listen, alle
   2.594 echten Rückfall-Listen bis 10^11), 0 verschieden (`ergebnisse/test_rechne_c.txt`). Bis 10^18
   stimmen auch die Schrittzahlen an den Zehnerpotenzen mit dem reinen Python-Lauf (lokal) überein.
@@ -130,7 +132,8 @@ Bewiesen ist hier nichts (Justus: Regeln jetzt nicht beweisen). Je Regel gibt es
    18 Rechtsschritt-Typen vor, darunter für C nur `001 010 100 101 110`, also nie `011` oder `111`.
    - Negativkontrolle: zufällige Bit-Bänder ohne Regelbedingung, Phasen bis zum Halt gerechnet. 8 Halte,
      alle 8 mit erkanntem K(C).
-3. **Stichproben im Lauf jenseits 10^12:** 900 Stichproben zwischen 10^12 und 10^22 (300 je Start), alle ohne Halt
+3. **Stichproben im Lauf jenseits 10^12:** 900 Stichproben zwischen 10^12 und 10^22 (300 je Start), im
+   Actions-Lauf bis 10^24/10^25 insgesamt 1.110, alle ohne Halt
    und ohne K(C), und alle stimmen mit der Regel überein. Getroffen wurden nur N1 und N2 (siehe Abschnitt 7).
 
 Fällt die Bedingung einer Regel weg, wird nicht übersprungen, sondern zurückgefallen. Das gilt, wenn das
@@ -159,7 +162,23 @@ Lokal mit `zyklus_beschl.py` (C-Fassung), Logs in `ergebnisse/lokal/zyklus_1e22_
 - int64-Schutz: Die größte Teilsumme der Paarkosten wächst je Zehnerpotenz etwa um den Faktor 5,6
   (6·10^15 bei 10^21). Um 10^24 hätte sie den int64-Bereich gesprengt. Seit 509fb21 wird dort mit
   Python-Zahlen gerechnet.
-- Actions-Lauf mit Schutz (Run 45684698614, bis 340 min je Start): läuft noch, das Ergebnis trage ich hier nach.
+- Actions-Lauf mit Schutz (Run 45684698614, 340 min je Start, Nachtrag 26.11.):
+
+| Start | erreicht | Schritte an der letzten Zehnerpotenz | Zyklen | K(C) | Halt | Stichproben |
+|---|---|---|---|---|---|---|
+| A (114) | 10^24 | 1,0000086·10^24 | 463.856 | 0 | nein | 360, alle gleich |
+| C (378) | 10^24 | 1,0000029·10^24 | 463.856 | 0 | nein | 360, alle gleich |
+| D (367) | 10^25 | 1,0000019·10^25 | 824.868 | 0 | nein | 390, alle gleich |
+
+  - A und C kommen in 340 min nicht bis 10^25: Ab etwa 10^24 greift der Schutz und rechnet mit
+    Python-Zahlen, das ist deutlich langsamer. Bei D hat der Schutz 71.839-mal gegriffen.
+  - Zweiter Lauf zum Vergleich (Run 45682765314, ohne Schutz): an jeder gemeinsamen Zehnerpotenz gleich
+    (Schrittzahl, Phasen, Zyklen, Token, Regelzähler), A und C bis 10^24, D bis 10^25. Seine Werte für A
+    und C bei 10^25 bestätigt kein zweiter Lauf; ich zähle sie nicht.
+  - Reine Python-Fassung (Run 45675033053): kam bis 10^19 (danach vom Runner beendet, Ursache
+    unbekannt), bis dahin an jeder Zehnerpotenz gleich.
+  - Zahlen: `analyse/gruppe1/verboten/ergebnisse/actions_lauf_jenseits_1e22.txt` (aus den Job-Logs
+    abgeschrieben).
 
 ## 6. Belege
 
@@ -167,7 +186,7 @@ Lokal mit `zyklus_beschl.py` (C-Fassung), Logs in `ergebnisse/lokal/zyklus_1e22_
   Beschreibungen), ad96679 (Zyklus-Beschleuniger, Regeltest), 0bb0c90 (Stichproben, Kandidaten),
   d36cde9 (kein Start durch Push auf main), 14b51e4 (Durchlaufmodell in C), 509fb21 (int64-Schutz)
 - Actions: 45668615893 (verboten: direkt bis 10^12, durchlauf bis 10^10, beschleuniger bis 10^14),
-  45675033053 (zyklus, Python-Fassung: pruef bis 10^15, lauf), 45682765314 (zyklus, C-Fassung ohne int64-Schutz: pruef bis 10^16; lauf nur bis 10^24 verwertbar), 45684698614 (zyklus, mit Schutz: lauf so weit wie möglich)
+  45675033053 (zyklus, Python-Fassung: pruef bis 10^15, lauf), 45682765314 (zyklus, C-Fassung ohne int64-Schutz: pruef bis 10^16; lauf nur bis 10^24 verwertbar), 45684698614 (zyklus, mit Schutz: lauf A/C bis 10^24, D bis 10^25)
 - Englische Problembeschreibungen: `analyse/gemini/gruppe1_en.md`, `analyse/gemini/m5_en.md`
 
 ## 7. Abweichungen und eigene Fehler
@@ -190,7 +209,6 @@ Lokal mit `zyklus_beschl.py` (C-Fassung), Logs in `ergebnisse/lokal/zyklus_1e22_
 ## 8. Offene Punkte und Empfehlung
 
 Offen:
-- Ergebnis des Actions-Laufs jenseits 10^22 (Run 45684698614), pruef bis 10^16 (Run 45682765314).
 - Die Regeln sind nicht bewiesen. Jenseits 10^12 ist Halt nur unter der Bedingung aus Abschnitt 4
   ausgeschlossen.
 - Der Download der Actions-Logs als ZIP ist aus der Sitzung gesperrt (results-receiver.actions.githubusercontent.com,
