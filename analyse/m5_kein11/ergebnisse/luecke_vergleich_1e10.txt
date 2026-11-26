@@ -1,0 +1,2 @@
+A: C und Go gleich (alle Zeilen)
+C: C und Go gleich (alle Zeilen)

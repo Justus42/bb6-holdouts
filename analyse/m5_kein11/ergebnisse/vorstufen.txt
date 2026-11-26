@@ -1,0 +1,15 @@
+Fenster R=7, Tiefe bis 4
+  d=1: 1024 Fensterbelegungen erreichen T nach genau 1 Schritten; einen Schritt(e) vor T: {'VB': 512, 'VE': 512}, auf kein (oder mehr als ein) Muster: 0
+  d=2: 1024 Fensterbelegungen erreichen T nach genau 2 Schritten; zwei Schritt(e) vor T: {'P1': 256, 'P3': 256, 'P2': 512}, auf kein (oder mehr als ein) Muster: 0
+  d=3: 1024 Fensterbelegungen erreichen T nach genau 3 Schritten; zwei Schritt(e) vor T: {'P2': 512, 'P1': 256, 'P3': 256}, auf kein (oder mehr als ein) Muster: 0
+  d=4: 1408 Fensterbelegungen erreichen T nach genau 4 Schritten; zwei Schritt(e) vor T: {'P1': 384, 'P2': 512, 'P3': 512}, auf kein (oder mehr als ein) Muster: 0
+  Positivkontrolle VB: erreicht T nach 1 Schritt(en) bei jeder Belegung: True
+  Positivkontrolle VE: erreicht T nach 1 Schritt(en) bei jeder Belegung: True
+  Positivkontrolle P1: erreicht T nach 2 Schritt(en) bei jeder Belegung: True
+  Positivkontrolle P2: erreicht T nach 2 Schritt(en) bei jeder Belegung: True
+  Positivkontrolle P3: erreicht T nach 2 Schritt(en) bei jeder Belegung: True
+  Negativkontrolle (A> 0 | 100011): erreicht T: False (erwartet False)
+Teil 2: Wege, auf denen eine Luecke (k >= 4) strikt rechts vom Kopf entsteht (Fenster R=7):
+  A1 D0   : 960 Fensterbelegungen
+  C0 D0   : 384 Fensterbelegungen
+  D0      : 896 Fensterbelegungen
