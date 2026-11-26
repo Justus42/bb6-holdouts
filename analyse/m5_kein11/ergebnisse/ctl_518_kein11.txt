@@ -1,0 +1,14 @@
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=1 klauseln=223 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=2 klauseln=831 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=3 klauseln=1858 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=4 klauseln=3322 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=5 klauseln=5241 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=6 klauseln=7633 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=7 klauseln=10516 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=8 klauseln=13908 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=9 klauseln=17827 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=10 klauseln=22291 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=11 klauseln=27318 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=12 klauseln=32926 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=13 klauseln=39133 zeit=0.0s ergebnis=UNSAT
+518 kein11 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- start=A rechts=kein11 nL=14 klauseln=45957 zeit=0.0s ergebnis=UNSAT

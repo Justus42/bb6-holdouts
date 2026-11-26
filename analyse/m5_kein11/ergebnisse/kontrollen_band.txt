@@ -1,0 +1,9 @@
+GLEICH 1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC R 20 --start A --band 00001 0 | ERGEBNIS schritte=14 halt=1 brueche=9 erster_bruch=4 breite=7 HASH 3ecd1701009009d6 zustand=A kopf_rel=6 
+GLEICH 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- R 20 --start A --band 00001 0 | ERGEBNIS schritte=20 halt=0 brueche=9 erster_bruch=4 breite=7 HASH eb2b862a039d0f7d zustand=B kopf_rel=6 
+GLEICH 1RB1RF_1LC0LF_1RD0LB_0RA1RE_1RD---_0RC0LA R 20 --start C --band 00001 0 | ERGEBNIS schritte=14 halt=1 brueche=9 erster_bruch=4 breite=7 HASH 94a0342efb81911a zustand=E kopf_rel=6 
+GLEICH 1RB0RE_1LC0RA_0LD1LB_1LA1LF_0LB0RD_0LB--- L 20 --start B --band 10000 4 | ERGEBNIS schritte=20 halt=0 brueche=9 erster_bruch=4 breite=7 HASH 76ec585e88fe11b6 zustand=C kopf_rel=0 
+GLEICH 1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC R 20 --start A --band 0011 0 | ERGEBNIS schritte=20 halt=0 brueche=2 erster_bruch=0 breite=10 HASH de12cea9a3f10803 zustand=A kopf_rel=2 
+GLEICH 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- R 20 --start A --band 0011 0 | ERGEBNIS schritte=3 halt=1 brueche=2 erster_bruch=0 breite=4 HASH 4ab108c1ba532758 zustand=F kopf_rel=3 
+GLEICH 1RB1RF_1LC0LF_1RD0LB_0RA1RE_1RD---_0RC0LA R 20 --start C --band 0011 0 | ERGEBNIS schritte=20 halt=0 brueche=2 erster_bruch=0 breite=10 HASH b320dd2b0f29eac7 zustand=E kopf_rel=2 
+GLEICH 1RB0RE_1LC0RA_0LD1LB_1LA1LF_0LB0RD_0LB--- L 20 --start B --band 1100 3 | ERGEBNIS schritte=3 halt=1 brueche=2 erster_bruch=0 breite=4 HASH 8ea864fcdf232c6f zustand=F kopf_rel=0 
+GLEICH 1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC R 20 --start A --band 00101 0 | ERGEBNIS schritte=20 halt=0 brueche=0 erster_bruch=-1 breite=10 HASH cf3f27cc2fa32e42 zustand=E kopf_rel=8 

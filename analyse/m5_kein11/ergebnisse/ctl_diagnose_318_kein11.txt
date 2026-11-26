@@ -1,0 +1,28 @@
+1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC, rechter Automat "kein11", linker Automat trivial (nL=1)
+Beobachtete (Zustand, Bit, q) im echten Lauf, 300000 Schritte ab Leerband:
+   A0 q=0: 7803
+   A0 q=1: 8446
+   B0 q=0: 246
+   B0 q=1: 23311
+   B1 q=0: 16248
+   C0 q=0: 499
+   C0 q=1: 11
+   C1 q=0: 31391
+   D0 q=0: 54978
+   D1 q=0: 15884
+   E0 q=0: 15754
+   E0 q=1: 7802
+   E1 q=0: 15388
+   E1 q=1: 54964
+   F0 q=0: 23542
+   F0 q=1: 15388
+   F1 q=0: 8345
+Kuerzester abstrakter Weg zum Halt (* = kommt im echten Lauf nie vor):
+    0: A0 q=0
+    1: B0 q=0
+    2: C0 q=0
+    3: D0 q=1  *
+    4: E0 q=2  *
+    5: B1 q=1  *
+    6: A1 q=0  *
+Erste nie beobachtete Stelle: Schritt 3 (D0 q=1), davor C0 q=0

@@ -1,0 +1,13 @@
+== Positivkontrolle: rechter DFA aus dem ctl_sat-Zertifikat von P1 fest vorgegeben, nL=3 muss SAT sein
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=3 nR=2 klauseln=861 zeit=0.0s ergebnis=SAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A rechts=json:zertifikate/kontrolle_P1_frei.json nL=3 klauseln=855 zeit=0.0s ergebnis=SAT
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A nL=3 nR=2 |acc|=4
+Abschlusspruefung: OK
+Lauf 1000000 Schritte: OK
+== Positivkontrolle 2: dieselbe Vorgabe, nL=2 muss UNSAT sein (ctl_sat findet bis 2x2 nichts)
+1RB0RC_1LC1RD_1RA1LE_1LA0RD_0LE1RF_1LB--- start=A rechts=json:zertifikate/kontrolle_P1_frei.json nL=2 klauseln=379 zeit=0.0s ergebnis=UNSAT
+== Negativkontrolle: haltende Maschinen, beide festen rechten DFAs, nL=1..8, erwartet nur UNSAT
+1RB1LB_1LA0LC_---1LD_1RD0RA kein11: 8 Groessen, 0 mit Zertifikat (erwartet 0)
+1RB1LB_1LA0LC_---1LD_1RD0RA nullen: 8 Groessen, 0 mit Zertifikat (erwartet 0)
+1RB1LC_1RC1RB_1RD0LE_1LA1LD_---0LA kein11: 8 Groessen, 0 mit Zertifikat (erwartet 0)
+1RB1LC_1RC1RB_1RD0LE_1LA1LD_---0LA nullen: 8 Groessen, 0 mit Zertifikat (erwartet 0)

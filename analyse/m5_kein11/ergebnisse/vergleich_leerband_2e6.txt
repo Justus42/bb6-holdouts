@@ -1,0 +1,4 @@
+GLEICH 1RB0RE_1LC0RA_0LD1LB_1LA1LF_0LB0RD_0LB--- L 2000000 | ERGEBNIS schritte=2000000 halt=0 brueche=0 erster_bruch=-1 breite=2426 HASH 5dd7a2fe2a775b5e zustand=B kopf_rel=251 
+GLEICH 1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC R 2000000 | ERGEBNIS schritte=2000000 halt=0 brueche=0 erster_bruch=-1 breite=2352 HASH 5d16d4f7d4f97cf7 zustand=D kopf_rel=1782 
+GLEICH 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- R 2000000 | ERGEBNIS schritte=2000000 halt=0 brueche=0 erster_bruch=-1 breite=2352 HASH 5d16d4f7d4f97cf7 zustand=D kopf_rel=1782 
+GLEICH 1RB1RF_1LC0LF_1RD0LB_0RA1RE_1RD---_0RC0LA R 2000000 | ERGEBNIS schritte=2000000 halt=0 brueche=0 erster_bruch=-1 breite=2426 HASH 1667d55553231889 zustand=D kopf_rel=2166 

@@ -1,0 +1,13 @@
+ERGEBNIS TM=1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- seite=R schritte=10000000000 halt=0 brueche=0 erster_bruch=-1 maxP=0 vollfehler=0 breite=161368
+HASH 68bb498875560928 zustand=B kopf_rel=138665
+NACHBAR A0 gelesen=1315843750 nachbar_1=526395558
+NACHBAR A1 gelesen=2368303553 nachbar_1=1842057733
+NACHBAR B0 gelesen=789448192 nachbar_1=789406770
+NACHBAR B1 gelesen=526395557 nachbar_1=0
+NACHBAR C0 gelesen=83953 nachbar_1=1088
+NACHBAR C1 gelesen=1052603866 nachbar_1=0
+NACHBAR D0 gelesen=1842057749 nachbar_1=0
+NACHBAR D1 gelesen=526329757 nachbar_1=0
+NACHBAR E0 gelesen=263090130 nachbar_1=0
+NACHBAR E1 gelesen=263239627 nachbar_1=0
+NACHBAR F0 gelesen=1052603866 nachbar_1=526245820
