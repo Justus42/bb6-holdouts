@@ -1,0 +1,33 @@
+== Tabelle 133 gegen 581 und gegen den RWLAccHalt-Geschwister
+A..F -> CDABEF gespiegelt
+A..F -> DABCEF gespiegelt
+== Negativkontrolle Tabelle (ein Feld von 581 geaendert, 0LC -> 0LB): keine Zeile erwartet
+== Portierung gegen direkte Simulation (Besuche bis Wortlaenge 100.000)
+Portierung: 1204 in Reihenfolge gefunden: 1204 nach Sprung: 108 fehlend: 0 | Schrittzahl gleich: 1204 verschieden: 0
+rc=0 (erwartet 0)
+== Negativkontrolle 1: Besuche von 581 gegen den direkten Lauf von 133
+Portierung: 3492 in Reihenfolge gefunden: 0 nach Sprung: 0 fehlend: 3492 | Schrittzahl gleich: 0 verschieden: 0
+rc=1 (erwartet 1)
+== Negativkontrolle 2: ein Hash nach Sprung verfaelscht
+Portierung: 1204 in Reihenfolge gefunden: 1203 nach Sprung: 107 fehlend: 1 | Schrittzahl gleich: 1203 verschieden: 0
+rc=1 (erwartet 1)
+== Portierung ohne Spruenge gegen direkte Simulation (Besuche und Schrittzahlen)
+Portierung: 33278 in Reihenfolge gefunden: 33278 nach Sprung: 0 fehlend: 0 | Schrittzahl gleich: 33278 verschieden: 0
+rc=0 (erwartet 0)
+== Negativkontrolle 4: Schrittzahl nach einem Sprung um 1 erhoeht
+Portierung: 1204 in Reihenfolge gefunden: 1204 nach Sprung: 108 fehlend: 0 | Schrittzahl gleich: 1203 verschieden: 1
+rc=1 (erwartet 1)
+== Negativkontrolle 5: Sprungformel verfaelscht (15V -> 16V)
+1
+Portierung: 1204 in Reihenfolge gefunden: 1204 nach Sprung: 108 fehlend: 0 | Schrittzahl gleich: 194 verschieden: 1010
+rc=1 (erwartet 1)
+== Negativkontrolle 3: zwei Besuche vertauscht
+Portierung: 1204 in Reihenfolge gefunden: 1203 nach Sprung: 108 fehlend: 1 | Schrittzahl gleich: 1203 verschieden: 0
+rc=1 (erwartet 1)
+== Positivkontrolle: 581 ab A, erwartet HALT in Runde 19026768 (PR 76) und
+   853177647932005270554892218084645935472995035642746848454477793277027802995098762076895667304703808111420498351739937140047615589683 Schritte (bbe, mit Halteuebergang)
+HALT in Runde 19026768 | Spruenge 86734 | Sprung-Besuche 960444283605030179454456534694492774255946350586257176153504195031
+Schritte bis zur Haltekonfiguration: 853177647932005270554892218084645935472995035642746848454477793277027802995098762076895667304703808111420498351739937140047615589682
+Schritte mit Halteuebergang (bbchallenge-Zaehlung): 853177647932005270554892218084645935472995035642746848454477793277027802995098762076895667304703808111420498351739937140047615589683
+letzte Konfiguration: dir=False q=F front=[] back=[1 0 (100)^91561 1 0 1 1 0 (100)^6920 1 0 1]
+Positivkontrolle OK
