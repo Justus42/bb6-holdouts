@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; 133 nachgezogen 26.11. nach Run 45817990655)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -26,7 +26,8 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
 [RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
-[M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34).
+[M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34) ·
+[133] `133_581.md` (PR 32 und Folge-PR).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -223,6 +224,26 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 - Vorlage busycoq #55 (471, `1011 → 0001` wie 396, hält nicht): Ihre Gestalt mit festem Block hinter L^k gibt es
   bei 396 bis Runde 1.200.000 nicht, dort sitzt ein Zähler [WM]. Die Beweisidee „kein Besuch endet auf einer 0 direkt vor 11“ ruht (Justus
   26.11.); laut bbe reicht eine Aussage nur über das Wortende dafür nicht [AB §3].
+
+## Einzelfall 133 (gleiche Tabelle wie 581) [133]
+
+### Bewiesen (Rocq)
+
+Nichts. Durch **Tabellenvergleich** belegt (eigenes Programm `tabelle.py`, dazu [VK] und bbe): 581 ist 133 mit
+A↔C, B↔D vertauscht und gespiegelt, einzige Abbildung. 581 ist also die Tabelle von 133 **ab C**; eine andere
+Rechnung. busycoq-PR 76 (offen) beweist nur 581; **133 ist dadurch nicht entschieden.**
+
+### Beobachtet
+
+| Beobachtung | Prüfgrenze | Programme | Quelle |
+|---|---|---|---|
+| 133 hält nicht, PR-76-Simulator (Python-Portierung) ab dem Start von 133 | **2^28 Runden = 7,92·10^334 Schritte (exakt gezählt)** | **1** (Portierung); frühe Besuche schrittgenau von `direkt133.c` bestätigt | [133], Run 45817990655 |
+| Läufe 133 und 581 treffen sich nicht | Besuche bis Wortlänge 10^5 (wir), 10^9 Schritte (bbe) | 2 + bbe | [133], [VK] |
+
+### Offen
+
+- 133 **ruht** (Justus, 26.11.). Kein Rocq zu 133, bis geklärt ist, was slugbird als „Reported by others“ führt
+  (`holdouts.json`; Justus sieht in Discord nach).
 
 ## Verwandtschaftskarte (alle 608 Holdouts)
 

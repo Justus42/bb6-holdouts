@@ -27,7 +27,8 @@ Reports (all in `analyse/`, German, merged with the PR in brackets):
 [VK] `verwandtschaft.md` (PR 12, corrected in PR 13; English summary `verwandtschaft_en.md`) ·
 [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) · [RF] `396_rueckfuehrung.md` (PR 21) ·
 [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (check against busy-beaver-explorer) ·
-[M3] `318_518_teil3.md` (PR 31, halting patterns up to 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34).
+[M3] `318_518_teil3.md` (PR 31, halting patterns up to 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34) ·
+[133] `133_581.md` (PR 32 and follow-up PR).
 
 ## Data (check of 25 Nov 2026) [DA]
 
@@ -223,6 +224,26 @@ Shown by **table comparison** [VK, section F12]:
 - Template busycoq #55 (471, `1011 → 0001` as in 396, does not halt): its shape with a fixed block behind L^k
   does not occur in 396 up to round 1,200,000; a counter sits there [WM]. The proof idea "no visit ends on a 0 right before 11" is on hold (Justus, 26 Nov);
   according to bbe a statement about the word end alone is not enough for it [AB §3].
+
+## Single case 133 (same table as 581) [133]
+
+### Proved (Rocq)
+
+Nothing. By **table comparison** (own program `tabelle.py`, plus [VK] and bbe): 581 is 133 with A<->C, B<->D swapped
+and mirrored, the only such map. So 581 is 133's table **started in C**, a different run. busycoq PR 76 (open)
+proves only 581; **133 is not decided by it.**
+
+### Observed
+
+| Observation | Bound | Programs | Source |
+|---|---|---|---|
+| 133 does not halt, PR 76 simulator (Python port) from 133's start | **2^28 rounds = 7.92·10^334 steps (counted exactly)** | **1** (the port); early visits confirmed step for step by `direkt133.c` | [133], run 45817990655 |
+| The runs of 133 and 581 never meet | visits up to word length 10^5 (us), 10^9 steps (bbe) | 2 + bbe | [133], [VK] |
+
+### Open
+
+- 133 is **on hold** (Justus, 26 Nov). No Rocq on 133 until it is clear what slugbird lists as "Reported by others"
+  (`holdouts.json`; Justus checks Discord).
 
 ## Relationship map (all 608 holdouts)
 
