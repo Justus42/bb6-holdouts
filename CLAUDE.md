@@ -26,10 +26,21 @@ Unbelegtes als unbelegt kennzeichnen.
   1. busycoq: Zweig BB6 und offene PRs, nur lesen per
      `git fetch https://github.com/ccz181078/busycoq "+refs/heads/BB6:refs/remotes/o/BB6" "+refs/pull/*/head:refs/pr/*"`,
      Maschinen-String (mit `---` und `HHH`) im Volltext der gegenüber BB6 geänderten Dateien suchen.
+     Welche PRs offen sind: `git ls-remote https://github.com/ccz181078/busycoq 'refs/pull/*/merge'` zeigt
+     `refs/pull/N/merge` nur für offene PRs ohne Merge-Konflikt, also eine **Untergrenze** (offene PRs mit
+     Konflikt fehlen). Diese per `"+refs/pull/*/merge:refs/prm/*"` holen und **gegen `o/BB6`** vergleichen
+     (`git diff o/BB6 refs/prm/N`, nur hinzugefügte Zeilen), nicht gegen den ersten Elternteil des Merge-Commits:
+     viele Merge-Refs beruhen auf älteren BB6-Ständen und zeigen sonst längst gemergte Zeilen. Im Bericht Zahl
+     der offenen PRs mit Datum nennen und eine Kontrolle angeben, die anschlägt (Stand 26.11.: 53 offen).
   2. busy-beaver-explorer: `git clone https://github.com/fractal-geometry-explorer/busy-beaver-explorer`,
      Ordner `holdouts/<Maschine>/` (`README.md`, `status.json`) und Familienangaben dort lesen.
   Die frühere Regel „erst in Discord fragen, ob jemand daran arbeitet“ entfällt. Vorbild: `analyse/abgleich_bbe.md`.
 - Höchstens 2 Threads gleichzeitig; nicht selbst angestoßene Threads nur vorschlagen.
+- Regel je Maschine (Justus 26.11.2026): Eine Maschine ruht, sobald bbe oder busycoq mit demselben Ansatz
+  gleich weit oder weiter ist. Ein neuer Ansatz ist immer erlaubt, wenn er vor dem Start in einem Satz benannt
+  und gegen bbes `holdouts/recent-proofs/technique-survey-nov26.md` geprüft ist. Höchstens 2 Threads je
+  Maschine ohne Beweisplan.
+- Kein Stichtag für das Projekt. Keine Portierung fremder Beweise (Justus 26.11.2026).
 - Daten in `data/` sind Schnappschüsse (Herkunft: `data/QUELLE.md`), nie als aktuell behandeln.
 
 ## Prüfregeln für Beweise
@@ -43,8 +54,8 @@ Unbelegtes als unbelegt kennzeichnen.
 - Neue Prüfwerkzeuge brauchen Negativkontrollen, die nachweislich anschlagen.
 - Zählungen, auf die sich eine Entscheidung stützt, von einem zweiten, unabhängig
   geschriebenen Programm bestätigen lassen.
-- busycoq bleibt auf Pin `33209bc7dc282b38c8cd6be507bfc551fea56108`, bis Justus etwas anderes
-  sagt. Coq 8.20.1 nur über die Images per Digest (siehe unten und `VORTEST.md`).
+- busycoq-Pin: `9c078caa3443e8027f5d2704e26c7228c1c86aa8` (BB6, 26.11.2026; vorher `33209bc7`, Wechsel mit Justus' OK vom 26.11.).
+  Neuer Pin nur auf Justus' Anweisung. Coq 8.20.1 nur über die Images per Digest (siehe unten und `VORTEST.md`).
 
 ## Docker-Start (Cloud-Sitzung, Umgebung „Mathe“)
 

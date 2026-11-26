@@ -8,7 +8,7 @@ on:
 
 env:
   BUSYCOQ_URL: https://github.com/ccz181078/busycoq
-  BUSYCOQ_PIN: 33209bc7dc282b38c8cd6be507bfc551fea56108
+  BUSYCOQ_PIN: 9c078caa3443e8027f5d2704e26c7228c1c86aa8
   # Digests am 2026-11-24 per Registry-API verifiziert
   IMG_VM: coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1
   IMG_NATIVE: coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd
@@ -31,7 +31,7 @@ jobs:
             thms: "halt halt_C halt_twin"
           - id: m284-native
             image: coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd
-            src: "33209bc7dc282b38c8cd6be507bfc551fea56108:verify/PR_Loop4Mono.v"
+            src: "9c078caa3443e8027f5d2704e26c7228c1c86aa8:verify/PR_Loop4Mono.v"
             mod: M284
             thms: "TM1.halt TM2.halt"
     name: ${{ matrix.id }}

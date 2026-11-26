@@ -6,7 +6,7 @@
 #   build_check.sh file:Pruefling.v Pruefling TM1.halt TM2.halt
 # coqchk ist gestrichen (Werkzeuge haerten, 24.11.2026); massgeblich ist Print Assumptions streng.
 set -euo pipefail
-PIN=33209bc7dc282b38c8cd6be507bfc551fea56108
+PIN=9c078caa3443e8027f5d2704e26c7228c1c86aa8
 DEPS="LibTactics Helper Eqb HashTable TM Compute Flip Permute Pigeonhole Enumerate Individual BB62 Individual62 RWLAcc RWLAcc62 FastRev ES_v3"
 [ $# -ge 3 ] || { echo "FEHLER: Aufruf build_check.sh <quelle> <Modul> <Theorem>... (mindestens ein Theorem)"; exit 2; }
 src=$1; mod=$2; shift 2; theorems="$*"
