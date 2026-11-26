@@ -1,0 +1,12 @@
+== /tmp/claude-0/luecke ohne Stoerung
+EP 89985 90030 45 4 C A1D0 10111010101111101011101010110101
+ERGEBNIS schritte=200000 halt=0 T=0 VB=0 VE=0 P1=0 P2=0 P3=0 episoden=1 max_gleichzeitig=1 mehrfach=0 vollfehler=0
+== /tmp/claude-0/luecke mit Stoerung
+EP 89985 89994 9 4 B A1D0 10111010101111101011101010110101
+ERGEBNIS schritte=200000 halt=0 T=1 VB=1 VE=0 P1=1 P2=0 P3=0 episoden=1 max_gleichzeitig=1 mehrfach=0 vollfehler=0
+== /tmp/claude-0/luecke_go ohne Stoerung
+EP 89985 90030 45 4 C A1D0 10111010101111101011101010110101
+ERGEBNIS schritte=200000 halt=0 T=0 VB=0 VE=0 P1=0 P2=0 P3=0 episoden=1 max_gleichzeitig=1 mehrfach=0
+== /tmp/claude-0/luecke_go mit Stoerung
+EP 89985 89994 9 4 B A1D0 10111010101111101011101010110101
+ERGEBNIS schritte=200000 halt=0 T=1 VB=1 VE=0 P1=1 P2=0 P3=0 episoden=1 max_gleichzeitig=1 mehrfach=0

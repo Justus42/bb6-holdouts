@@ -1,0 +1,2 @@
+ERGEBNIS schritte=10000000000 halt=0 T=0 VB=0 VE=0 P1=0 P2=0 P3=0 episoden=0 max_gleichzeitig=0 mehrfach=0 vollfehler=0
+R5SUMME C0 1085 erster=483 letzter=37745728

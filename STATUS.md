@@ -206,6 +206,10 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
   für jeden linken Automaten UNSAT. Berichtigung: „M5-A liest 1, rechts `0001`“ kommt ab C/D 2-mal in 10^10 vor. Rechte
   k-Fenster bis k = 24 retten das Spiel nicht, daher nicht gestartet. Schärfer: `00001` rechts vom Kopf gibt es nur am Anfang
   und im bzw. kurz nach einem Umbau; die offene Aussage entscheidet sich also im Umbau (dieselbe Hürde wie Idee 1).
+  **Nachtrag 2 (26.11. spät, beobachtet)** [K11 Nachtrag 2]: Zahlen der Prüfstelle zur „stehenden Lücke“ (`1 0000 1`
+  rechts vom Kopf) mit zwei eigenen Programmen bestätigt: ab A nie, ab C 2-mal (je 45 Schritte), Familie F 15.382-mal,
+  nie zwei zugleich, Ankunft immer in C; die Vorstufen P1–P3 von `A> 0 0001` kommen bis 10^10 nie vor. Dauer 45 genau bei
+  der linken Umgebung `1011101010110101`; die anderen Dauern (39–485) hängen an Zellen weiter links.
   **M5 ruht wieder, bis ein Ansatz für den Umbau benannt ist.**
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
