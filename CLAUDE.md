@@ -36,7 +36,14 @@ Unbelegtes als unbelegt kennzeichnen.
      Ordner `holdouts/<Maschine>/` (`README.md`, `status.json`) und Familienangaben dort lesen.
   3. `data/holdouts.json`: je Maschine die Felder `slugbird` (Status, simulierte Schritte), `sheet` und `notes`
      lesen und im Bericht nennen (Schnappschuss, Stand siehe `data/QUELLE.md`), damit keine schon erreichte
-     Prüfgrenze als neu gilt.
+     Prüfgrenze als neu gilt. Dazu die gleichwertigen Strings (`aliases`) der Maschine: jeden davon wie unter 1 und 2
+     in busycoq (BB6, offene PRs) und bbe suchen. Treffer nur in den Äquivalenzbeweisen `verify/Eqv*.v` sind keine
+     Entscheidung, aber im Bericht zu nennen.
+  4. slugbirds Holdout-Guide (Stand 3.11.2026, claude.ai/artifact/8B8E5ms18otN4XHbEnxaP2; Lesefreigabe Justus
+     26.11.): Klasse, Status und Notiz der Maschine lesen und sinngemäß nennen. Ist er nicht lesbar, das sagen.
+  5. bbchallenge-Wiki: `wiki/BB(6)`, `wiki/Beaver_Math_Olympiad` und die Seite der Klasse der Maschine lesen.
+     Ist das Wiki gesperrt, melden, nicht umgehen.
+  „Wir sind weiter“ nur gegenüber einer geprüften Quelle behaupten und diese nennen (Stand 26.11.: nur gegenüber bbe).
   Die frühere Regel „erst in Discord fragen, ob jemand daran arbeitet“ entfällt. Vorbild: `analyse/abgleich_bbe.md`.
 - Höchstens 2 Threads gleichzeitig; nicht selbst angestoßene Threads nur vorschlagen.
 - Regel je Maschine (Justus 26.11.2026): Eine Maschine ruht, sobald bbe oder busycoq mit demselben Ansatz
