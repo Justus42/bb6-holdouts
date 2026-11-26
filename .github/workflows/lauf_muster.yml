@@ -1,0 +1,78 @@
+name: lauf_muster
+
+# Thread "396 Wachstumsmuster" (26.11.2026, nur Analyse, kein Rocq). Startet nur von Hand (workflow_dispatch),
+# auf dem Thread-Branch als ref. Alle Programme und Skripte kommen aus analyse/396/muster/ des gewaehlten Refs;
+# der Workflow selbst ruft nur Skripte auf und rechnet nichts.
+# Jobs:
+#   kontrollen:  kontrollen.sh (Abgleich mit runde.c, Negativkontrollen)
+#   x:           lauf_x.sh   (Programm X, defizit.c, bis RUNDEN oder Zeitgrenze), Auswertung ins Log
+#   b:           lauf_b.sh   (zweites Programm, runde_b.cpp mit Anfangsfenstern), bis Zeitgrenze
+#   vergleich:   vergleich.sh (X gegen B bis zur kleineren Runde, zweite Auswertung)
+on:
+  workflow_dispatch:
+    inputs:
+      runden:
+        description: 'Runden fuer Programm X'
+        default: '1200000'
+      x_sekunden:
+        description: 'Zeitgrenze Programm X in Sekunden'
+        default: '18000'
+      b_sekunden:
+        description: 'Zeitgrenze Programm B in Sekunden'
+        default: '18000'
+
+permissions:
+  contents: read
+
+jobs:
+  kontrollen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Kontrollen
+        run: bash analyse/396/muster/kontrollen.sh
+
+  x:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm X
+        env:
+          RUNDEN: ${{ inputs.runden }}
+          SEK: ${{ inputs.x_sekunden }}
+        run: bash analyse/396/muster/lauf_x.sh "$RUNDEN" "$SEK"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: muster-x
+          path: analyse/396/muster/aus_x/
+
+  b:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Programm B
+        env:
+          SEK: ${{ inputs.b_sekunden }}
+        run: bash analyse/396/muster/lauf_b.sh "$SEK"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: muster-b
+          path: analyse/396/muster/aus_b/
+
+  vergleich:
+    needs: [x, b]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: analyse/396/muster/artefakte
+      - name: Vergleich X gegen B
+        run: bash analyse/396/muster/vergleich.sh analyse/396/muster/artefakte/muster-x analyse/396/muster/artefakte/muster-b
