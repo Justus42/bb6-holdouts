@@ -141,7 +141,10 @@ Shown by **table comparison** (holds for every step count, two programs, not in 
 
 ### Open
 
-- Whether M5 reaches `B> 1 1` / `C> 1 1`: **open**. It does not occur up to 8·10^14 [M3]; not checked beyond.
+- Whether M5 reaches `B> 1 1` / `C> 1 1`: **open**. It does not occur up to 8·10^14 [M3]; not checked by us beyond.
+  **Not a new bound:** per `data/holdouts.json` (as of 10 Nov) slugbird (Holdout Guide, 3 Nov) simulated 274, 322 and 518
+  to 1.0·10^17 and 318 to 1.0·10^20 steps (status "rules"), the RobinCodes sheet (9 Oct) all four to at least 10^15.
+  Not re-checked, their programs unknown. What [M3] adds is only the published count of every transition by two programs.
 - How a rebuild places the new digits (position and phase): no formula found, hence **no proof plan** [M2 §4].
 - Next rebuild, if any, beyond 8·10^14; `m5sim` reaches about 10^15 [M2 §6].
 - Templates in the pin would be `SBCv6a2.v` (compute the orbit) or `SOBLv3.v` (residue-class invariant); both
@@ -261,6 +264,7 @@ Nothing. Shown by **table comparison**, two programs (`karte_a.py`, `karte_b.c`,
 | M5: left record from C at 29,550,874 read as a rebuild | not a large rebuild; real rebuilds from C only at 87,823 and 874,896,314 | [M1] → [M2 §2, §3] |
 | M5: "no further rebuild up to 10^11" | none up to 8·10^14 | [M1] → [M2] |
 | M5: halting pattern "not checked beyond 10^10" | checked up to 8·10^14, no occurrence | [M2 §4] → [M3] |
+| M5: 8·10^14 read as the furthest bound | not a new bound: slugbird 10^17 (274, 322, 518) / 10^20 (318), sheet ≥ 10^15 (`holdouts.json`) | [M3] → external review 26 Nov |
 | M5: 29,754,240 vs bbe 29,787,121 "not reconciled" | the same rebuild, two moments | [AB] → [M3 §1a] |
 | cycle runs without int64 guard (runs 45675033053, 45682765314) | do not use beyond 10^24; guard since commit `509fb21` | [VB §5, §6] |
 | busycoq BB6 "still at `33209bc7`", PR #59 "open, not merged" | since 26 Nov at `9c078ca`, #59 and #55 merged; 88, 312, 449, 471 decided upstream | [DA] → [AB §1] |

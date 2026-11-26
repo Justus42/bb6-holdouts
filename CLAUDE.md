@@ -34,6 +34,9 @@ Unbelegtes als unbelegt kennzeichnen.
      der offenen PRs mit Datum nennen und eine Kontrolle angeben, die anschlägt (Stand 26.11.: 53 offen).
   2. busy-beaver-explorer: `git clone https://github.com/fractal-geometry-explorer/busy-beaver-explorer`,
      Ordner `holdouts/<Maschine>/` (`README.md`, `status.json`) und Familienangaben dort lesen.
+  3. `data/holdouts.json`: je Maschine die Felder `slugbird` (Status, simulierte Schritte), `sheet` und `notes`
+     lesen und im Bericht nennen (Schnappschuss, Stand siehe `data/QUELLE.md`), damit keine schon erreichte
+     Prüfgrenze als neu gilt.
   Die frühere Regel „erst in Discord fragen, ob jemand daran arbeitet“ entfällt. Vorbild: `analyse/abgleich_bbe.md`.
 - Höchstens 2 Threads gleichzeitig; nicht selbst angestoßene Threads nur vorschlagen.
 - Regel je Maschine (Justus 26.11.2026): Eine Maschine ruht, sobald bbe oder busycoq mit demselben Ansatz

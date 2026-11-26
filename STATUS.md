@@ -141,7 +141,10 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 
 ### Offen
 
-- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Bis 8·10^14 kommt es nicht vor [M3]; darüber nicht geprüft.
+- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Bis 8·10^14 kommt es nicht vor [M3]; darüber von uns nicht geprüft.
+  **Keine neue Grenze:** Laut `data/holdouts.json` (Stand 10.11.) simuliert slugbird (Holdout Guide, 3.11.) 274, 322 und 518
+  bis 1,0·10^17 und 318 bis 1,0·10^20 Schritte (Status „rules“), das RobinCodes-Sheet (9.10.) alle vier bis mindestens 10^15.
+  Nicht nachgeprüft, Programme dort unbekannt. Neu an [M3] ist nur die offen gelegte Zählung jedes Übergangs mit zwei Programmen.
 - Wie ein Umbau die neuen Ziffern setzt (Lage und Phase): keine Formel gefunden, daher **kein Beweisplan** [M2 §4].
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
@@ -261,6 +264,7 @@ Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte
 | M5: Links-Rekord ab C bei 29.550.874 als Umbau gelesen | kein großer Umbau; echte Umbauten nur 87.823 und 874.896.314 (ab C) | [M1] → [M2 §2, §3] |
 | M5: „bis 10^11 kein weiterer Umbau“ | bis 8·10^14 keiner | [M1] → [M2] |
 | M5: Haltemuster „jenseits 10^10 nicht geprüft“ | bis 8·10^14 geprüft, kein Vorkommen | [M2 §4] → [M3] |
+| M5: 8·10^14 als weiteste Prüfgrenze gelesen | keine neue Grenze: slugbird 10^17 (274, 322, 518) bzw. 10^20 (318), Sheet ≥ 10^15 (`holdouts.json`) | [M3] → Prüfstelle 26.11. |
 | M5: 29.754.240 gegen bbe 29.787.121 „nicht abgeglichen“ | derselbe Umbau, zwei Zeitpunkte | [AB] → [M3 §1a] |
 | Zyklus-Läufe ohne int64-Schutz (Runs 45675033053, 45682765314) | jenseits 10^24 nicht verwenden; Schutz seit Commit `509fb21` | [VB §5, §6] |
 | busycoq BB6 „unverändert auf `33209bc7`“, PR #59 „offen, nicht gemergt“ | seit 26.11. `9c078ca`, #59 und #55 gemergt; 88, 312, 449, 471 upstream entschieden | [DA] → [AB §1] |
