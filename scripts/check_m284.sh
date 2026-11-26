@@ -1,11 +1,11 @@
 #!/bin/sh
-# Prueft den in busycoq@33209bc7 gemergten Beweis aus PR #32 (verify/PR_Loop4Mono.v),
+# Prueft den in busycoq (seit 33209bc7, Pin jetzt 9c078ca) gemergten Beweis aus PR #32 (verify/PR_Loop4Mono.v),
 # kompiliert als M284.v. Aufruf im coqorg/coq:8.20.1-Container, cwd = busycoq/verify.
 #   check_m284.sh deps     -> nur Abhaengigkeiten bauen
 #   check_m284.sh main     -> M284.v kompilieren + Print Assumptions (streng)
 #   check_m284.sh all      -> beides
 set -eu
-PIN=33209bc7dc282b38c8cd6be507bfc551fea56108
+PIN=9c078caa3443e8027f5d2704e26c7228c1c86aa8
 DEPS="LibTactics Helper Eqb HashTable TM Compute Flip Permute Pigeonhole Enumerate Individual BB62 Individual62 RWLAcc RWLAcc62 FastRev ES_v3"
 THEOREMS="TM1.halt TM2.halt"
 export PATH=/home/coq/.opam/4.13.1+flambda/bin:$PATH

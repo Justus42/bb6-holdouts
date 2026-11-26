@@ -47,7 +47,7 @@ Bestanden nur, wenn beide Bau-Jobs grün sind.
 
 | Komponente | Pin |
 |---|---|
-| busycoq | Zweig BB6, `33209bc7dc282b38c8cd6be507bfc551fea56108` |
+| busycoq | Zweig BB6, `9c078caa3443e8027f5d2704e26c7228c1c86aa8` (seit 26.11.2026; vorher `33209bc7`) |
 | Coq 8.20.1 (VM) | `coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1` |
 | Coq 8.20.1 (nativ) | `coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd` |
 | GitHub Actions | `checkout` v7.0.1, `upload-artifact` v7.0.2, `download-artifact` v8.0.2, jeweils per Commit-SHA (Node 24) |

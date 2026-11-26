@@ -43,8 +43,8 @@ Unbelegtes als unbelegt kennzeichnen.
 - Neue Prüfwerkzeuge brauchen Negativkontrollen, die nachweislich anschlagen.
 - Zählungen, auf die sich eine Entscheidung stützt, von einem zweiten, unabhängig
   geschriebenen Programm bestätigen lassen.
-- busycoq bleibt auf Pin `33209bc7dc282b38c8cd6be507bfc551fea56108`, bis Justus etwas anderes
-  sagt. Coq 8.20.1 nur über die Images per Digest (siehe unten und `VORTEST.md`).
+- busycoq-Pin: `9c078caa3443e8027f5d2704e26c7228c1c86aa8` (BB6, 26.11.2026; vorher `33209bc7`, Wechsel mit Justus' OK vom 26.11.).
+  Neuer Pin nur auf Justus' Anweisung. Coq 8.20.1 nur über die Images per Digest (siehe unten und `VORTEST.md`).
 
 ## Docker-Start (Cloud-Sitzung, Umgebung „Mathe“)
 

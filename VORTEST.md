@@ -24,7 +24,7 @@ angelegt (keine Issues, PRs oder Kommentare).
 |---|---|
 | Coq (VM) | `coqorg/coq:8.20.1@sha256:3675f124508d7bbfcd509000d5d67e76ed66c1945ccb1f455ce57c6e5d6d52a1` (= Tag `8.20`), Coq 8.20.1, OCaml 4.13.1+flambda, Native-Compiler **aus** |
 | Coq (nativ) | `coqorg/coq:8.20.1-native@sha256:89d0f19002641db9a9a090a2f22bc7e19288e24827be5d2c8bc2a0be39d5e5dd` (= Tag `8.20-native`), OCaml 4.13.1, Native-Compiler **an** |
-| busycoq | `ccz181078/busycoq`, Zweig BB6, Pin `33209bc7dc282b38c8cd6be507bfc551fea56108` (03.11.2026) |
+| busycoq | `ccz181078/busycoq`, Zweig BB6, Pin `33209bc7dc282b38c8cd6be507bfc551fea56108` (03.11.2026); seit 26.11.2026 Pin `9c078caa3443e8027f5d2704e26c7228c1c86aa8` (nur neue `verify/M_*.v`-Dateien, Kern unverändert) |
 | Daten | `data/holdouts.json` (SHA-256 `84e7b8ac…6810`), `data/BB6_holdouts_608.txt` (SHA-256 `81b29741…00a5`) |
 | BB(5)-Quellen | `bbchallenge/bbchallenge-paper` @ `c563cb33`; `ccz181078/Coq-BB5` @ `9142e219` |
 | Werkzeuge | Docker 29.9.3 (Client und Daemon), Python 3.13.18, Rust 1.97.0 |
