@@ -15,7 +15,7 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [LE] `gruppe1_linkes_ende.md` (PR 10) · [VL] `gruppe1_vorlagen.md` (PR 11) · [P26] `gruppe1_pr26.md` (PR 11) ·
 [GR] `gruppe1_groesse.md` (PR 16) · [VB] `gruppe1_verboten.md` (PR 17) · [INV] `invarianten.md` (PR 15) ·
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
-[VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (dieser PR).
+[VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (Familie Besuchsgesetz).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -129,6 +129,7 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 | 88 und 396 rundengleich, nicht schrittgleich | Runde 27 (rund 1,57 Mio. Schritte) direkt simuliert | 3 Wege zum Rundenmodell zeilengleich (`direkt.c` 27 Runden, `naiv.py` 34 Runden, `runde.c`) | [396 §4, §5] |
 | 88 hält in Runde 161.211, wie in der Rechnung von PR #59 | – | 1 eigenes (`runde.c`), Run 45676623019 | [396 §4] |
 | 396: kein Halt, nur zwei 1011-Ereignisse (Runden 161.211 und 194.647) | Runde 260.000 (Wort 1.615.087 Zellen) | 1 für den langen Lauf (`runde.c`), Run 45676623019 | [396 §4] |
+| Familie des Besuchsgesetzes unter allen 608 (gespiegelt, alle Zustandspaare): genau 88, **110**, 312, 396, 449, 587; 110 = 396 bis auf `V(111x)`, rundengleich bis zum ersten 111-Besuch | alle Wörter bis Länge 12; 27 Runden direkt | 2 (`suche_a.py`, `suche_b.c`), zeilengleich | [FB] |
 
 ### Läuft
 

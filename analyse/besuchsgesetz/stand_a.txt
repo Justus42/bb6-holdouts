@@ -1,0 +1,6 @@
+88	busycoq: BB6: verify/Eqv_v3.v; PR 59: verify/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.v	cryptids: nichts
+110	busycoq: BB6: verify/Eqv_v2.v	cryptids: nichts
+312	busycoq: BB6: verify/Eqv_Misc.v,verify/Eqv_v2.v,verify/Eqv_v3.v; PR 59: verify/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.v	cryptids: BusyBeaver/BB6/Accelerations/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.lean,BusyBeaver/BB6/Accelerations/M_1RB1LD_0RC0LF_1LD1RE_0LA0RB_0RD1RB_0LDHHH.lean,BusyBeaver/BB6/Accelerations/README.md,BusyBeaverChallenge.lean
+396	busycoq: BB6: verify/Eqv_Misc.v,verify/Eqv_v3.v	cryptids: nichts
+449	busycoq: BB6: verify/Eqv_v3.v; PR 59: verify/M_1RB0LB_0RC0LD_1LD1RE_0LA0RF_0RD1RF_0RCHHH.v	cryptids: nichts
+587	busycoq: nichts	cryptids: BusyBeaver/BB6/Accelerations/M_1RB1LD_0RC0LF_1LD1RE_0LA0RB_0RD1RB_0LDHHH.lean,BusyBeaver/BB6/Accelerations/README.md,BusyBeaverChallenge.lean
