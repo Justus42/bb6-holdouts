@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags; 133 nachgezogen 26.11. nach Run 45817990655)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags; 133 nachgezogen 26.11. nach Run 45817990655; M5 Idee 1 abgeschlossen 26.11. abends)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -27,7 +27,7 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
 [RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
 [M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34) ·
-[133] `133_581.md` (PR 32 und Folge-PR).
+[133] `133_581.md` (PR 32 und Folge-PR) · [KB] `318_518_kunst.md` (PR 39 und Folge-PR, künstliche Bänder).
 Fremde Quelle: [GU] slugbirds BB(6) Holdout Guide, Stand 3.11.2026 (Abschnitt unten).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
@@ -181,6 +181,9 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 | Beschleunigter Simulator stimmt an allen Zyklusbeginnen (40.324 ab A, 41.794 ab C) | 10^10 | 2 (`m5schnell.py`, `m5sim hash`) | [M2 §1] |
 | Nur drei große Umbauten: ab A bei 29.754.240, ab C bei 87.823 und 874.896.314 | 8·10^14 (lokal, jenseits 10^10 nur jeder 5.000. Zyklus nachgeprüft) | 1 (+ Stichproben) | [M2 §3] |
 | 83 bzw. 88 Wanddurchgänge (Paare) je Lauf, keine Umbauten | 8·10^14 | 1 | [M2 §2] |
+| Künstliche Bänder (Familie F, 27.108 Bänder): kein Haltemuster | je bis 5 Zyklusbeginne (Median 3.289, höchstens 7,4·10^6 Schritte); Prüfstelle je 2·10^6 Schritte | 2 je Lauf gleich (`kunst.c`, `zweit.go`); dazu Prüfstelle (Code nicht im Repo) | [KB §3, §7.2] |
+| Umbau aus künstlichen Bändern: nie wieder ein Ausgangsrest (10.092 neue Reste), 485 Bänder zerfallen danach nicht mehr in Bausteine; je alter Ziffer genau 2 neue Ziffern (8.229/8.229) | 27.108 Bänder | 2 | [KB §3, §4] |
+| Die drei natürlichen Umbauten aus ihren Vorzuständen exakt reproduziert, Rest `RX` bestätigt | Umbau bis 2,34·10^8 Schritte | 2 (+ CRC aus `m5sim hash`) | [KB §7.1] |
 
 ### Offen
 
@@ -189,6 +192,9 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
   bis 1,0·10^17 und 318 bis 1,0·10^20 Schritte (Status „rules“), das RobinCodes-Sheet (9.10.) alle vier bis mindestens 10^15.
   Nicht nachgeprüft, Programme dort unbekannt. Neu an [M3] ist nur die offen gelegte Zählung jedes Übergangs mit zwei Programmen.
 - Wie ein Umbau die neuen Ziffern setzt (Lage und Phase): keine Formel gefunden, daher **kein Beweisplan** [M2 §4].
+- **Idee 1 der Lückenkarte abgeschlossen** (26.11.) [KB]: keine Umbau-Formel, keine feste Restliste (10.092 Reste); die
+  Werte der neuen Ziffern sind nicht örtlich bestimmt (ein Programm). Damit ist auch Idee 2 (Bandsprache mit endlich
+  vielen Rest-Formen) in der einfachen Form nicht haltbar. **Kein Beweisplan. M5 ruht, bis ein neuer Ansatz benannt ist.**
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
   die fehlende Umbau-Abbildung [M2 §5].
