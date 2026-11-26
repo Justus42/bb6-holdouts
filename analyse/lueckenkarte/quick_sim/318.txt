@@ -1,0 +1,27 @@
+best_block_size: 2
+elapsed_time_us: 134344
+least_compressed_loop: 7896
+least_compressed_tape_size_chain: 130
+least_compressed_tape_size_raw: 177
+best_compression_block_size: 2
+best_compression_tape_size: 77
+best_mult: 1
+best_chain_factor: 0.361981511
+         Steps:                     Times Applied:
+Total:   2_092_626                          768000
+Outer:   N/A                                768000
+Prover:  N/A                                     0
+Macro:   1_541_350                          604040
+Chain:   551_276                            163960
+Rule:    0                                       0
+Rules proven: 0
+Iterated rules proven: 0
+Collatz rules: 0
+Failed proofs: 0
+Prover num past configs: 67_855
+Tape copies: 0
+Elapsed time: 145.67403364181519
+00^inf 11^4 10^2 11^6 10^2 11^1 10^3 11^5 10^2 11^3 10^2 11^1 10^2 11^5 10^2 11^5 10^2 11^2 10^2 11^2 10^2 11^3 10^4 11^3 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^3 11^4 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^1 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^2 10^2 11^
+Num Nonzeros: 1_646 (1646)
+Span: 2_400 (2400)
+exit 124
