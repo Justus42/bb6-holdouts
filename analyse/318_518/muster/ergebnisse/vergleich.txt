@@ -1,0 +1,26 @@
+# Vergleich (lauf.sh), 2026-11-26T10:54Z, Kopf 5ee8ce7
+A Programm 1: 37 s
+C Programm 1: 38 s
+D Programm 1: 38 s
+A Programm 2: 87 s
+C Programm 2: 90 s
+D Programm 2: 90 s
+A: Programm 1 und 2 zeilengleich an allen Pruefpunkten (9 Pruefpunkte, 180 Zeilen)
+A: bei 1000000000 alle 18 Paarzahlen gleich der direkten Simulation
+A: bei 10000000000 alle 18 Paarzahlen gleich der direkten Simulation
+A: Zeilen mit Haltepaar B1 A1: Programm 1 0, Programm 2 0
+A: Zeilen mit Haltepaar C1 E1: Programm 1 0, Programm 2 0
+A: bis 800000000000000: B1 A0 42105282152791, C1 E0 84210517549351, Spruenge 45044175, darin 799997497378006
+C: Programm 1 und 2 zeilengleich an allen Pruefpunkten (9 Pruefpunkte, 180 Zeilen)
+C: bei 1000000000 alle 18 Paarzahlen gleich der direkten Simulation
+C: bei 10000000000 alle 18 Paarzahlen gleich der direkten Simulation
+C: Zeilen mit Haltepaar B1 A1: Programm 1 0, Programm 2 0
+C: Zeilen mit Haltepaar C1 E1: Programm 1 0, Programm 2 0
+C: bis 800000000000000: B1 A0 42105280801535, C1 E0 84210517448960, Spruenge 45347180, darin 799997336983142
+D: Programm 1 und 2 zeilengleich an allen Pruefpunkten (9 Pruefpunkte, 180 Zeilen)
+D: bei 1000000000 alle 18 Paarzahlen gleich der direkten Simulation
+D: bei 10000000000 alle 18 Paarzahlen gleich der direkten Simulation
+D: Zeilen mit Haltepaar B1 A1: Programm 1 0, Programm 2 0
+D: Zeilen mit Haltepaar C1 E1: Programm 1 0, Programm 2 0
+D: bis 800000000000000: B1 A0 42105280801536, C1 E0 84210517448959, Spruenge 45347162, darin 799997394880174
+ERGEBNIS: alles gleich
