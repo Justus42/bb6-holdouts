@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -26,7 +26,7 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
 [RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
-[M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14).
+[M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -185,6 +185,7 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 | 396: kein Halt, nur zwei 1011-Ereignisse (Runden 161.211 und 194.647) | Runde 260.000 (Wort 1.615.087 Zellen) | 1 für den langen Lauf (`runde.c`), Run 45676623019 | [396 §4] |
 | Familie des Besuchsgesetzes unter allen 608 (gespiegelt, alle Zustandspaare): genau 88, 110, 312, 396, 449, 587; 110 = 396 bis auf `V(111x)`, rundengleich bis zum ersten 111-Besuch. Folgerung „hält 396 nie, dann hält 110 nie“: **getestet, nicht bewiesen** (Gesetz für 110 nur so weit geprüft wie in dieser Zeile). **Nicht erfasst** (andere Lage oder Regel): 123, 223 (um eine Zelle verschoben, 123 mit zweiter Besuchsform; halten), 471 (`V(110x) = 001x`; hält nicht) | alle Wörter bis Länge 12; 27 Runden direkt | 2 (`suche_a.py`, `suche_b.c`), zeilengleich; Nachtrag 123/223/471 Stichprobe, 1 Programm | [FB], [AB §2] |
 | 396: kein Halt, nie `111`, nie `011`; `11` am Rundenende nur in 161.210 und 194.646, danach je ein 1011-Ereignis | Runde 748.162 (A), bis 573.850 zeilengleich mit B | 2 (`runde.c`, `runde_b.cpp`), Run 45688978145 | [T2] |
+| 396: kein Halt; Junk-Runden 161.210, 194.646, 757.565, 906.775, 1.042.306 (wie bbe). Keine Gestalt nach Art von 471 (L^(k+at) A B^t C D^t E T^(v+bt)): hinter L^k ein Binärzähler, die ersten m Zellen sind periodisch mit Zweierpotenz-Perioden, die mit m wachsen (2^18 bei m = 224, keine Periode ≤ 300.000 ab m = 232); ein gemeinsames P müsste Vielfaches von 2^18 sein | Runde 1.200.000 (X), B bis 1.238.663; Prüfstelle mit eigenem Code bis 300.000 (Tabelle bis m = 208) | 2 Rundenprogramme (`defizit.c`, `runde_b_anf.cpp`), jede Runde Anfangsfenster gleich; 2 Periodensuchen; Run 45771362724 | [WM] |
 
 ### Extern (bbe, Stand 26.11., Kopf `8515a2a4`) [AB §2, §3]
 
@@ -195,7 +196,7 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
   `piperun.c`, wortgleich mit `wordrun.c`/`deficit.c` nur bis 20.000 bzw. 200.000 Runden geprüft, also ein
   Programm mit Teilabgleichen; Wort dann 24.856.760 Zellen). 18 junk-Ereignisse, alle harmlos (nach einem
   Verdoppler, gerades Defizit 6). Gleiche Angabe im Ordner von 110. Von uns nur gelesen, nicht nachgerechnet;
-  unser eigener Lauf endet bei Runde 748.162 [T2].
+  unsere eigenen Läufe enden bei Runde 748.162 [T2] und 1.200.000 [WM].
 - **Gefahrenbedingung:** Halt nur, wenn ein junk mit Versatz 2 getroffen wird; das braucht ein ungerades Defizit
   beim Eintritt in den letzten `000`-Block.
 - **Keine Invariante nur über das Wortende:** Mit beliebigem Zähler erreichen die letzten 48 Zellen `111` in 2–3
@@ -208,13 +209,16 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 ### Offen
 
 - Ob 396 hält, also ob `111` je entsteht: **offen** [T2], [AB].
+- Ob die Perioden der Anfangsfenster unbeschränkt wachsen (dann gäbe es für 396 keine Gestalt nach Art von 471,
+  für kein P): **offen**, nur beobachtet bis Runde 1.200.000 [WM]. Den Zähler selbst beschreibt bbe schon auf
+  Ereignisebene; neu ist bei uns nur die Periodentabelle je Runde. **396 ruht** (Justus 26.11.).
 - „396 hält nie ⇒ 110 hält nie“ ist bei uns **getestet, nicht bewiesen**: Das Besuchsgesetz für 110 ist nur bis
   Wortlänge 12 und 27 Runden direkt geprüft, nicht in Rocq [FB]. bbe hat es in Lean auf eigenen Definitionen;
   von uns nicht geprüft.
 - 396, 110, 587 haben weiterhin keinen PR in busycoq (auch unter den 53 offenen nicht, 26.11.); nur 587 hat eine Datei in cryptids [DA], [AB].
 - Der Halte-Beweis von PR #59 ist **nicht** auf 396 übertragbar [396].
-- Nächster Kandidat als Vorlage: busycoq #55 (471, `1011 → 0001` wie 396, hält nicht); ob die Technik auf 396
-  passt, ist nicht geprüft [AB §2]. Die Beweisidee „kein Besuch endet auf einer 0 direkt vor 11“ ruht (Justus
+- Vorlage busycoq #55 (471, `1011 → 0001` wie 396, hält nicht): Ihre Gestalt mit festem Block hinter L^k gibt es
+  bei 396 bis Runde 1.200.000 nicht, dort sitzt ein Zähler [WM]. Die Beweisidee „kein Besuch endet auf einer 0 direkt vor 11“ ruht (Justus
   26.11.); laut bbe reicht eine Aussage nur über das Wortende dafür nicht [AB §3].
 
 ## Verwandtschaftskarte (alle 608 Holdouts)
