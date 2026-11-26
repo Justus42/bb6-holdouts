@@ -1,13 +1,18 @@
-# Stand des Projekts (25.11.2026, abends)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
 stammt (Kürzel siehe unten). Wo Berichte sich widersprechen oder später korrigiert wurden, gilt der spätere;
 die Korrekturen stehen am Ende. Englische Fassung: `STATUS.en.md`.
 
-**Insgesamt:** Keine Maschine ist entschieden. Bewiesen in Rocq ist nur eine Umformulierung für Gruppe 1
-(Durchlauf-Beschleunigung) und eine Regel darauf (Regel F). Alles andere ist Beobachtung bis zu einer
-Prüfgrenze.
+**Insgesamt:** Von uns ist keine Maschine entschieden. Bewiesen in Rocq sind Umformulierungen: für Gruppe 1
+(Durchlauf-Beschleunigung) mit einer Regel darauf (Regel F), und für 396 die Rückführung auf ein Wortsystem
+(PR 21). Alles andere ist Beobachtung bis zu einer Prüfgrenze.
+
+**Extern (26.11.):** busycoq hat PR #59 und #55 nach BB6 gemergt. Damit sind **88, 312, 449 (halten)** und
+**471 (hält nicht)** upstream entschieden. 123 und 223 halten laut busy-beaver-explorer (Lean und Coq;
+busycoq-PR #72/#73 offen). Zu 396 hatte busy-beaver-explorer am 24.11. alles, was wir gefunden haben, und mehr;
+**unser 396-Ergebnis ist eine unabhängige Bestätigung, keine Neuheit** [AB].
 
 Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [G1] `gruppe1.md` (PR 2) · [G1-2] `gruppe1_teil2.md` (PR 3) · [G1-3] `gruppe1_teil3.md` (PR 6) ·
@@ -15,7 +20,8 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [LE] `gruppe1_linkes_ende.md` (PR 10) · [VL] `gruppe1_vorlagen.md` (PR 11) · [P26] `gruppe1_pr26.md` (PR 11) ·
 [GR] `gruppe1_groesse.md` (PR 16) · [VB] `gruppe1_verboten.md` (PR 17) · [INV] `invarianten.md` (PR 15) ·
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
-[VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (Familie Besuchsgesetz).
+[VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
+[RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -28,6 +34,16 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 - cryptids (Commit `f01ee56`, 25.11.): nichts zu 396, 88, 449, Gruppe 1, M5. 312 hat dort eine formale
   Rückführung (keine Entscheidung). Holdout 587 hat eine bewiesene Beschleunigung mit derselben Lage wie 396
   (`1011` hält nicht, nur `111`); nur gelesen.
+
+## Abgleich mit busycoq und busy-beaver-explorer (26.11.2026) [AB]
+
+- **busycoq** (per git, nur gelesen): Zweig BB6 jetzt auf `9c078ca` (26.11.), 25 PRs gemergt, darunter #59
+  (88, 312, 449 halten) und #55 (u. a. 471 hält nicht). Unser Pin bleibt `33209bc7`, bis Justus etwas anderes
+  sagt. In BB6 (neu seit Pin) und in den PR-Refs 1–120 nennt keine Datei 396, 110, 587, Gruppe 1 oder M5.
+- **busy-beaver-explorer** (bbe, `github.com/fractal-geometry-explorer/busy-beaver-explorer`, Kopf `662e215`):
+  je Holdout ein Ordner mit Belegstufen. Lean-Sätze dort stehen auf bbes eigenen Definitionen, nicht auf
+  busycoqs; „native“ heißt `native_decide`. Je Gruppe unten unter „Extern (bbe)“.
+- Ab jetzt gilt (CLAUDE.md): vor jeder Arbeit an einer Maschine busycoq und bbe prüfen; die Discord-Regel entfällt.
 
 ## Gruppe 1: 114, 367, 378 (eine Tabelle, drei Starts)
 
@@ -52,8 +68,7 @@ hinreichend [VB, Abschnitt 1.2]. Von Justus extern bestätigt.
 |---|---|---|---|
 | Kein Halt, jeder Schritt geprüft | 10^12 Schritte, alle drei Starts | 2 (`direkt.c` Run 45614962053; `zaehl_direkt.c` Run 45668615893) | [LE §2], [VB §4] |
 | Kein K(C) (`C> 0 1 1`) | 10^9 lokal, 10^10 in Actions (Run 45668615893); bis 10^12 nur `zaehl_direkt.c` | 2 bis 10^10, 1 bis 10^12 | [VB §2, §4] |
-| Kein Halt, **bedingt** (Regeln des Phasen-Automaten nur empirisch) | 10^22 Schritte, alle drei Starts, 900 Stichproben ohne Befund | 1 (Zyklus-Beschleuniger, lokal), bis 10^12 gegen `beschleuniger.py` validiert | [VB §5] |
-| Lauf jenseits 10^22 | **läuft**: Actions-Run 45684698614 (Abbruch nach 340 min je Start); Ergebnis noch nicht da | – | [VB §5] |
+| Kein Halt, **bedingt** (Regeln des Phasen-Automaten nur empirisch) | 10^24 (A, C) bzw. 10^25 (D), 1.110 Stichproben ohne Befund | Zyklus-Beschleuniger; zwei Actions-Läufe an jeder gemeinsamen Zehnerpotenz gleich (Runs 45684698614, 45682765314); bis 10^12 gegen `beschleuniger.py` validiert | [VB §5], PR 25 |
 | Durchlaufmodell = direkte Simulation, byteweise | 10^9 Schritte, 36.944 Listenzeilen | 2 (`sweepmodell.py`, `zweitpruefung.c`) | [G1-3 §2] |
 | Prüfpunkte (B/D liest 0, rechts `11`) 1,63 bis 1,64 Mio. je Start, keiner mit `111` | 10^9 | 2 (C, Rust) | [G1-2 §1] |
 | Regel Z: `x = a + 4b + 7` am Ende jeder Fressphase, 76/76, 77/77, 76/76 | 10^9 | Listen aus C, Prüfung in Python | [G1] |
@@ -74,7 +89,14 @@ hinreichend [VB, Abschnitt 1.2]. Von Justus extern bestätigt.
 - Linkes Ende: 7 der 8 Familien ohne Regel, „alt“-Fälle ohne Regel, Sättigung nicht belegt [LE §4].
 - Regel Z und erste/letzte Fressrunde nicht in Rocq [S2a]. Warum a immer gerade ist, ist nicht bewiesen [S2a], [ZY].
 - Es fehlt eine Gleichung, die die Zahlen bindet (wie `gval G + 6 + κ = Q` in `PR_SBC.v`) [P26 §3].
-- Laut Justus (25.11.): Gruppe 1 ruht mit diesem Stand; der Lauf jenseits 10^22 läuft zu Ende.
+- Laut Justus (25.11.): Gruppe 1 ruht mit diesem Stand.
+
+### Extern (bbe, Stand 13.11.) [AB]
+
+- Lean-Kern: Haltekonfigurationen, 10^4 Schritte, Umkodier-Durchläufe (114: 6 Regeln, 367: 8, 378:
+  Verschieberegeln); native: 10^7 Schritte. Gerechnet: 10^9 (alle), 114 beschleunigt bis 1,29·10^10.
+- Vermutet: „jeder Eintrag wächst je Zyklus um 2“. Gleiche Tabelle mit drei Starts erkennt bbe auch.
+- **Wir sind weiter** (Rocq-Beschleunigung, Regel F, 10^12 lückenlos, 10^24/10^25 bedingt). Kein Widerspruch.
 
 ## M5-Gruppe: 318, 518, 322, 274
 
@@ -109,12 +131,24 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
   die fehlende Umbau-Abbildung [M2 §5].
 - Justus hat die M5-Rückführung in #bb6 gepostet (laut Projektgedächtnis, 25.11.).
 
-## 396 mit 88, 312, 449 (Familie F12)
+### Extern (bbe, Stand 8.11.) [AB]
+
+- Lean-Kern: Durchläufe je Maschine; **318/518 im Gleichschritt bis zum ersten Bruch** (`Twin.lean`).
+  Gerechnet: kein Halt bis 2·10^10 (318), 10^11 (322, 518), 10^9 (274).
+- bbe kennt die Paare 318~322, 274~518 (gleiche Tabelle), 318~518 (gleicher Lauf), 322~274 (gleiche Bänder),
+  aber nicht die gemeinsame 5-Zustands-Maschine M5. Unsere Umbau-Verfolgung bis 8·10^14 hat bbe nicht.
+- Kein Widerspruch. Nicht abgeglichen: unser Umbau „ab A bei 29.754.240“ gegen bbe „Schritt 29.787.121“
+  (vermutlich anderer Zeitpunkt definiert).
+
+## 396 mit 110, 587 und 88, 312, 449 (Familie Besuchsgesetz)
 
 ### Bewiesen (Rocq)
 
-Von uns nichts. Extern: busycoq-PR #59 (Kopf `f23281d`, offen, **nicht gemergt**, von uns nicht gebaut)
-beweist laut Titel, dass 88, 312 und 449 halten [396 §1], [DA].
+Von uns: **Rückführung** `halts tm c0 <-> W.trifft111 W.start` für 396 (`rocq/rueckfuehrung_396.v`, axiomfrei,
+pruefen-Lauf 45700149762 in beiden Images, PR 21). Umformulierung, **keine Entscheidung** [RF].
+
+Extern: busycoq #59 (Kopf `f23281d`) ist seit 26.11. in BB6 gemergt (`1ff6eba`): **88, 312, 449 halten**
+(Runde 161.211, Block `1011`). Von uns nicht gebaut; bbe hat es mit Coq 8.20.1 gebaut [AB].
 
 Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 - Nach dem Zusammenlegen des Haltezustands sind die Kerne von 88, 312, 396, 449 gleich **bis auf E1**;
@@ -129,18 +163,33 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
 | 88 und 396 rundengleich, nicht schrittgleich | Runde 27 (rund 1,57 Mio. Schritte) direkt simuliert | 3 Wege zum Rundenmodell zeilengleich (`direkt.c` 27 Runden, `naiv.py` 34 Runden, `runde.c`) | [396 §4, §5] |
 | 88 hält in Runde 161.211, wie in der Rechnung von PR #59 | – | 1 eigenes (`runde.c`), Run 45676623019 | [396 §4] |
 | 396: kein Halt, nur zwei 1011-Ereignisse (Runden 161.211 und 194.647) | Runde 260.000 (Wort 1.615.087 Zellen) | 1 für den langen Lauf (`runde.c`), Run 45676623019 | [396 §4] |
-| Familie des Besuchsgesetzes unter allen 608 (gespiegelt, alle Zustandspaare): genau 88, **110**, 312, 396, 449, 587; 110 = 396 bis auf `V(111x)`, rundengleich bis zum ersten 111-Besuch | alle Wörter bis Länge 12; 27 Runden direkt | 2 (`suche_a.py`, `suche_b.c`), zeilengleich | [FB] |
+| Familie des Besuchsgesetzes unter allen 608 (gespiegelt, alle Zustandspaare): genau 88, 110, 312, 396, 449, 587; 110 = 396 bis auf `V(111x)`, rundengleich bis zum ersten 111-Besuch. **Nicht erfasst** (andere Lage oder Regel): 123, 223 (um eine Zelle verschoben, 123 mit zweiter Besuchsform; halten), 471 (`V(110x) = 001x`; hält nicht) | alle Wörter bis Länge 12; 27 Runden direkt | 2 (`suche_a.py`, `suche_b.c`), zeilengleich; Nachtrag 123/223/471 Stichprobe, 1 Programm | [FB], [AB §2] |
+| 396: kein Halt, nie `111`, nie `011`; `11` am Rundenende nur in 161.210 und 194.646, danach je ein 1011-Ereignis | Runde 748.162 (A), bis 573.850 zeilengleich mit B | 2 (`runde.c`, `runde_b.cpp`), Run 45688978145 | [T2] |
 
-### Läuft
+### Extern (bbe, Stand 24.11.) [AB §2, §3]
 
-- Thread „396, Teil 2“ (Branch `claude/project-thread-pzp4s2`, noch nicht gemergt): Rückwärts-Analyse und ein
-  zweites Programm `runde_b.cpp`; Actions-Run 45688978145 (`lauf_396b`) läuft. Endergebnis fehlt noch.
+- **Lean-Kern** (für 396 und 110): Besuchsgesetz und Rundenform (seit 13.11.); Wortrechnung = Maschine, beide
+  Richtungen (`halts_of_run`, `not_halts_of_run`); `junk_offset1` (harmlos), `junk_offset2_halts` (Halt);
+  Defizitform des Zählers (2^e − c). **native:** 10^7 Schritte, erste 2.000 Runden.
+- **Gerechnet:** 10^11 Schritte direkt; **bis Runde 3.000.000 kein `111`** (ein Programm, Teilabgleiche);
+  14 junk-Ereignisse, alle harmlos, alle nach einem Verdoppler.
+- **Gefahrenbedingung:** Halt nur, wenn ein junk mit Versatz 2 getroffen wird; das braucht ein ungerades Defizit
+  beim Eintritt in den letzten `000`-Block.
+- **Keine Invariante nur über das Wortende:** Mit beliebigem Zähler erreichen die letzten 48 Zellen `111` in 2–3
+  Runden; ein bis zwei Besuche mehr führen etwa alle 3.500 Runden zu `111`. Für 587 findet SAT kein Zertifikat
+  mit bis zu 7 Zuständen (auch nicht für das Gesetz von 110).
+- 587 zusätzlich in Lean: `1011` und `111` nur am rechten Wortende; Lauf bis Runde 4.000.000.
+- **Unsere Zahlen stimmen überein** (Ereignisrunden, Wortlänge je Runde). Was nur wir haben: die Rückführung in
+  Rocq auf busycoqs Definitionen und das zweite unabhängige Rundenprogramm.
 
 ### Offen
 
-- Ob 396 hält, also ob `111` je entsteht: **offen** [396 §6].
-- 396 hat weiterhin keinen PR in busycoq, keine Datei in cryptids [DA].
+- Ob 396 hält, also ob `111` je entsteht: **offen** [T2], [AB].
+- 396, 110, 587 haben weiterhin keinen PR in busycoq; nur 587 hat eine Datei in cryptids [DA], [AB].
 - Der Halte-Beweis von PR #59 ist **nicht** auf 396 übertragbar [396].
+- Nächster Kandidat als Vorlage: busycoq #55 (471, `1011 → 0001` wie 396, hält nicht); ob die Technik auf 396
+  passt, ist nicht geprüft [AB §2]. Die Beweisidee „kein Besuch endet auf einer 0 direkt vor 11“ ruht (Justus
+  26.11.); laut bbe reicht eine Aussage nur über das Wortende dafür nicht [AB §3].
 
 ## Verwandtschaftskarte (alle 608 Holdouts)
 
@@ -182,9 +231,13 @@ Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte
 | M5: Links-Rekord ab C bei 29.550.874 als Umbau gelesen | kein großer Umbau; echte Umbauten nur 87.823 und 874.896.314 (ab C) | [M1] → [M2 §2, §3] |
 | M5: „bis 10^11 kein weiterer Umbau“ | bis 8·10^14 keiner | [M1] → [M2] |
 | Zyklus-Läufe ohne int64-Schutz (Runs 45675033053, 45682765314) | jenseits 10^24 nicht verwenden; Schutz seit Commit `509fb21` | [VB §5, §6] |
+| busycoq BB6 „unverändert auf `33209bc7`“, PR #59 „offen, nicht gemergt“ | seit 26.11. `9c078ca`, #59 und #55 gemergt; 88, 312, 449, 471 upstream entschieden | [DA] → [AB §1] |
+| 110 „neu“ in der Familie Besuchsgesetz | bei bbe seit 13.11. bekannt, mit Lean-Beweis des Gesetzes | [FB] → [AB §2] |
+| Familie „genau 6“, „keine weitere Suche nötig“ | gilt nur für die wörtliche Lage; 123, 223 (verschoben) und 471 (andere `110`-Regel) sind Verwandte, alle drei entschieden | [FB] → [AB §2] |
+| 396-Ergebnis (Teil 2) als eigener Befund | unabhängige Bestätigung von bbe (Stand 24.11.), keine Neuheit | [T2] → [AB] |
 
 ## Was dieser Stand nicht enthält
 
-- Endergebnisse von „396, Teil 2“ und vom Lauf jenseits 10^22 (beide laufen).
-- Den Thread „Invariante gegen K(C)“ (Nebenstrang, noch kein Bericht).
-- Status aus Discord (#bb6); nur Justus prüft dort, wer woran arbeitet.
+- Den Thread „Invariante gegen K(C)“ (PR 19) nur indirekt (Regeln des Phasen-Automaten weiter empirisch).
+- Den Stand von cryptids nach dem 25.11. (`f01ee56`) und Lean-PRs, die nicht in busycoq liegen.
+- Inhalte aus Discord. Statt „erst in Discord fragen“ gilt jetzt: busycoq und bbe per git prüfen (CLAUDE.md).

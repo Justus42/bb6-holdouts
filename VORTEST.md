@@ -133,7 +133,7 @@ Die Image-Digests wurden über die Docker-Registry-API ermittelt, nicht geraten.
   - je 1 in Shift-overflow bouncer counter und Skelet 1-like Class 1
 
   „Ohne PR“ ist streng ausgelegt: Auch nur erwähnende oder geschlossene PRs schließen aus.
-- **Discord-Angaben** wurden nicht verwendet, weil sie unvollständig sind. Ob jemand an einer Maschine arbeitet, muss direkt in #bb6 geprüft werden.
+- **Discord-Angaben** wurden nicht verwendet, weil sie unvollständig sind. Ob jemand an einer Maschine arbeitet, muss direkt in #bb6 geprüft werden. (Ersetzt am 26.11.2026: stattdessen busycoq und busy-beaver-explorer per git prüfen, siehe CLAUDE.md.)
 - Das ist **nur eine Auswertung**; es wird nichts beansprucht.
 
 ## Block 3 – zwei unabhängige Simulatoren (BB(5))
@@ -266,4 +266,4 @@ Bedingungen für die nächste Phase:
    - coqchk ist für Beweise mit großen VM- oder nativen Casts in dieser Form zu langsam: VM-Image über 20 min allein in `TM1.halt`.
    - Ob coqchk mit dem nativen Image oder mit mehr Zeit durchläuft, ist **offen**. Das wäre ein eigener Actions-Lauf ohne das 5-min-Kriterium und mit einem großzügigen Limit, z. B. 60 min (nur Vorschlag).
 3. **Umgebung:** Das Setup-Skript und der SessionStart-Hook oben würden die manuellen `dockerd`-Starts und Pulls ersetzen. Ohne die drei Domains muss weiterhin jemand Datenstände von Hand liefern.
-4. **Kandidaten:** Die 75 Einträge in `data/kandidaten.csv` sind nur eine Auswertung. Vor jeder Arbeit an einer Maschine muss in #bb6 geprüft werden, ob jemand anderes daran arbeitet; die Discord-Daten in der Datei taugen dafür nicht.
+4. **Kandidaten:** Die 75 Einträge in `data/kandidaten.csv` sind nur eine Auswertung. Vor jeder Arbeit an einer Maschine sind busycoq (BB6 und offene PRs) und busy-beaver-explorer per git zu prüfen (Regel seit 26.11.2026, CLAUDE.md; vorher: in #bb6 fragen); die Discord-Daten in der Datei taugen dafür nicht.
