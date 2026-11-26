@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -25,7 +25,8 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [GR] `gruppe1_groesse.md` (PR 16) · [VB] `gruppe1_verboten.md` (PR 17) · [INV] `invarianten.md` (PR 15) ·
 [M1] `318_518.md` (PR 4) · [M2] `318_518_teil2.md` (PR 5) · [396] `396.md` (PR 13) ·
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
-[RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer).
+[RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
+[M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -130,6 +131,7 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 | Beobachtung | Prüfgrenze | Programme | Quelle |
 |---|---|---|---|
 | Kein Haltemuster (`B> 1 1`, `C> 1 1`) | 10^10 Schritte (Läufe ab A und ab C) | 2 (`m5sim.c`, `zweitpruefung.go`) | [M1 §3] |
+| Kein Haltemuster (`B> 1 1`, `C> 1 1`), jeder Übergang gezählt | **8·10^14** (Läufe ab A, C, D) | bis 10^10 drei (`blocksim.c`, `zweitzaehlung.go`, `m5sim paare`); bis 10^11 dazu die direkte Simulation der Prüfstelle (Code nicht im Repo); 10^11 bis 8·10^14 zwei Programme, **ein Prinzip** (Sprünge bei exakt wiederholter Lage, Satz in [M3 §2]); Kontrollen 9/9, darunter ein eingebautes Haltemuster | [M3] |
 | 318, 518 und M5 im Gleichschritt | 10^9 | 1 (`m5sim gleich`) | [M1 §1] |
 | Zählerregeln 1 bis 3 (Binärzähler aus Ziffern Z/D1/D2/D3, Trenner W) | 3·10^8 | Zyklusdateien 2 Programme bytegleich, Regelprüfung nur Python | [M1 §2] |
 | Lauf ab A trifft Lauf ab C nicht | 3·10^8 (Zyklusbeginne) | 1 | [M1 §1] |
@@ -139,7 +141,7 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 
 ### Offen
 
-- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Jenseits 10^10 wurde das Haltemuster nicht geprüft [M2 §4].
+- Ob M5 bei `B> 1 1` / `C> 1 1` ankommt: **offen**. Bis 8·10^14 kommt es nicht vor [M3]; darüber nicht geprüft.
 - Wie ein Umbau die neuen Ziffern setzt (Lage und Phase): keine Formel gefunden, daher **kein Beweisplan** [M2 §4].
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
@@ -152,8 +154,11 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
   Gerechnet: kein Halt bis 2·10^10 (318), 10^11 (322, 518), 10^9 (274).
 - bbe kennt die Paare 318~322, 274~518 (gleiche Tabelle), 318~518 (gleicher Lauf), 322~274 (gleiche Bänder),
   aber nicht die gemeinsame 5-Zustands-Maschine M5. Unsere Umbau-Verfolgung bis 8·10^14 hat bbe nicht.
-- Kein Widerspruch. Nicht abgeglichen: unser Umbau „ab A bei 29.754.240“ gegen bbe „Schritt 29.787.121“
-  (vermutlich anderer Zeitpunkt definiert).
+- Kein Widerspruch. Umbau „ab A bei 29.754.240“ gegen bbe „Schritt 29.787.121“: derselbe Umbau; 29.754.240 ist
+  der Beginn des Zyklus, bei 29.787.121 erreicht der Kopf in C das linke Ende (direkt nachgerechnet) [M3 §1a].
+- `Twin.lean` (Gleichschritt 318/518, Paare A-A, B-B, C-C, D-D, E-A, F-E, F-F) passt zu unserer M5-Zuordnung [M3 §1a].
+- Bei 10^9 stimmen unsere Bänder ab C und D mit bbe überein (47.247 Zellen, 30.462 bzw. 30.463 Einsen) [M3 §1a].
+- bbe-Ordner der vier Maschinen unverändert seit 13.11. (274: 24.11.), geprüft bis bbe-Kopf `47856cd8` (Prüfstelle).
 
 ## 396 mit 110, 587 und 88, 312, 449 (Familie Besuchsgesetz)
 
@@ -251,6 +256,8 @@ Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte
 | „x/2 ≥ Listenlänge“ in 24 von 76 Zyklen (Start A) | 19 von 77 mit anderer Abgrenzung; maßgeblich ist die Streuung −64 bis +27 | [G1] → [VL §3] |
 | M5: Links-Rekord ab C bei 29.550.874 als Umbau gelesen | kein großer Umbau; echte Umbauten nur 87.823 und 874.896.314 (ab C) | [M1] → [M2 §2, §3] |
 | M5: „bis 10^11 kein weiterer Umbau“ | bis 8·10^14 keiner | [M1] → [M2] |
+| M5: Haltemuster „jenseits 10^10 nicht geprüft“ | bis 8·10^14 geprüft, kein Vorkommen | [M2 §4] → [M3] |
+| M5: 29.754.240 gegen bbe 29.787.121 „nicht abgeglichen“ | derselbe Umbau, zwei Zeitpunkte | [AB] → [M3 §1a] |
 | Zyklus-Läufe ohne int64-Schutz (Runs 45675033053, 45682765314) | jenseits 10^24 nicht verwenden; Schutz seit Commit `509fb21` | [VB §5, §6] |
 | busycoq BB6 „unverändert auf `33209bc7`“, PR #59 „offen, nicht gemergt“ | seit 26.11. `9c078ca`, #59 und #55 gemergt; 88, 312, 449, 471 upstream entschieden | [DA] → [AB §1] |
 | 110 „neu“ in der Familie Besuchsgesetz | bei bbe seit 13.11. bekannt, mit Lean-Beweis des Gesetzes | [FB] → [AB §2] |
