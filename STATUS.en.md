@@ -62,11 +62,14 @@ Outside source: [GU] slugbird's BB(6) Holdout Guide, as of 3 Nov 2026 (section b
   one folder per holdout with evidence levels. Lean theorems there use bbe's own definitions, not busycoq's;
   "native" means `native_decide`. Per group below under "External (bbe)".
 - **Equivalent strings** (`holdouts.json`, field `aliases`): 14 for our 11 machines (396: 8, 114: 2,
-  110, 274, 318, 322: 1 each; 133, 367, 378, 518, 587: none). External review (26 Nov): no hit in BB6, open PRs
-  or bbe. Our own search (26 Nov afternoon, one program): none in the 53 open PRs (lines added against BB6) or in
-  bbe (head `923e0537`). In BB6, 110, 114, 318 and all eight of 396 appear only in the equivalence proofs
+  110, 274, 318, 322: 1 each; 133, 367, 378, 518, 587: none). Our own search (26 Nov afternoon, one program):
+  none in the 53 open PRs (lines added against BB6) or in bbe (head `923e0537`). In BB6, 11 of the 14 appear:
+  one each of 110, 114 (`1RB1RF_1RC0LD_…`; the second one of 114 appears nowhere) and 318, and all eight of 396,
+  only in the equivalence proofs
   `Eqv_v2.v`, `Eqv_v3.v`, `Eqv_Misc.v` (lemma `eqv`, since 30 Oct; the list of 608 is built from them), in no
   decision proof. Controls fire: 581 in PR 76, the 396 string in bbe.
+  The external review had reported "no hit in BB6" because its search left out the Eqv files; it has confirmed
+  the finding (26 Nov, 15:55).
 - From now on (CLAUDE.md): before any work on a machine, check busycoq, bbe, `holdouts.json` including the
   equivalent strings, slugbird's guide and the wiki; the Discord rule is dropped.
 
@@ -91,12 +94,13 @@ says it was written by AI agents (Claude, "Heron"). Its step counts match the `s
 - **133** ("Skelet 1-like Class 1"): "Reported by others", i.e. others have worked on it or discussed it; no
   step count given.
 - **385**: the guide (3 Nov) names "open PR 44, which proves non-halting". Outdated: PR 44 is now in BB6, but
-  without 385. Its last commit `c94a67d` (Alk, 5 Nov) removes the proof again (432 lines; per the external
-  review almost only data, an automaton with 11,253 states, not recounted by us). We do not pursue 385 (no
+  without 385. Its last commit `c94a67d` (Alk, 5 Nov) removes the proof again (432 lines; per the commit
+  message "mostly data (an automaton with 11,253 states)", not recounted by us). We do not pursue 385 (no
   porting, Justus 26 Nov).
 
 **Consequence:** we now claim "we are further" only against bbe. Against slugbird it is not supported: the guide
-simulated Group 1 and M5 further than we did, and names the rules of the 396 family as proved in Rocq (where:
+simulated Group 1 to 1.6·10^14 (114) and 2·10^14 (367, 378), we have 10^12 gap-free and 10^24/10^25 only
+conditionally; it simulated M5 to 10^17/10^20, we to 8·10^14; and names the rules of the 396 family as proved in Rocq (where:
 not checked by us).
 
 ## Group 1: 114, 367, 378 (one table, three starts)
@@ -150,7 +154,8 @@ sufficient [VB, section 1.2]. Confirmed externally by Justus.
   native: 10^7 steps. Computed: 10^9 (all), 114 accelerated to 1.29·10^10.
 - Conjectured: "every entry grows by 2 per cycle". bbe also sees the same table with three starts.
 - **Against bbe we are further** (Rocq acceleration, rule F, 10^12 gap-free, 10^24/10^25 conditional). No
-  contradiction. Not against slugbird: halting only from the left end is described there, simulated to 2·10^14 [GU].
+  contradiction. Not supported against slugbird: halting only from the left end is described there, simulated 1.6·10^14
+  (114) to 2·10^14 (367, 378); we have 10^12 gap-free, 10^24/10^25 conditional [GU].
 
 ## M5 group: 318, 518, 322, 274
 
@@ -313,7 +318,7 @@ Nothing. Shown by **table comparison**, two programs (`karte_a.py`, `karte_b.c`,
 | "Our pin stays `33209bc7`" (check section) | pin is `9c078ca` since 26 Nov (PR 27) | external review 26 Nov |
 | bbe 396/110: no `111` up to round 3,000,000, 14 junk events | up to round 4,000,000, 18, all harmless (bbe `195c1340`) | [AB] → external review 26 Nov |
 | "If 396 never halts, 110 never halts" without a label | tested, not proved (law for 110 only tested) | [FB] → external review 26 Nov |
-| "We are further" (Group 1), "only we have" (396) without a reference | only against bbe; slugbird simulated Group 1 and M5 further, 396 rules in Rocq per the guide | [GU], external review 26 Nov |
+| "We are further" (Group 1), "only we have" (396) without a reference | only against bbe; slugbird simulates Group 1 to 1.6–2·10^14 (we: 10^12 gap-free, 10^24/10^25 conditional), M5 to 10^17/10^20, 396 rules in Rocq per the guide | [GU], external review 26 Nov |
 | 385: "open PR 44 proves non-halting" (guide 3 Nov) | PR 44 in BB6 without 385, proof removed on 5 Nov (`c94a67d`, Alk) | external review 26 Nov, checked via git |
 | whether busycoq PRs are open "not visible via git" | visible via `refs/pull/N/merge` (open ones without conflict only, lower bound); 53 on 26 Nov | [DA] → external review 26 Nov |
 

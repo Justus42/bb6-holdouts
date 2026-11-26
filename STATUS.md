@@ -61,11 +61,13 @@ Fremde Quelle: [GU] slugbirds BB(6) Holdout Guide, Stand 3.11.2026 (Abschnitt un
   je Holdout ein Ordner mit Belegstufen. Lean-Sätze dort stehen auf bbes eigenen Definitionen, nicht auf
   busycoqs; „native“ heißt `native_decide`. Je Gruppe unten unter „Extern (bbe)“.
 - **Gleichwertige Strings** (`holdouts.json`, Feld `aliases`): 14 für unsere 11 Maschinen (396: 8, 114: 2,
-  110, 274, 318, 322: je 1; 133, 367, 378, 518, 587: keine). Prüfstelle (26.11.): kein Treffer in BB6, offenen
-  PRs oder bbe. Eigene Nachsuche (26.11. nachmittags, ein Programm): in den 53 offenen PRs (hinzugefügte Zeilen
-  gegen BB6) und in bbe (Kopf `923e0537`) keiner. In BB6 stehen 110, 114, 318 und alle acht von 396 nur in den
-  Äquivalenzbeweisen `Eqv_v2.v`, `Eqv_v3.v`, `Eqv_Misc.v` (Lemma `eqv`, seit 30.10.; daraus ist die Liste der
+  110, 274, 318, 322: je 1; 133, 367, 378, 518, 587: keine). Eigene Nachsuche (26.11. nachmittags, ein
+  Programm): in den 53 offenen PRs (hinzugefügte Zeilen gegen BB6) und in bbe (Kopf `923e0537`) keiner. In BB6
+  stehen 11 der 14: je einer von 110, 114 (`1RB1RF_1RC0LD_…`; der zweite von 114 steht nirgends) und 318 sowie
+  alle acht von 396, und zwar nur in den Äquivalenzbeweisen `Eqv_v2.v`, `Eqv_v3.v`, `Eqv_Misc.v` (Lemma `eqv`, seit 30.10.; daraus ist die Liste der
   608 gebildet), in keinem Entscheidungsbeweis. Kontrollen schlagen an: 581 in PR 76, der 396-String in bbe.
+  Die Prüfstelle hatte „kein Treffer in BB6“ gemeldet, weil ihre Suche die Eqv-Dateien ausklammerte; sie hat den
+  Befund bestätigt (26.11., 15:55).
 - Ab jetzt gilt (CLAUDE.md): vor jeder Arbeit an einer Maschine busycoq, bbe, `holdouts.json` samt
   gleichwertigen Strings, slugbirds Guide und das Wiki prüfen; die Discord-Regel entfällt.
 
@@ -91,11 +93,12 @@ eigener Fußzeile von KI-Agenten (Claude, „Heron“) geschrieben. Ihre Schritt
   Schrittzahl angegeben.
 - **385**: Der Guide (3.11.) nennt „offenen PR 44, der Nicht-Halt beweist“. Überholt: PR 44 steckt inzwischen in
   BB6, aber ohne 385. Sein letzter Commit `c94a67d` (Alk, 5.11.) entfernt den Beweis wieder (432 Zeilen; laut
-  Prüfstelle fast nur Daten, Automat mit 11.253 Zuständen, von uns nicht nachgezählt). 385 verfolgen wir nicht
+  Commit-Nachricht „mostly data (an automaton with 11,253 states)“, von uns nicht nachgezählt). 385 verfolgen wir nicht
   (keine Portierung, Justus 26.11.).
 
 **Folge:** „Wir sind weiter“ behaupten wir nur noch gegenüber bbe. Gegenüber slugbird ist es nicht belegt:
-Gruppe 1 und M5 hat der Guide weiter simuliert als wir, die Regeln der 396-Familie sind dort als in Rocq bewiesen
+Gruppe 1 hat der Guide bis 1,6·10^14 (114) bzw. 2·10^14 (367, 378) simuliert, wir haben 10^12 lückenlos und
+10^24/10^25 nur bedingt; M5 hat der Guide bis 10^17/10^20 simuliert, wir bis 8·10^14; die Regeln der 396-Familie sind dort als in Rocq bewiesen
 genannt (wo, von uns nicht geprüft).
 
 ## Gruppe 1: 114, 367, 378 (eine Tabelle, drei Starts)
@@ -150,7 +153,8 @@ hinreichend [VB, Abschnitt 1.2]. Von Justus extern bestätigt.
   Verschieberegeln); native: 10^7 Schritte. Gerechnet: 10^9 (alle), 114 beschleunigt bis 1,29·10^10.
 - Vermutet: „jeder Eintrag wächst je Zyklus um 2“. Gleiche Tabelle mit drei Starts erkennt bbe auch.
 - **Gegenüber bbe sind wir weiter** (Rocq-Beschleunigung, Regel F, 10^12 lückenlos, 10^24/10^25 bedingt). Kein
-  Widerspruch. Gegenüber slugbird nicht: dort Halt nur vom linken Ende schon beschrieben, simuliert bis 2·10^14 [GU].
+  Widerspruch. Gegenüber slugbird nicht belegt: dort Halt nur vom linken Ende schon beschrieben, simuliert 1,6·10^14 (114)
+  bis 2·10^14 (367, 378); wir 10^12 lückenlos, 10^24/10^25 bedingt [GU].
 
 ## M5-Gruppe: 318, 518, 322, 274
 
@@ -313,7 +317,7 @@ Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte
 | „Unser Pin bleibt `33209bc7`“ (Abschnitt Abgleich) | Pin ist seit 26.11. `9c078ca` (PR 27) | Prüfstelle 26.11. |
 | bbe 396/110: kein `111` bis Runde 3.000.000, 14 junk-Ereignisse | bis Runde 4.000.000, 18, alle harmlos (bbe `195c1340`) | [AB] → Prüfstelle 26.11. |
 | „Hält 396 nie, dann hält auch 110 nie“ ohne Kennzeichnung | getestet, nicht bewiesen (Gesetz für 110 nur getestet) | [FB] → Prüfstelle 26.11. |
-| „Wir sind weiter“ (Gruppe 1), „Was nur wir haben“ (396) ohne Bezug | nur gegenüber bbe; slugbird hat Gruppe 1 und M5 weiter simuliert, die 396-Regeln laut Guide in Rocq | [GU], Prüfstelle 26.11. |
+| „Wir sind weiter“ (Gruppe 1), „Was nur wir haben“ (396) ohne Bezug | nur gegenüber bbe; slugbird simuliert Gruppe 1 bis 1,6–2·10^14 (wir 10^12 lückenlos, 10^24/10^25 bedingt), M5 bis 10^17/10^20, die 396-Regeln laut Guide in Rocq | [GU], Prüfstelle 26.11. |
 | 385: „offener PR 44 beweist Nicht-Halt“ (Guide 3.11.) | PR 44 in BB6 ohne 385, Beweis am 5.11. entfernt (`c94a67d`, Alk) | Prüfstelle 26.11., per git nachgesehen |
 | Ob busycoq-PRs offen sind, „per git nicht sichtbar“ | sichtbar über `refs/pull/N/merge` (nur offene ohne Konflikt, Untergrenze); 53 am 26.11. | [DA] → Prüfstelle 26.11. |
 
