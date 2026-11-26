@@ -30,13 +30,15 @@
  *   k wird so gewaehlt, dass der naechste Pruefpunkt nicht ueberschritten wird; der Rest laeuft
  *   in Einzelschritten. Ein Halteuebergang innerhalb der Wiederholung haette E' verhindert.
  *
- * Aufruf: blocksim <tm> <start> <pruefpunkt1> [<pruefpunkt2> ...] [-nosprung] [-fehler] [-anteil]
+ * Aufruf: blocksim <tm> <start> <pruefpunkt1> [<pruefpunkt2> ...] [-nosprung] [-fehler] [-anteil] [-kipp S d k]
  *   Ausgabe je Pruefpunkt: Schritt, Paare (alle, die vorkommen), Zahl der Spruenge und der darin
  *   verbuchten Schritte, Band (Laenge ohne Randnullen, CRC-32 der 0/1-Zeichen, Kopf relativ zur
  *   ersten 1, Zustand).
  *   -nosprung: ohne Beschleunigung (zum Abgleich).  -fehler: Negativkontrolle, verbucht in einem
  *   Sprung die Paare nur (k-1)-mal.  -anteil: zusaetzlich je Paar, wie viele davon in Spruengen
  *   verbucht wurden ("im Sprung ...", nur zur Anzeige).
+ *   -kipp S d k: Negativkontrolle K8, nach genau S Schritten die k Zellen Kopf+d, Kopf+d+8, ... umdrehen
+ *   (kuenstlich eingebautes Haltemuster); S wird zugleich Pruefpunkt.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,6 +116,7 @@ typedef struct {
 static Moment ML, MR;
 
 static int sprung_aus = 0, fehler = 0;
+static int64_t kippS = -1, kippD, kippK; static int gekippt = 0;
 
 static int gleich(const Moment *m) {
   return m->gueltig && m->flen == flen && m->kopf == kopf && m->zst == zst && m->vorher == vorher &&
@@ -198,21 +201,46 @@ static void crcinit(void) {
   }
 }
 
-static void bericht(void) {
-  /* Band ausbreiten: L von unten, Fenster, R von oben */
+/* Band ausbreiten: L von unten, Fenster, R von oben. Liefert Feld, Laenge, Kopfstelle. */
+static unsigned char *ausbreiten(int64_t *laenge, int64_t *kpos) {
   int64_t n = flen;
   for (long i = 0; i < L.n; i++) n += L.a[i].c * BS;
   for (long i = 0; i < R.n; i++) n += R.a[i].c * BS;
   unsigned char *t = malloc(n);
-  int64_t p = 0, kpos;
+  int64_t p = 0;
   for (long i = 0; i < L.n; i++) for (int64_t c = 0; c < L.a[i].c; c++) { block_ein(t + p, L.a[i].b); p += BS; }
-  memcpy(t + p, F, flen); kpos = p + kopf; p += flen;
+  memcpy(t + p, F, flen); *kpos = p + kopf; p += flen;
   for (long i = R.n - 1; i >= 0; i--) for (int64_t c = 0; c < R.a[i].c; c++) { block_ein(t + p, R.a[i].b); p += BS; }
-  int64_t a = 0, e = n - 1;
+  *laenge = n;
+  return t;
+}
+
+/* Negativkontrolle K8: k Zellen Kopf+d, Kopf+d+8, ... umdrehen; Band danach neu in Bloecke fassen. */
+static void kippe(int64_t d, int64_t k) {
+  int64_t n, kpos;
+  unsigned char *t = ausbreiten(&n, &kpos);
+  for (int64_t j = 0; j < k; j++) {
+    int64_t q = kpos + d + 8 * j;
+    if (q < 0 || q >= n) { fprintf(stderr, "kippe: Zelle ausserhalb des Bandes\n"); exit(2); }
+    t[q] ^= 1;
+  }
+  int64_t l0 = kpos - kopf, r0 = l0 + flen;
+  L.n = 0; R.n = 0;
+  for (int64_t q = 0; q < l0; q += BS) st_push(&L, block_aus(t + q), 1);
+  memcpy(F, t + l0, flen);
+  for (int64_t q = n - BS; q >= r0; q -= BS) st_push(&R, block_aus(t + q), 1);
+  ML.gueltig = MR.gueltig = 0;
+  free(t);
+}
+
+static void bericht(void) {
+  int64_t n, kpos;
+  unsigned char *t = ausbreiten(&n, &kpos);
+  int64_t a = 0, e = n - 1, eins = 0;
   while (a < n && !t[a]) a++;
   while (e >= a && !t[e]) e--;
   uint32_t c = 0xFFFFFFFFU;
-  for (int64_t q = a; q <= e; q++) c = crctab[(c ^ ('0' + t[q])) & 0xFF] ^ (c >> 8);
+  for (int64_t q = a; q <= e; q++) { c = crctab[(c ^ ('0' + t[q])) & 0xFF] ^ (c >> 8); eins += t[q]; }
   c ^= 0xFFFFFFFFU;
   printf("Schritt %lld%s\n", (long long)schritt, halt ? " HALT" : "");
   for (int x = 0; x < 16; x++)
@@ -223,7 +251,8 @@ static void bericht(void) {
     for (int x = 0; x < 16; x++)
       for (int y = 0; y < 16; y++)
         if (sprungpaar[x][y]) printf("  im Sprung %c%d %c%d %lld\n", 'A' + x / 2, x % 2, 'A' + y / 2, y % 2, (long long)sprungpaar[x][y]);
-  printf("  Band %lld Zellen, CRC %u, Kopf %lld, Zustand %c\n", (long long)(e - a + 1), c, (long long)(kpos - a), 'A' + zst);
+  printf("  Band %lld Zellen, %lld Einsen, CRC %u, Kopf %lld, Zustand %c\n", (long long)(e - a + 1), (long long)eins, c,
+         (long long)(kpos - a), 'A' + zst);
   fflush(stdout);
   free(t);
 }
@@ -238,8 +267,14 @@ int main(int argc, char **argv) {
     if (!strcmp(argv[i], "-nosprung")) sprung_aus = 1;
     else if (!strcmp(argv[i], "-fehler")) fehler = 1;
     else if (!strcmp(argv[i], "-anteil")) anteil = 1;
+    else if (!strcmp(argv[i], "-kipp") && i + 3 < argc) {
+      kippS = (int64_t)strtod(argv[i + 1], NULL); kippD = atoll(argv[i + 2]); kippK = atoll(argv[i + 3]); i += 3;
+      ziele[nz++] = kippS;
+    }
     else ziele[nz++] = (int64_t)strtod(argv[i], NULL);
   }
+  for (int i = 1; i < nz; i++)                 /* Pruefpunkte aufsteigend */
+    for (int j = i; j > 0 && ziele[j] < ziele[j - 1]; j--) { int64_t x = ziele[j]; ziele[j] = ziele[j - 1]; ziele[j - 1] = x; }
   flen = 2 * BS + 1; memset(F, 0, sizeof F); kopf = BS; vorher = -1;
   for (int z = 0; z < nz && !halt; z++) {
     int64_t ziel = ziele[z];
@@ -256,6 +291,7 @@ int main(int argc, char **argv) {
       ablegen();
     }
     bericht();
+    if (kippS >= 0 && schritt == kippS && !gekippt) { kippe(kippD, kippK); gekippt = 1; }
   }
   return 0;
 }

@@ -49,6 +49,20 @@ B2=1RB1LB_1LA---
 "$BIN/blocksim" $B2 A 100 | grep -q "^Schritt 5 HALT" && "$BIN/zweitzaehlung" $B2 A 100 | grep -q "^Schritt 5 HALT"
 melde $? "K7: BB(2)-Meister $B2: beide Programme melden HALT (5 Uebergaenge, dann Halteuebergang als 6. Schritt)"
 
+# K8: Kuenstlich eingebautes Haltemuster. Nach genau 1e7 Schritten (ab A) werden 200 Zellen im Abstand 8 umgedreht,
+# beginnend 1006 (bzw. 1003) Zellen rechts vom Kopf. Danach entsteht im Durchlauf B1->A1 (bzw. C1->E1).
+# Beide Programme muessen es finden, mit denselben Paarzahlen wie die direkte Simulation (direkt_kipp.c),
+# und zwar auch innerhalb von Spruengen.
+for x in "K8a 1006 B1_A1" "K8b 1003 C1_E1"; do
+  set -- $x; k=$1; d=$2; muster=${3/_/ }
+  "$BIN/blocksim" $M5 A 1.1e7 -kipp 1e7 $d 200 -anteil > $T/p1; "$BIN/zweitzaehlung" $M5 A 1.1e7 -kipp 1e7 $d 200 > $T/p2
+  "$BIN/direkt_kipp" $M5 A 1e7 $d 200 1.1e7 > $T/dk; awk 'NF==3' $T/dk | LC_ALL=C sort > $T/d
+  n=$(awk -v m="$muster" '$1" "$2==m && NF==3{print $3}' $T/d); j=$(grep "im Sprung $muster" $T/p1 | awk '{print $NF}')
+  vor=$(paare $T/p1 10000000 | grep -c "^$muster " || true)
+  diff <(paare $T/p1 11000000) $T/d > /dev/null && diff <(paare $T/p2 11000000) $T/d > /dev/null && [ "${n:-0}" -gt 0 ] && [ "${j:-0}" -gt 0 ] && [ "$vor" = 0 ]
+  melde $? "$k: $muster eingebaut (Kopf+$d, 200 Zellen, bei 1e7): vorher 0, bis 1,1e7 direkt ${n:-0}-mal, $(sed -n 2p $T/dk | sed 's/^e/E/'); Programm 1 und 2 finden es mit allen Paarzahlen gleich direkt; davon in Spruengen verbucht (Programm 1): ${j:-0}"
+done
+
 echo "Kontrollen: $ok OK, $nok NICHT"
 rm -rf $T
 [ $nok = 0 ]

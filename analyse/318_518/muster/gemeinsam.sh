@@ -7,6 +7,7 @@ bauen() {
   gcc -O2 -Wall -o "$BIN/blocksim" "$HIER/blocksim.c"
   (cd "$HIER" && go build -o "$BIN/zweitzaehlung" zweitzaehlung.go)
   gcc -O2 -o "$BIN/m5sim" "$HIER/../m5sim.c"
+  gcc -O2 -Wall -o "$BIN/direkt_kipp" "$HIER/direkt_kipp.c"
 }
 # paare <datei> <schritt>: Paarzeilen des Pruefpunkts <schritt> aus einer Ausgabe von blocksim/zweitzaehlung
 paare() { awk -v s="$2" '$1=="Schritt"{an=($2==s)} an && NF==3 && $1 ~ /^[A-H][01]$/ {print $1, $2, $3}' "$1" | LC_ALL=C sort; }

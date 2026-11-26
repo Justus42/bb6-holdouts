@@ -17,8 +17,9 @@
 // Dann haengt der Abschnitt nur von (Fenster, Kopf, Zustand, letzter Uebergang, X) ab und wiederholt
 // sich exakt, solange X kommt; k Wiederholungen werden mit k*Dauer und k*Paarzuwachs verbucht.
 //
-// Aufruf: zweitzaehlung <tm> <start> <pruefpunkt>... [-nosprung] [-fehler]
+// Aufruf: zweitzaehlung <tm> <start> <pruefpunkt>... [-nosprung] [-fehler] [-kipp S d k]
 // -fehler: Negativkontrolle, springt ohne den Fenstervergleich.
+// -kipp S d k: Negativkontrolle K8, nach genau S Schritten k Zellen Kopf+d, Kopf+d+8, ... umdrehen.
 package main
 
 import (
@@ -26,6 +27,7 @@ import (
 	"fmt"
 	"hash/crc32"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -246,7 +248,8 @@ func (m *maschine) lauf(ziel int64) {
 	}
 }
 
-func (m *maschine) ausgabe(w *bufio.Writer) {
+// band breitet das ganze Band aus; liefert Zellen, Kopfstelle und Laenge des linken Stapels.
+func (m *maschine) band() ([]byte, int, int) {
 	var band []byte
 	for _, l := range m.links.laeufe {
 		z := ausBits(l.bits)
@@ -254,7 +257,8 @@ func (m *maschine) ausgabe(w *bufio.Writer) {
 			band = append(band, z...)
 		}
 	}
-	kpos := len(band) + m.kopf
+	links := len(band)
+	kpos := links + m.kopf
 	band = append(band, m.fenster...)
 	for i := len(m.rechts.laeufe) - 1; i >= 0; i-- {
 		l := m.rechts.laeufe[i]
@@ -263,6 +267,35 @@ func (m *maschine) ausgabe(w *bufio.Writer) {
 			band = append(band, z...)
 		}
 	}
+	return band, kpos, links
+}
+
+// kippen: Negativkontrolle K8. Dreht die k Zellen Kopf+d, Kopf+d+8, ... um und fasst das Band neu.
+func (m *maschine) kippen(d, k int) {
+	band, kpos, links := m.band()
+	for j := 0; j < k; j++ {
+		q := kpos + d + 8*j
+		if q < 0 || q >= len(band) {
+			fmt.Fprintln(os.Stderr, "kippen: Zelle ausserhalb des Bandes")
+			os.Exit(2)
+		}
+		band[q] ^= 1
+	}
+	m.links.laeufe, m.rechts.laeufe = nil, nil
+	for q := 0; q < links; q += blk {
+		m.links.ablegen(zuBits(band[q:q+blk]), 1)
+	}
+	r0 := links + len(m.fenster)
+	copy(m.fenster, band[links:r0])
+	for q := len(band) - blk; q >= r0; q -= blk {
+		m.rechts.ablegen(zuBits(band[q:q+blk]), 1)
+	}
+	m.snap[0].da, m.snap[1].da = false, false
+	m.protokoll = m.protokoll[:0]
+}
+
+func (m *maschine) ausgabe(w *bufio.Writer) {
+	band, kpos, _ := m.band()
 	a, e := 0, len(band)-1
 	for a < len(band) && band[a] == 0 {
 		a++
@@ -271,8 +304,10 @@ func (m *maschine) ausgabe(w *bufio.Writer) {
 		e--
 	}
 	txt := make([]byte, 0, e-a+1)
+	einsen := 0
 	for _, c := range band[a : e+1] {
 		txt = append(txt, '0'+c)
+		einsen += int(c)
 	}
 	h := ""
 	if m.gehalten {
@@ -287,7 +322,7 @@ func (m *maschine) ausgabe(w *bufio.Writer) {
 		}
 	}
 	fmt.Fprintf(w, "  Spruenge %d, darin %d Schritte\n", m.spruenge, m.imSprung)
-	fmt.Fprintf(w, "  Band %d Zellen, CRC %d, Kopf %d, Zustand %c\n", e-a+1, crc32.ChecksumIEEE(txt), kpos-a, 'A'+m.zustand)
+	fmt.Fprintf(w, "  Band %d Zellen, %d Einsen, CRC %d, Kopf %d, Zustand %c\n", e-a+1, einsen, crc32.ChecksumIEEE(txt), kpos-a, 'A'+m.zustand)
 	w.Flush()
 }
 
@@ -300,7 +335,19 @@ func main() {
 	m.fenster = make([]byte, 2*blk+1)
 	m.kopf = blk
 	var ziele []int64
-	for _, a := range os.Args[3:] {
+	kippS, kippD, kippK := int64(-1), 0, 0
+	args := os.Args[3:]
+	for i := 0; i < len(args); i++ {
+		a := args[i]
+		if a == "-kipp" && i+3 < len(args) {
+			f, _ := strconv.ParseFloat(args[i+1], 64)
+			kippS = int64(f)
+			kippD, _ = strconv.Atoi(args[i+2])
+			kippK, _ = strconv.Atoi(args[i+3])
+			ziele = append(ziele, kippS)
+			i += 3
+			continue
+		}
 		if a == "-nosprung" {
 			m.ohneSprung = true
 			continue
@@ -316,10 +363,16 @@ func main() {
 		}
 		ziele = append(ziele, int64(f))
 	}
+	sort.Slice(ziele, func(i, j int) bool { return ziele[i] < ziele[j] })
 	w := bufio.NewWriter(os.Stdout)
+	gekippt := false
 	for _, z := range ziele {
 		m.lauf(z)
 		m.ausgabe(w)
+		if kippS >= 0 && m.schritt == kippS && !gekippt {
+			m.kippen(kippD, kippK)
+			gekippt = true
+		}
 		if m.gehalten {
 			break
 		}

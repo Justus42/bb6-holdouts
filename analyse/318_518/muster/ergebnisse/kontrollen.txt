@@ -5,4 +5,6 @@ OK    K4: Programm 2 mit -fehler weicht bei 1e9 ab (18 Paarzeilen verschieden)
 OK    K5: Vergleich C gegen D bei 1e9 meldet Unterschied (< A0 B1 52657005 < A1 D0 184158339 > A0 B1 52657006 > A1 D0 184158338 < B1 A0 52657005 > B1 A0 52657006 < C1 E0 105251708 < D0 A0 18 < D0 A1 184191290 > C1 E0 105251707 > D0 A0 19 > D0 A1 184191289 < E0 A0 78936232 < E0 A1 52604868 < E1 C0 21166 < E1 C1 26331927 > E0 A0 78936231 > E0 A1 52604869 > E1 C0 21167 > E1 C1 26331926 )
 OK    K6: mit und ohne Spruenge, Programm 1 und 2, 1e7: Paare und Band gleich
 OK    K7: BB(2)-Meister 1RB1LB_1LA---: beide Programme melden HALT (5 Uebergaenge, dann Halteuebergang als 6. Schritt)
-Kontrollen: 7 OK, 0 NICHT
+OK    K8a: B1 A1 eingebaut (Kopf+1006, 200 Zellen, bei 1e7): vorher 0, bis 1,1e7 direkt 200-mal, Erstes B1 A1 bei 10007237, erstes C1 E1 bei -1; Programm 1 und 2 finden es mit allen Paarzahlen gleich direkt; davon in Spruengen verbucht (Programm 1): 198
+OK    K8b: C1 E1 eingebaut (Kopf+1003, 200 Zellen, bei 1e7): vorher 0, bis 1,1e7 direkt 200-mal, Erstes B1 A1 bei -1, erstes C1 E1 bei 10007234; Programm 1 und 2 finden es mit allen Paarzahlen gleich direkt; davon in Spruengen verbucht (Programm 1): 198
+Kontrollen: 9 OK, 0 NICHT
