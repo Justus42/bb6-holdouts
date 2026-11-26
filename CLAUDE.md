@@ -26,6 +26,12 @@ Unbelegtes als unbelegt kennzeichnen.
   1. busycoq: Zweig BB6 und offene PRs, nur lesen per
      `git fetch https://github.com/ccz181078/busycoq "+refs/heads/BB6:refs/remotes/o/BB6" "+refs/pull/*/head:refs/pr/*"`,
      Maschinen-String (mit `---` und `HHH`) im Volltext der gegenüber BB6 geänderten Dateien suchen.
+     Welche PRs offen sind: `git ls-remote https://github.com/ccz181078/busycoq 'refs/pull/*/merge'` zeigt
+     `refs/pull/N/merge` nur für offene PRs ohne Merge-Konflikt, also eine **Untergrenze** (offene PRs mit
+     Konflikt fehlen). Diese per `"+refs/pull/*/merge:refs/prm/*"` holen und **gegen `o/BB6`** vergleichen
+     (`git diff o/BB6 refs/prm/N`, nur hinzugefügte Zeilen), nicht gegen den ersten Elternteil des Merge-Commits:
+     viele Merge-Refs beruhen auf älteren BB6-Ständen und zeigen sonst längst gemergte Zeilen. Im Bericht Zahl
+     der offenen PRs mit Datum nennen und eine Kontrolle angeben, die anschlägt (Stand 26.11.: 53 offen).
   2. busy-beaver-explorer: `git clone https://github.com/fractal-geometry-explorer/busy-beaver-explorer`,
      Ordner `holdouts/<Maschine>/` (`README.md`, `status.json`) und Familienangaben dort lesen.
   Die frühere Regel „erst in Discord fragen, ob jemand daran arbeitet“ entfällt. Vorbild: `analyse/abgleich_bbe.md`.
