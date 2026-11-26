@@ -12,8 +12,13 @@ Programme in `analyse/396/muster/`, Workflow `lauf_muster` (PR 28).
   Fenster aus 256 Zellen wiederholt sich zwischen Runde 194.647 und 1.200.000 kein einziges Mal (1.005.354 Runden).
   Dazu kommen Junk-Ereignisse in unregelmäßigem Abstand. Wächst die Periode mit m so weiter wie bisher, gibt es
   überhaupt kein solches P. Das ist beobachtet, nicht bewiesen.
-- **Neu gegenüber busy-beaver-explorer:** die Zählerstruktur hinter L^k mit ihren Zweierpotenz-Perioden. Ihre
-  Junk-Ereignisse bis Runde 1.042.306 bestätigt unser Lauf unabhängig, Runde für Runde.
+- **Gegenüber busy-beaver-explorer:** Den Binärzähler beschreibt bbe schon, auf Ereignisebene (README: „change
+  counts halve from one digit to the next“). Neu ist bei uns nur die Auswertung je Runde mit der Periodentabelle
+  der Anfangsfenster. Ihre Junk-Ereignisse bis Runde 1.042.306 bestätigt unser Lauf unabhängig, Runde für Runde.
+- **Prüfstelle (26.11., 14:15 Uhr, eigener Code bis Runde 300.000):** bestätigt die Periodentabelle bis m = 208
+  (Periode und Beginn), k = r/2 oder r/2 + 1, die Junk-Runden 161.210 und 194.646 und das Tokenbild bei Runde 200.000
+  (L und Z gleich, H um 1 anders, siehe Zählweise unten). **Nicht nachgerechnet:** 2^18 (m = 216/224) und alles ab
+  Runde 300.001. Diese Teile stützen sich nur auf unsere beiden Programme.
 
 ## Pflichtprüfung vor der Arbeit (CLAUDE.md, 26.11.2026)
 
@@ -65,6 +70,11 @@ eine neue `xstep`-Tabelle mit dem zusätzlichen Stück `1`.
 - **Periodensuche zweimal:** `auswertung.py` (Kandidaten aus Wiederholungen) und `zweit.c` (Rand-Funktion nach
   Knuth-Morris-Pratt), unabhängig geschrieben. Kontrollen an künstlichen Folgen mit bekannter Periode und eine
   Negativkontrolle mit einer gestörten Stelle, beide schlagen wie erwartet an (`kontrollen.sh`).
+
+**Zählweise:** „Zellen“ (Wortlänge, Tokenbild) zählt in diesem Bericht das ganze Wort am Rundenende **mit** den
+führenden „10“, in [T2] (`396_teil2.md`) ohne. Unsere Längen sind deshalb um 2 größer, zum Beispiel Runde 748.162:
+4.648.357 hier, 4.648.355 in [T2]. Die Prüfstelle zerlegt ohne die führenden „10“ und bekommt bei Runde 200.000
+ein H weniger bzw. mehr; L und Z sind gleich.
 
 ### Warum das Anfangsfenster entscheidet
 
