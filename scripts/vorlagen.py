@@ -26,7 +26,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PIN = "33209bc7dc282b38c8cd6be507bfc551fea56108"
+PIN = "9c078caa3443e8027f5d2704e26c7228c1c86aa8"
 JSON_SHA256 = "84e7b8ac2ca92dedeac98bb2bfd5f57dd5aefdef38ee4da302f9c36df2b66810"
 KLASSEN = ["Monotone list", "Shift-overflow structural counter"]
 REF_FILE = "PR_Loop4Mono.v"

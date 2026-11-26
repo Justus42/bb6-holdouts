@@ -8,7 +8,7 @@ on:
 
 env:
   BUSYCOQ_URL: https://github.com/ccz181078/busycoq
-  BUSYCOQ_PIN: 33209bc7dc282b38c8cd6be507bfc551fea56108
+  BUSYCOQ_PIN: 9c078caa3443e8027f5d2704e26c7228c1c86aa8
 
 jobs:
   m284:
