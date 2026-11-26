@@ -20,6 +20,7 @@ Aufruf jeweils aus dem Repo-Wurzelverzeichnis.
 
 Hinweise:
 - `runde396.py` und `fam_check.py` laden `gesetz396.py` aus demselben Ordner.
+- `gesetz396.py`: Die Ausgabezeile „88 mit Halt bei 1011 (wie PR 59) … Abweichungen: 5024“ ist kein Befund. Das Programm setzt für 88 auch Halt bei `111` an, was für 88 nicht gilt. Ohne diese Wörter sind es 0 Abweichungen von 26.320 Wörtern (Angabe der Prüfstelle, 26.11.2026; die Zeile selbst ist im Projekt nachgeprüft, die 0 von 26.320 nicht).
 - Die Zahlen in der letzten Spalte gelten für den Datenstand vom 10.11.2026 (`holdouts.json`) bzw. die Liste vom 30.10.2026.
 - `reduktion.py` und `muster114.py` wurden für diese Ablage neu aufgeschrieben; die ursprünglichen Rechnungen liefen als Einzeiler und kamen zum selben Ergebnis.
 - Nicht abgelegt, weil nur von Hand geführt: die Herleitung des Muster-Satzes für Tabelle 114 und die Durchsicht der Rocq-Dateien.
