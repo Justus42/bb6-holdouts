@@ -1,0 +1,3 @@
+Laeufe 27108  davon U/U-R 24020  Abweichungen je Feld: keine
+Laeufe 27108  davon U/U-R 24020  Abweichungen je Feld: {'klasse': 1}
+Regel-Versaetze -2/+4: Laeufe 27108  davon U/U-R 24020  Abweichungen je Feld: {'D2': 5307, 'D3': 5079, 'suffix': 663, 'abschn': 4017}
