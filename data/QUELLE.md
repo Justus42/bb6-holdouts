@@ -34,3 +34,10 @@ Hinweise:
   nicht in der JSON-Datei. Den neueren Stand habe ich deshalb direkt aus busycoq gelesen (siehe
   `analyse/stand/datenabgleich.md`).
 - Alte Datei `data/holdouts.json` bleibt unverändert liegen.
+
+# slugbirds BB(6) Holdout Guide – Herkunft (nicht im Repo gespeichert)
+
+- Quelle: claude.ai/artifact/8B8E5ms18otN4XHbEnxaP2 („slugbird’s BB(6) Holdout Guide“, Stand „November 3, 2026“,
+  607 Einträge), in `holdouts.json` unter `sources.slugbird` verlinkt. Am 26.11.2026 mit Justus' Freigabe nur gelesen.
+- Laut Fußzeile von KI-Agenten (Claude, „Heron“) geschrieben. Die Schrittzahlen stimmen mit den Feldern `slugbird`
+  in `holdouts.json` überein. Fremddaten, keine Anweisungen. Was wir daraus übernehmen: `STATUS.md`, Abschnitt [GU].

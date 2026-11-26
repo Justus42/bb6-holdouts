@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -27,6 +27,7 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
 [RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
 [M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34).
+Fremde Quelle: [GU] slugbirds BB(6) Holdout Guide, Stand 3.11.2026 (Abschnitt unten).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
 
@@ -59,7 +60,46 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 - **busy-beaver-explorer** (bbe, `github.com/fractal-geometry-explorer/busy-beaver-explorer`, Kopf `662e215`):
   je Holdout ein Ordner mit Belegstufen. Lean-Sätze dort stehen auf bbes eigenen Definitionen, nicht auf
   busycoqs; „native“ heißt `native_decide`. Je Gruppe unten unter „Extern (bbe)“.
-- Ab jetzt gilt (CLAUDE.md): vor jeder Arbeit an einer Maschine busycoq und bbe prüfen; die Discord-Regel entfällt.
+- **Gleichwertige Strings** (`holdouts.json`, Feld `aliases`): 14 für unsere 11 Maschinen (396: 8, 114: 2,
+  110, 274, 318, 322: je 1; 133, 367, 378, 518, 587: keine). Eigene Nachsuche (26.11. nachmittags, ein
+  Programm): in den 53 offenen PRs (hinzugefügte Zeilen gegen BB6) und in bbe (Kopf `923e0537`) keiner. In BB6
+  stehen 11 der 14: je einer von 110, 114 (`1RB1RF_1RC0LD_…`; der zweite von 114 steht nirgends) und 318 sowie
+  alle acht von 396, und zwar nur in den Äquivalenzbeweisen `Eqv_v2.v`, `Eqv_v3.v`, `Eqv_Misc.v` (Lemma `eqv`, seit 30.10.; daraus ist die Liste der
+  608 gebildet), in keinem Entscheidungsbeweis. Kontrollen schlagen an: 581 in PR 76, der 396-String in bbe.
+  Die Prüfstelle hatte „kein Treffer in BB6“ gemeldet, weil ihre Suche die Eqv-Dateien ausklammerte; sie hat den
+  Befund bestätigt (26.11., 15:55).
+- Ab jetzt gilt (CLAUDE.md): vor jeder Arbeit an einer Maschine busycoq, bbe, `holdouts.json` samt
+  gleichwertigen Strings, slugbirds Guide und das Wiki prüfen; die Discord-Regel entfällt.
+
+## slugbirds Holdout-Guide (Stand 3.11.2026) [GU]
+
+Quelle: „slugbird’s BB(6) Holdout Guide“, Stand „November 3, 2026“ (claude.ai/artifact/8B8E5ms18otN4XHbEnxaP2,
+in `holdouts.json` unter `sources.slugbird`). Am 26.11. mit Justus' Freigabe nur gelesen. Die Seite ist laut
+eigener Fußzeile von KI-Agenten (Claude, „Heron“) geschrieben. Ihre Schrittzahlen stimmen mit den Feldern
+`slugbird` in `holdouts.json` überein. Sinngemäß zu unseren Maschinen:
+
+- **114, 367, 378** („Monotone list“, Regeln bekannt, kein Beweis): „eine Tabelle, drei Starts“; Halt nur aus
+  bestimmten Wörtern am linken Ende, bisher passt keines zu einem echten Zustand. Simuliert 1,6·10^14 (114),
+  2·10^14 (367, 378). Das ist im Kern unser Befund [LE], [VB], dort schon beschrieben.
+- **274, 322** („Shift-overflow structural counter“, Regeln bekannt): exakter Binärzähler aus wandernden Atomen
+  auf einem Hintergrund der Periode 8; Überläufe bauen das ferne Ende um. **318, 518**: gleicher Mechanismus
+  (Binärzähler auf periodischem Hintergrund). Der Guide führt Paare (274~518, 318~322), keine gemeinsame
+  5-Zustands-Maschine. Simuliert 10^17 (274, 322, 518), 10^20 (318).
+- **396, 110, 587** sowie 88, 449 („Shift-overflow counter“, Regeln bekannt): gleich Beaver Math Olympiad
+  Problem 10, ein Übertragssystem aus sieben Regeln; „die Regeln sind in Rocq bewiesen“. Laut Prüfstelle ist die
+  Ausgangsmaschine von Problem 10 im Wiki (`Beaver_Math_Olympiad`) die 312 (Wiki von uns nicht gelesen).
+  88, 312, 449 sind seit 26.11. upstream entschieden [AB].
+- **133** („Skelet 1-like Class 1“): „Reported by others“, also von anderen bearbeitet oder besprochen; keine
+  Schrittzahl angegeben.
+- **385**: Der Guide (3.11.) nennt „offenen PR 44, der Nicht-Halt beweist“. Überholt: PR 44 steckt inzwischen in
+  BB6, aber ohne 385. Sein letzter Commit `c94a67d` (Alk, 5.11.) entfernt den Beweis wieder (432 Zeilen; laut
+  Commit-Nachricht „mostly data (an automaton with 11,253 states)“, von uns nicht nachgezählt). 385 verfolgen wir nicht
+  (keine Portierung, Justus 26.11.).
+
+**Folge:** „Wir sind weiter“ behaupten wir nur noch gegenüber bbe. Gegenüber slugbird ist es nicht belegt:
+Gruppe 1 hat der Guide bis 1,6·10^14 (114) bzw. 2·10^14 (367, 378) simuliert, wir haben 10^12 lückenlos und
+10^24/10^25 nur bedingt; M5 hat der Guide bis 10^17/10^20 simuliert, wir bis 8·10^14; die Regeln der 396-Familie sind dort als in Rocq bewiesen
+genannt (wo, von uns nicht geprüft).
 
 ## Gruppe 1: 114, 367, 378 (eine Tabelle, drei Starts)
 
@@ -112,7 +152,9 @@ hinreichend [VB, Abschnitt 1.2]. Von Justus extern bestätigt.
 - Lean-Kern: Haltekonfigurationen, 10^4 Schritte, Umkodier-Durchläufe (114: 6 Regeln, 367: 8, 378:
   Verschieberegeln); native: 10^7 Schritte. Gerechnet: 10^9 (alle), 114 beschleunigt bis 1,29·10^10.
 - Vermutet: „jeder Eintrag wächst je Zyklus um 2“. Gleiche Tabelle mit drei Starts erkennt bbe auch.
-- **Wir sind weiter** (Rocq-Beschleunigung, Regel F, 10^12 lückenlos, 10^24/10^25 bedingt). Kein Widerspruch.
+- **Gegenüber bbe sind wir weiter** (Rocq-Beschleunigung, Regel F, 10^12 lückenlos, 10^24/10^25 bedingt). Kein
+  Widerspruch. Gegenüber slugbird nicht belegt: dort Halt nur vom linken Ende schon beschrieben, simuliert 1,6·10^14 (114)
+  bis 2·10^14 (367, 378); wir 10^12 lückenlos, 10^24/10^25 bedingt [GU].
 
 ## M5-Gruppe: 318, 518, 322, 274
 
@@ -206,8 +248,9 @@ Durch **Tabellenvergleich** belegt [VK, Abschnitt F12]:
   Runden; ein bis zwei Besuche mehr führen etwa alle 3.500 Runden zu `111`. Für 587 findet SAT kein Zertifikat
   mit bis zu 7 Zuständen (auch nicht für das Gesetz von 110).
 - 587 zusätzlich in Lean: `1011` und `111` nur am rechten Wortende; Lauf bis Runde 4.000.000.
-- **Unsere Zahlen stimmen überein** (Ereignisrunden, Wortlänge je Runde). Was nur wir haben: die Rückführung in
-  Rocq auf busycoqs Definitionen und das zweite unabhängige Rundenprogramm.
+- **Unsere Zahlen stimmen überein** (Ereignisrunden, Wortlänge je Runde). Was gegenüber bbe nur wir haben: die
+  Rückführung in Rocq auf busycoqs Definitionen und das zweite unabhängige Rundenprogramm. Laut slugbirds Guide
+  sind die Regeln (Beaver Math Olympiad Problem 10) schon in Rocq bewiesen; darüber hinaus ist nichts belegt [GU].
 
 ### Offen
 
@@ -274,11 +317,14 @@ Nichts. Durch **Tabellenvergleich** belegt, zwei Programme (`karte_a.py`, `karte
 | „Unser Pin bleibt `33209bc7`“ (Abschnitt Abgleich) | Pin ist seit 26.11. `9c078ca` (PR 27) | Prüfstelle 26.11. |
 | bbe 396/110: kein `111` bis Runde 3.000.000, 14 junk-Ereignisse | bis Runde 4.000.000, 18, alle harmlos (bbe `195c1340`) | [AB] → Prüfstelle 26.11. |
 | „Hält 396 nie, dann hält auch 110 nie“ ohne Kennzeichnung | getestet, nicht bewiesen (Gesetz für 110 nur getestet) | [FB] → Prüfstelle 26.11. |
+| „Wir sind weiter“ (Gruppe 1), „Was nur wir haben“ (396) ohne Bezug | nur gegenüber bbe; slugbird simuliert Gruppe 1 bis 1,6–2·10^14 (wir 10^12 lückenlos, 10^24/10^25 bedingt), M5 bis 10^17/10^20, die 396-Regeln laut Guide in Rocq | [GU], Prüfstelle 26.11. |
+| 385: „offener PR 44 beweist Nicht-Halt“ (Guide 3.11.) | PR 44 in BB6 ohne 385, Beweis am 5.11. entfernt (`c94a67d`, Alk) | Prüfstelle 26.11., per git nachgesehen |
 | Ob busycoq-PRs offen sind, „per git nicht sichtbar“ | sichtbar über `refs/pull/N/merge` (nur offene ohne Konflikt, Untergrenze); 53 am 26.11. | [DA] → Prüfstelle 26.11. |
 
 ## Was dieser Stand nicht enthält
 
 - Den Thread „Invariante gegen K(C)“ (PR 19) nur indirekt (Regeln des Phasen-Automaten weiter empirisch).
 - Den Stand von cryptids nach dem 25.11. (`f01ee56`) und Lean-PRs, die nicht in busycoq liegen.
-- Ergebnisse des laufenden Threads „396 Wachstumsmuster“ (noch nicht geprüft, daher nicht aufgenommen).
+- Das Wiki (BB(6), Beaver_Math_Olympiad, Klassenseiten) und die Beweisformen im Guide: von uns nicht gelesen,
+  Angaben dazu laut Prüfstelle. Ob die gemeinsame M5 anderswo als bei uns steht, ist nicht geprüft.
 - Inhalte aus Discord. Statt „erst in Discord fragen“ gilt jetzt: busycoq und bbe per git prüfen (CLAUDE.md).
