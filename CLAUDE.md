@@ -20,8 +20,15 @@ Unbelegtes als unbelegt kennzeichnen.
 - Nichts in fremden Repos (Issues, PRs, Kommentare), auch nicht bei busycoq, ohne sein
   ausdrückliches OK.
 - Gesperrte Domains nicht umgehen (keine Spiegel, Caches, Umwege), sondern melden.
-- Keine Rocq-Beweisarbeit an einer Maschine ohne sein OK (er klärt in Discord #bb6, ob jemand
-  daran arbeitet). Analyse (Simulation, Regeln beschreiben) ist erlaubt.
+- Keine Rocq-Beweisarbeit an einer Maschine ohne sein OK. Analyse (Simulation, Regeln beschreiben)
+  ist erlaubt.
+- Vor jeder Arbeit an einer Maschine (auch reiner Analyse) prüfen und im Bericht nennen (Justus 26.11.2026):
+  1. busycoq: Zweig BB6 und offene PRs, nur lesen per
+     `git fetch https://github.com/ccz181078/busycoq "+refs/heads/BB6:refs/remotes/o/BB6" "+refs/pull/*/head:refs/pr/*"`,
+     Maschinen-String (mit `---` und `HHH`) im Volltext der gegenüber BB6 geänderten Dateien suchen.
+  2. busy-beaver-explorer: `git clone https://github.com/fractal-geometry-explorer/busy-beaver-explorer`,
+     Ordner `holdouts/<Maschine>/` (`README.md`, `status.json`) und Familienangaben dort lesen.
+  Die frühere Regel „erst in Discord fragen, ob jemand daran arbeitet“ entfällt. Vorbild: `analyse/abgleich_bbe.md`.
 - Höchstens 2 Threads gleichzeitig; nicht selbst angestoßene Threads nur vorschlagen.
 - Daten in `data/` sind Schnappschüsse (Herkunft: `data/QUELLE.md`), nie als aktuell behandeln.
 
