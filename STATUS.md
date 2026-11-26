@@ -1,4 +1,4 @@
-# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags; 133 nachgezogen 26.11. nach Run 45817990655; M5 Idee 1 abgeschlossen 26.11. abends)
+# Stand des Projekts (26.11.2026, früh; Abgleich mit busy-beaver-explorer; berichtigt 26.11. mittags nach Prüfstelle; M5 nachgezogen 26.11. nach PR 31; 396 nachgezogen 26.11. nach PR 34; slugbirds Guide nachgetragen 26.11. nachmittags; 133 nachgezogen 26.11. nach Run 45817990655; M5 Idee 1 abgeschlossen 26.11. abends; M5 „nie 11 rechts vom Kopf“ 26.11. abends)
 
 Kurzfassung je Gruppe: was **bewiesen** ist (Rocq, mit Datei und Actions-Lauf), was nur **beobachtet** ist
 (mit Prüfgrenze und Zahl der Programme), was **offen** ist. Jede Zahl verweist auf den Bericht, aus dem sie
@@ -27,7 +27,8 @@ Berichte (alle in `analyse/`, gemergt mit PR in Klammern):
 [VK] `verwandtschaft.md` (PR 12, korrigiert in PR 13) · [DA] `stand/datenabgleich.md` (PR 18) · [FB] `besuchsgesetz.md` (PR 23) ·
 [RF] `396_rueckfuehrung.md` (PR 21) · [T2] `396_teil2.md` (PR 24) · [AB] `abgleich_bbe.md` (Abgleich mit busy-beaver-explorer) ·
 [M3] `318_518_teil3.md` (PR 31, Haltemuster bis 8·10^14) · [WM] `396_wachstumsmuster.md` (PR 34) ·
-[133] `133_581.md` (PR 32 und Folge-PR) · [KB] `318_518_kunst.md` (PR 39 und Folge-PR, künstliche Bänder).
+[133] `133_581.md` (PR 32 und Folge-PR) · [KB] `318_518_kunst.md` (PR 39 und Folge-PR, künstliche Bänder) ·
+[K11] `318_518_kein11.md` (nie „11“ rechts vom Kopf).
 Fremde Quelle: [GU] slugbirds BB(6) Holdout Guide, Stand 3.11.2026 (Abschnitt unten).
 
 ## Datenstand (Abgleich 25.11.2026) [DA]
@@ -184,6 +185,8 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 | Künstliche Bänder (Familie F, 27.108 Bänder): kein Haltemuster | je bis 5 Zyklusbeginne (Median 3.289, höchstens 7,4·10^6 Schritte); Prüfstelle je 2·10^6 Schritte | 2 je Lauf gleich (`kunst.c`, `zweit.go`); dazu Prüfstelle (Code nicht im Repo) | [KB §3, §7.2] |
 | Umbau aus künstlichen Bändern: nie wieder ein Ausgangsrest (10.092 neue Reste), 485 Bänder zerfallen danach nicht mehr in Bausteine; je alter Ziffer genau 2 neue Ziffern (8.229/8.229) | 27.108 Bänder | 2 | [KB §3, §4] |
 | Die drei natürlichen Umbauten aus ihren Vorzuständen exakt reproduziert, Rest `RX` bestätigt | Umbau bis 2,34·10^8 Schritte | 2 (+ CRC aus `m5sim hash`) | [KB §7.1] |
+| Nie „11“ strikt rechts vom Kopf (274 gespiegelt: links); M5-D liest nie 0 mit 1 rechts daneben | 10^10 je Maschine ab Leerband; Familie F je 2·10^6 | `kein11.c` bei jedem Schritt; Zweitprogramm `naiv.go` bis 2·10^6 und an 200 Bändern gleich; Prüfstelle (Code nicht im Repo) | [K11 §3] |
+| Ohne „11“ rechts vom Kopf kein Halt; „11“ entsteht nur über A0 B0 C0 D0 (A liest 0, rechts `0001`) | jede Bandlänge (Fensteraufzählung, gilt allgemein) | 1 (`lokal.py`), Negativkontrolle | [K11 §2] |
 
 ### Offen
 
@@ -195,6 +198,10 @@ Durch **Tabellenvergleich** belegt (gilt für jede Schrittzahl, zwei Programme, 
 - **Idee 1 der Lückenkarte abgeschlossen** (26.11.) [KB]: keine Umbau-Formel, keine feste Restliste (10.092 Reste); die
   Werte der neuen Ziffern sind nicht örtlich bestimmt (ein Programm). Damit ist auch Idee 2 (Bandsprache mit endlich
   vielen Rest-Formen) in der einfachen Form nicht haltbar. **Kein Beweisplan. M5 ruht, bis ein neuer Ansatz benannt ist.**
+- **Neuer Ansatz „nie 11 rechts vom Kopf“** (26.11. abends, Prüfstelle, Justus' OK) [K11]: Nicht-Halten aller vier folgt aus
+  der einen Aussage „wenn M5-A eine 0 liest, steht rechts nie `0001`“. Gemessen nie verletzt, **nicht bewiesen**. SAT-Suche
+  mit festem rechtem Automaten (Lückenlängen), linker Automat bis 14 Zustände: nichts (318, 518); der rechte Automat ist zu
+  grob, gebraucht wird die Wortstruktur rechts. Weiter nur mit OK.
 - Nächster Umbau, falls überhaupt, jenseits 8·10^14; `m5sim` reicht bis etwa 10^15 [M2 §6].
 - Vorlagen im Pin wären `SBCv6a2.v` (Bahn ausrechnen) oder `SOBLv3.v` (Restklassen-Invariante); beide brauchen
   die fehlende Umbau-Abbildung [M2 §5].

@@ -1,0 +1,3 @@
+27108 Baender, je 2000000 Schritte
+ZUSAMMEN 27108 Baender, 54216000000 Schritte: Baender mit Bruch 0; M5-D liest 0: 9971723185 Mal, davon rechts daneben 1: 0
+ZWEITPRUEFUNG 200 Baender (Keim 20261126), je 200000 Schritte: 200 gleich (C gegen Go)

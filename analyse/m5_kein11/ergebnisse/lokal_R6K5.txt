@@ -1,0 +1,139 @@
+Fenster R=6 (Zellen -6..+6), hoechstens K=5 Schritte
+
+== Zuordnung auf M5 (Zustand der Maschine -> Zustand von M5)
+  274: KEINE Zuordnung
+  274m: A->D B->A C->B D->C E->E F->E   Halt bei F1 (= M5 E1), Start A -> M5 D
+  318: A->A B->B C->C D->D E->A F->E   Halt bei A1 (= M5 A1), Start A -> M5 A
+  322: A->C B->D C->A D->B E->A F->E   Halt bei E1 (= M5 A1), Start A -> M5 C
+  518: A->A B->B C->C D->D E->E F->E   Halt bei F1 (= M5 E1), Start A -> M5 A
+
+== M5 1RB0LD_0RC1RA_1RD1RE_1LA0LE_0RA0LC
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['D0']
+     k=2: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['C0 D0']
+     k=3: 2 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['B0 C0 D0', 'E1 C0 D0']
+     k=4: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['A0 B0 C0 D0']
+     k=5: 2 Folgen; letzter Uebergang immer in ['D0']
+        letzte 4 Uebergaenge: ['A0 B0 C0 D0']
+
+== 274 1RB0RE_1LC0RA_0LD1LB_1LA1LF_0LB0RD_0LB---
+  (a) Wege zum Halt, bei denen jede Konfiguration I erfuellt (nach Laenge k):
+     k=0: 1 Uebergangsfolgen  z.B. (Haltekonfiguration selbst)
+     k=1: 1 Uebergangsfolgen  z.B. D1
+     k=2: 1 Uebergangsfolgen  z.B. C0 D1
+     k=3: 1 Uebergangsfolgen  z.B. B0 C0 D1
+     k=4: 2 Uebergangsfolgen  z.B. E0 B0 C0 D1
+     k=5: 2 Uebergangsfolgen  z.B. A1 E0 B0 C0 D1
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 4 Folgen; letzter Uebergang immer in ['B0', 'C1', 'D0', 'D1']
+        Folgen: ['B0', 'C1', 'D0', 'D1']
+     k=2: 4 Folgen; letzter Uebergang immer in ['B0', 'C1', 'D0']
+        Folgen: ['A0 B0', 'B0 C1', 'C1 B0', 'E1 D0']
+     k=3: 5 Folgen; letzter Uebergang immer in ['B0', 'C1', 'D0']
+        Folgen: ['A0 B0 C1', 'A1 E1 D0', 'B1 A0 B0', 'E0 B0 C1', 'F0 B0 C1']
+     k=4: 7 Folgen; letzter Uebergang immer in ['B0', 'C1', 'D0']
+        Folgen: ['A0 B1 A0 B0', 'A1 E0 B0 C1', 'B1 A0 B0 C1', 'D0 A1 E1 D0', 'D1 F0 B0 C1', 'E0 B1 A0 B0', 'F0 B1 A0 B0']
+     k=5: 8 Folgen; letzter Uebergang immer in ['B0', 'C1', 'D0']
+        letzte 4 Uebergaenge: ['A0 B1 A0 B0', 'B1 A0 B0 C1', 'D0 A1 E1 D0', 'D1 F0 B0 C1']
+
+== 318 1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC
+  (a) Wege zum Halt, bei denen jede Konfiguration I erfuellt (nach Laenge k):
+     k=0: 1 Uebergangsfolgen  z.B. (Haltekonfiguration selbst)
+     k=1: 1 Uebergangsfolgen  z.B. B1
+     k=2: 0 Uebergangsfolgen
+     k=3: 0 Uebergangsfolgen
+     k=4: 0 Uebergangsfolgen
+     k=5: 0 Uebergangsfolgen
+     => ab k=2 kein solcher Weg: jeder Halt nach mindestens 2 Schritten hat unter den letzten 3 Konfigurationen eine mit "11" strikt rechts vom Kopf.
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['D0']
+     k=2: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['C0 D0']
+     k=3: 2 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['B0 C0 D0', 'F1 C0 D0']
+     k=4: 2 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['A0 B0 C0 D0', 'E0 B0 C0 D0']
+     k=5: 2 Folgen; letzter Uebergang immer in ['D0']
+        letzte 4 Uebergaenge: ['A0 B0 C0 D0', 'E0 B0 C0 D0']
+
+== 322 1RB1RF_1LC0LF_1RD0LB_0RA1RE_1RD---_0RC0LA
+  (a) Wege zum Halt, bei denen jede Konfiguration I erfuellt (nach Laenge k):
+     k=0: 1 Uebergangsfolgen  z.B. (Haltekonfiguration selbst)
+     k=1: 1 Uebergangsfolgen  z.B. D1
+     k=2: 0 Uebergangsfolgen
+     k=3: 0 Uebergangsfolgen
+     k=4: 0 Uebergangsfolgen
+     k=5: 0 Uebergangsfolgen
+     => ab k=2 kein solcher Weg: jeder Halt nach mindestens 2 Schritten hat unter den letzten 3 Konfigurationen eine mit "11" strikt rechts vom Kopf.
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 1 Folgen; letzter Uebergang immer in ['B0']
+        Folgen: ['B0']
+     k=2: 1 Folgen; letzter Uebergang immer in ['B0']
+        Folgen: ['A0 B0']
+     k=3: 2 Folgen; letzter Uebergang immer in ['B0']
+        Folgen: ['D0 A0 B0', 'F1 A0 B0']
+     k=4: 2 Folgen; letzter Uebergang immer in ['B0']
+        Folgen: ['C0 D0 A0 B0', 'E0 D0 A0 B0']
+     k=5: 2 Folgen; letzter Uebergang immer in ['B0']
+        letzte 4 Uebergaenge: ['C0 D0 A0 B0', 'E0 D0 A0 B0']
+
+== 518 1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---
+  (a) Wege zum Halt, bei denen jede Konfiguration I erfuellt (nach Laenge k):
+     k=0: 1 Uebergangsfolgen  z.B. (Haltekonfiguration selbst)
+     k=1: 1 Uebergangsfolgen  z.B. C1
+     k=2: 0 Uebergangsfolgen
+     k=3: 0 Uebergangsfolgen
+     k=4: 0 Uebergangsfolgen
+     k=5: 0 Uebergangsfolgen
+     => ab k=2 kein solcher Weg: jeder Halt nach mindestens 2 Schritten hat unter den letzten 3 Konfigurationen eine mit "11" strikt rechts vom Kopf.
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['D0']
+     k=2: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['C0 D0']
+     k=3: 2 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['B0 C0 D0', 'E1 C0 D0']
+     k=4: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['A0 B0 C0 D0']
+     k=5: 3 Folgen; letzter Uebergang immer in ['D0']
+        letzte 4 Uebergaenge: ['A0 B0 C0 D0']
+
+== 274m 1LB0LE_1RC0LA_0RD1RB_1RA1RF_0RB0LD_0RB---
+  (a) Wege zum Halt, bei denen jede Konfiguration I erfuellt (nach Laenge k):
+     k=0: 1 Uebergangsfolgen  z.B. (Haltekonfiguration selbst)
+     k=1: 1 Uebergangsfolgen  z.B. D1
+     k=2: 0 Uebergangsfolgen
+     k=3: 0 Uebergangsfolgen
+     k=4: 0 Uebergangsfolgen
+     k=5: 0 Uebergangsfolgen
+     => ab k=2 kein solcher Weg: jeder Halt nach mindestens 2 Schritten hat unter den letzten 3 Konfigurationen eine mit "11" strikt rechts vom Kopf.
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 1 Folgen; letzter Uebergang immer in ['A0']
+        Folgen: ['A0']
+     k=2: 1 Folgen; letzter Uebergang immer in ['A0']
+        Folgen: ['D0 A0']
+     k=3: 2 Folgen; letzter Uebergang immer in ['A0']
+        Folgen: ['C0 D0 A0', 'E1 D0 A0']
+     k=4: 1 Folgen; letzter Uebergang immer in ['A0']
+        Folgen: ['B0 C0 D0 A0']
+     k=5: 3 Folgen; letzter Uebergang immer in ['A0']
+        letzte 4 Uebergaenge: ['B0 C0 D0 A0']
+
+== Kontrolle-B1L 1RB0LD_0RC1LA_1RD1RE_1LA0LE_0RA0LC
+  (b) Wege, deren letzte Konfiguration I erstmals verletzt (Folge der Uebergaenge, letzter = verletzender Schritt):
+     k=1: 2 Folgen; letzter Uebergang immer in ['B1', 'D0']
+        Folgen: ['B1', 'D0']
+     k=2: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['C0 D0']
+     k=3: 2 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['B0 C0 D0', 'E1 C0 D0']
+     k=4: 1 Folgen; letzter Uebergang immer in ['D0']
+        Folgen: ['A0 B0 C0 D0']
+     k=5: 1 Folgen; letzter Uebergang immer in ['D0']
+        letzte 4 Uebergaenge: ['A0 B0 C0 D0']
+
