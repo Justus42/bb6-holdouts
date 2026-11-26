@@ -1,0 +1,2 @@
+W-Regel: D2 0/11030  D3 0/8178  Suffix 24020 / 24020
+Abschnitte (neue Ziffern, neue W): {}
