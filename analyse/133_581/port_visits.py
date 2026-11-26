@@ -25,19 +25,22 @@ def h(w):
     return '%016x' % x
 
 start, rounds, limit = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+if '--ohne-sprung' in sys.argv: P.tryJump = lambda b: None
 rnd = P.make_round(P.TM581)
 c = (True, [], [], start)
 for i in range(1, rounds + 1):
     if c[0] and not c[1] and c[3] == 'A':
         w = decode(c[2], limit)
         if w is None: print('ENDE Laenge', file=sys.stderr); break
-        print('%d %d %s' % (i, len(w), h(w)))
+        print('%d %d %s %d' % (i, len(w), h(w), P.STEPS[0]))
         j0 = P.STAT['jumps']
+        s0 = P.STEPS[0]
         c1 = P.atVisit(c)
         if P.STAT['jumps'] > j0:
             w = decode(c1[2], limit)
             if w is None: print('ENDE Laenge', file=sys.stderr); break
-            print('%d %d %s J' % (i, len(w), h(w)))
+            print('%d %d %s %d J' % (i, len(w), h(w), P.STEPS[0]))
         P.STAT['jumps'] = j0  # atVisit wird in round erneut aufgerufen
+        P.STEPS[0] = s0
     c = rnd(c)
     if c is None: print('HALT', i); break

@@ -49,12 +49,14 @@ W101 = (1, 0, 1)
 def segRun(T, fuel, l, r, q):
     l = list(l)
     r = list(r)
+    k = 0  # Schrittzahl (nur Zusatz der Portierung, in PR 76 nicht vorhanden)
     while True:
         if fuel == 0:
             return None
         fuel -= 1
         if not r:
-            return (l, q)
+            return (l, q, k)
+        k += 1
         s = r[0]
         a = T[(q, s)]
         if a is None:
@@ -79,7 +81,7 @@ def cross(T, q, w, cache):
     res = segRun(T, 200, [], w, q)
     out = None
     if res is not None and res[1] == q:
-        out = tuple(res[0])
+        out = (tuple(res[0]), res[2])
     cache[key] = out
     return out
 
@@ -101,6 +103,8 @@ def dbl(T, w, n, f, b, q, cache):
     v = cross(T, q, w + w, cache)
     if v is None:
         return None
+    v, k2 = v
+    STEPS[0] += h * k2
     f2 = ([('R', w, 1)] + f) if n % 2 == 1 else f
     k = len(w)
     if v[:k] == v[k:]:
@@ -115,7 +119,9 @@ def act(o, f2, b):
         return ('Halt',)
     s2, d, q2 = o
     if d == 'R':
+        STEPS[0] += 1
         return ('Same', f2, [Bit(s2)] + b, q2)
+    STEPS[0] += 1
     return ('Turn', b, [Bit(s2)] + f2, q2)
 
 
@@ -125,6 +131,8 @@ def gstep(T, f, b, q, cache):
         f2 = f[1:]
         w2 = cross(T, q, w, cache)
         if w2 is not None:
+            w2, k = w2
+            STEPS[0] += n * k
             return ('Same', f2, pushRun(w2, n, b), q)
         r = dbl(T, w, n, f2, b, q, cache)
         if r is not None:
@@ -318,6 +326,27 @@ def goodN(ps, top):
 
 
 STAT = {'jumps': 0, 'jumpV': 0}
+STEPS = [0]   # Schritte der Maschine bis zur aktuellen Konfiguration (ohne den Halteuebergang)
+
+
+def tz(m):
+    return (m & -m).bit_length() - 1
+
+
+def jump_steps(ps, V):
+    """Schritte von V Besuchen ab der Zone ps (N-Koordinaten wie toN), geschlossene Form.
+    Eigene Herleitung aus der Besuchsregel: ein Besuch mit neuem Zaehlerstand m kostet
+    11 + 4(1+tz(m)) + 6*(N_0+...+N_tz(m)); N_0 waechst je Besuch um 2, N_j verliert 1, wenn Bit j+1 gesetzt wird.
+    Geprueft gegen Einzelbesuche (pruefe_sprung.py)."""
+    X = sum((1 << k) for k, (b, _) in enumerate(ps) if b)
+    T = lambda M: M - bin(M).count('1')          # sum_{m<=M} tz(m)
+    F = lambda Q: (Q // 2) * ((Q + 1) // 2)      # sum_{q<=Q} floor(q/2)
+    C = lambda j, M: (M >> j) - (M >> (j + 1))   # #{m<=M: tz(m)=j}
+    tot = 15 * V + 4 * (T(X + V) - T(X)) + 6 * V * (V - 1)
+    for j, (_, N) in enumerate(ps):
+        qa, qb = X >> j, (X + V) >> j
+        tot += 6 * ((qb - qa) * (N + C(j, X)) - (F(qb) - F(qa)))
+    return tot
 
 
 def tryJump(b):
@@ -333,6 +362,7 @@ def tryJump(b):
             and physP(ps, top) == lv and encZone(n0, lv, rest) == cb:
         STAT['jumps'] += 1
         STAT['jumpV'] += V
+        STEPS[0] += jump_steps(ps, V)
         return encZone(n0of(ps2), physP(ps2, top), rest)
     return None
 
@@ -345,6 +375,7 @@ def macL(f, b):
     if len(f) >= 4 and isbit(f[0], 1) and isbit(f[1], 0) and f[2][0] == 'R' and isbit(f[3], 1):
         w, k = f[2][1], f[2][2]
         if w == W:
+            STEPS[0] += 5 + 3 * (k - 1)
             return ([Bit(1)] + f[4:], xrun(k - 1, [Bit(1), Bit(0), Bit(1), Bit(1), Bit(0)] + b))
     return None
 
@@ -354,10 +385,12 @@ def macR(f, b):
         w, m = f[0][1], f[0][2]
         if isbit(f[1], 1) and isbit(f[2], 0) and isbit(f[3], 1) and isbit(f[4], 1) and isbit(f[5], 0):
             if w == X:
+                STEPS[0] += 5 + 3 * m
                 return (f[6:], [Bit(1), Bit(1), ('R', W, m + 1)] + b)
         return None
     if len(f) >= 5 and isbit(f[0], 1) and isbit(f[1], 0) and isbit(f[2], 1) and isbit(f[3], 1) \
             and isbit(f[4], 0):
+        STEPS[0] += 5
         return (f[5:], [Bit(1), Bit(1), ('R', W, 1)] + b)
     return None
 
@@ -427,14 +460,19 @@ def main():
         c2 = rnd(c)
         if c2 is None:
             print('HALT in Runde', i, '| Spruenge', STAT['jumps'], '| Sprung-Besuche', STAT['jumpV'])
+            print('Schritte bis zur Haltekonfiguration:', STEPS[0])
+            print('Schritte mit Halteuebergang (bbchallenge-Zaehlung):', STEPS[0] + 1)
             print('letzte Konfiguration:', show(c))
             return
         c = c2
         if logk and i % logk == 0:
             mx = max([x[2] for x in c[1] + c[2] if x[0] == 'R'] + [0])
             print('Runde', i, 'Items', len(c[1]) + len(c[2]), 'Spruenge', STAT['jumps'],
-                  'groesste Wiederholung 2^%d' % mx.bit_length(), flush=True)
+                  'groesste Wiederholung 2^%d' % mx.bit_length(), 'Schritte ~10^%d' % (len(str(STEPS[0])) - 1),
+                  flush=True)
     print('KEIN HALT nach', rounds, 'Runden | Spruenge', STAT['jumps'], '| Sprung-Besuche', STAT['jumpV'])
+    print('Schritte bis hier (exakt, ohne Halt):', STEPS[0])
+    print('also mehr als 10^%d Schritte' % (len(str(STEPS[0])) - 1))
     print('Konfiguration:', show(c))
 
 
